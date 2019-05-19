@@ -1,5 +1,5 @@
-var api_url = 'http://rick5016.net/blog_api/'
-//var api_url = 'http://127.0.0.1/blog_api/'
+//var api_url = 'http://rick5016.net/blog_api/'
+var api_url = 'http://127.0.0.1/blog_api/'
 
 /**
  * Récupération des données
@@ -40,6 +40,13 @@ const getDOM = async function (fileName) {
     return wrapper.firstChild
 }
 
+const deco = function () {
+    if (localStorage.getItem('token') !== null) {
+        localStorage.removeItem('token')
+        document.location.reload(true);
+    }
+}
+
 /**
  * Initialisation des données du template
  */
@@ -52,6 +59,11 @@ const loadTemplate = async function () {
         div.addEventListener("click", loadAccueil)
         DOM.querySelector('#icons').appendChild(div)
         if (localStorage.getItem('token') !== null) {
+            let span = document.createElement('span')
+            span.innerHTML = 'Déconnexion'
+            span.addEventListener("click", deco )
+            DOM.querySelector('#bloc_login').innerHTML = ''
+            DOM.querySelector('#bloc_login').appendChild(span)
             let div = document.createElement('div')
             div.setAttribute('class', 'link icon add')
             div.addEventListener("click", function () { loadEdit('new') })

@@ -205,6 +205,8 @@ const loadEdit = async function (id) {
         DOM.querySelectorAll('.wiziwig').forEach(w => {
             w.addEventListener("click", wiziwig)
         })
+    } else {
+        loadAccueil()
     }
 
     // Sauvegarde
