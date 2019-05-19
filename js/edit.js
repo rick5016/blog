@@ -51,7 +51,7 @@ const setPrevisu = function () {
 
 const deleteArticle = async function (id) {
     document.querySelector('#loader').style.display = null
-    let data = await promise('http://127.0.0.1/blog_api/delete.php', 'POST', {'id': id, 'token': localStorage.getItem('token')})
+    let data = await promise('delete.php', 'POST', {'id': id, 'token': localStorage.getItem('token')})
     updateTemplate()
     document.querySelector('#loader').style.display = 'none'
     if (data !== false) {
@@ -61,7 +61,7 @@ const deleteArticle = async function (id) {
 
 const updateArticle = async function (id, reload) {
     document.querySelector('#loader').style.display = null
-    await promise('http://127.0.0.1/blog_api/update.php', 'POST', { 'id': id, 'token': localStorage.getItem('token') }, document.getElementById('form_article'))
+    await promise('update.php', 'POST', { 'id': id, 'token': localStorage.getItem('token') }, document.getElementById('form_article'))
     clearInterval(saveEdit)
     saveEdit = null
     if (reload) {
@@ -72,7 +72,7 @@ const updateArticle = async function (id, reload) {
 
 const saveArticle = async function () {
     document.querySelector('#loader').style.display = null
-    let data = await promise('http://127.0.0.1/blog_api/save.php', 'POST', {'token': localStorage.getItem('token')}, document.getElementById('form_article'))
+    let data = await promise('save.php', 'POST', {'token': localStorage.getItem('token')}, document.getElementById('form_article'))
     updateTemplate()
     if (data !== false) {
         loadEdit(data)

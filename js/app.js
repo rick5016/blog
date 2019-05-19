@@ -1,3 +1,6 @@
+var api_url = 'http://rick5016.net/blog_api/'
+//var api_url = 'http://127.0.0.1/blog_api/'
+
 /**
  * Récupération des données
  * 
@@ -21,7 +24,7 @@ const promise = async function (url, method = 'GET', data = {}, formElement = nu
         args = { method: method, body: form }
     }
 
-    return await fetch(url, args).then(response => response.text()).catch(error => console.error(error))
+    return await fetch(api_url + url, args).then(response => response.text()).catch(error => console.error(error))
 }
 
 /**
@@ -41,7 +44,7 @@ const getDOM = async function (fileName) {
  * Initialisation des données du template
  */
 const loadTemplate = async function () {
-    let [DOM, data] = await getDataHTML('http://127.0.0.1/blog_api/loadTemplate.php', ['template'])
+    let [DOM, data] = await getDataHTML('loadTemplate.php', ['template'])
 
     if (data !== false) {
         let div = document.createElement('div')
@@ -93,7 +96,7 @@ const loadTemplate = async function () {
  */
 const updateTemplate = async function () {
 
-    let data = await promise('http://127.0.0.1/blog_api/loadTemplate.php', 'POST', { 'token': localStorage.getItem('token') })
+    let data = await promise('loadTemplate.php', 'POST', { 'token': localStorage.getItem('token') })
 
     if (data !== false) {
         data = JSON.parse(data)
@@ -143,7 +146,7 @@ const inscription = async function () {
     let login = document.querySelector('#login').value
     let password = document.querySelector('#password').value
     if (login != '' && password != '') {
-        let data = await promise('http://127.0.0.1/blog_api/inscription.php', 'POST', { 'login': login, 'password': password })
+        let data = await promise('inscription.php', 'POST', { 'login': login, 'password': password })
         if (data !== false) {
             connexion()
         }
@@ -154,7 +157,7 @@ const connexion = async function () {
     let login = document.querySelector('#login').value
     let password = document.querySelector('#password').value
     if (login != '' && password != '') {
-        let data = JSON.parse(await promise('http://127.0.0.1/blog_api/login.php', 'POST', { 'login': login, 'password': password }))
+        let data = JSON.parse(await promise('login.php', 'POST', { 'login': login, 'password': password }))
 
         if (data !== false && data.token != '') {
             localStorage.setItem('token', data.token);

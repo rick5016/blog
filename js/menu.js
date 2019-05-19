@@ -41,7 +41,7 @@ const loadMenu = function (menuName, data = null) {
  */
 const loadAccueil = async function () {
     //clearInterval(saveEdit)
-    let [DOM, data] = await getDataHTML('http://127.0.0.1/blog_api/loadTemplate.php', ['accueil'])
+    let [DOM, data] = await getDataHTML('loadTemplate.php', ['accueil'])
 
     if (data !== false) {
         DOM.querySelector('ul').innerHTML = ''
@@ -87,7 +87,7 @@ const loadAccueil = async function () {
  */
 const loadArticle = async function (id) {
     clearInterval(saveEdit)
-    let [DOM, data] = await getDataHTML('http://127.0.0.1/blog_api/article.php', ['article'], 'POST', { 'id': id, 'token': localStorage.getItem('token') })
+    let [DOM, data] = await getDataHTML('article.php', ['article'], 'POST', { 'id': id, 'token': localStorage.getItem('token') })
 
     // Chargement du contenu de la page
     if (data !== false) {
@@ -171,7 +171,7 @@ const loadEdit = async function (id) {
         imported.id = 'editJS'
         await document.querySelector('body').appendChild(imported)
     }
-    let [DOM, article] = await getDataHTML('http://127.0.0.1/blog_api/edit.php', ['edit', 'edit'], 'POST', { 'id': id, 'token': localStorage.getItem('token') })
+    let [DOM, article] = await getDataHTML('edit.php', ['edit', 'edit'], 'POST', { 'id': id, 'token': localStorage.getItem('token') })
 
     if (article !== false) {
         // Chargement
@@ -190,29 +190,6 @@ const loadEdit = async function (id) {
         })
         DOM.appendChild(suppr)
 
-        // Sauvegarde
-        if (id != 'new') {
-            DOM.querySelector('#save_article').addEventListener("click", function () {
-                updateArticle(id, true)
-            })
-            DOM.querySelector('#article').addEventListener("keyup", function () {
-                setPrevisu()
-                if (saveEdit == null) {
-                    saveEdit = setInterval(function () { updateArticle(id) }, 5000)
-                }
-            })
-            DOM.querySelector('#title').addEventListener("keyup", function () {
-                if (saveEdit == null) {
-                    saveEdit = setInterval(function () { updateArticle(id, true) }, 5000)
-                }
-            })
-        } else {
-            DOM.querySelector('#save_article').innerHTML = "Créer l'article"
-            DOM.querySelector('#save_article').addEventListener("click", function () {
-                saveArticle()
-            })
-        }
-
         // Prévisualisation
         DOM.querySelector('#prev_button').addEventListener("click", function () {
             if (DOM.querySelector('#prev').style.display == 'none') {
@@ -227,6 +204,29 @@ const loadEdit = async function (id) {
         // Wiziwig
         DOM.querySelectorAll('.wiziwig').forEach(w => {
             w.addEventListener("click", wiziwig)
+        })
+    }
+
+    // Sauvegarde
+    if (id != 'new') {
+        DOM.querySelector('#save_article').addEventListener("click", function () {
+            updateArticle(id, true)
+        })
+        DOM.querySelector('#article').addEventListener("keyup", function () {
+            setPrevisu()
+            if (saveEdit == null) {
+                saveEdit = setInterval(function () { updateArticle(id) }, 5000)
+            }
+        })
+        DOM.querySelector('#title').addEventListener("keyup", function () {
+            if (saveEdit == null) {
+                saveEdit = setInterval(function () { updateArticle(id, true) }, 5000)
+            }
+        })
+    } else {
+        DOM.querySelector('#save_article').innerHTML = "Créer l'article"
+        DOM.querySelector('#save_article').addEventListener("click", function () {
+            saveArticle()
         })
     }
 
