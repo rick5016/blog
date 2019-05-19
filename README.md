@@ -1,0 +1,1 @@
+http://rick5016.net/blog/
