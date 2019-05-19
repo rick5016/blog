@@ -20,7 +20,7 @@ body {
     justify-content: space-between;
 }
 
-#header-container #header .link {
+#header-container #header .accueil {
     color: rgba(85, 85, 85, 1);
     font-size: 31px;
     line-height: 1.9;
@@ -41,14 +41,19 @@ body {
     color: #fff;
     display: flex;
 }
-
-#header-container #barre #display {
-    padding: 0px 20px 0px 20px;
+#header-container #barre #icons {
     display: flex;
+}
+
+#header-container #barre #icons .icon {
+    padding: 35px 20px 0px 20px;
     align-items: center;
     background-repeat: no-repeat;
     background-position: center center;
-    background-image: url(/img/index.png);
+    background-image: url(/img/home.png);
+}
+#header-container #barre #icons .add {
+    background-image: url(/img/add-15.png);
 }
 
 #header-container #barre #pages {

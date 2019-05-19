@@ -1,5 +1,3 @@
-var saveEdit
-
 const wiziwig = function (e) {
     e.preventDefault()
     if (e.target.id == 'br') {
@@ -51,10 +49,33 @@ const setPrevisu = function () {
     document.querySelector('#prev').innerHTML = content
 }
 
-const saveArticle = async function (id) {
+const deleteArticle = async function (id) {
     document.querySelector('#loader').style.display = null
-    await promise('http://127.0.0.1/blog_api/save.php', 'POST', { 'id': id }, document.getElementById('form_article'))
+    let data = await promise('http://127.0.0.1/blog_api/delete.php', 'POST', {'id': id, 'token': localStorage.getItem('token')})
+    updateTemplate()
+    document.querySelector('#loader').style.display = 'none'
+    if (data !== false) {
+        loadAccueil()
+    }
+}
+
+const updateArticle = async function (id, reload) {
+    document.querySelector('#loader').style.display = null
+    await promise('http://127.0.0.1/blog_api/update.php', 'POST', { 'id': id, 'token': localStorage.getItem('token') }, document.getElementById('form_article'))
     clearInterval(saveEdit)
     saveEdit = null
+    if (reload) {
+        updateTemplate()
+    }
+    document.querySelector('#loader').style.display = 'none'
+}
+
+const saveArticle = async function () {
+    document.querySelector('#loader').style.display = null
+    let data = await promise('http://127.0.0.1/blog_api/save.php', 'POST', {'token': localStorage.getItem('token')}, document.getElementById('form_article'))
+    updateTemplate()
+    if (data !== false) {
+        loadEdit(data)
+    }
     document.querySelector('#loader').style.display = 'none'
 }

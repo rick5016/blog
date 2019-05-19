@@ -87,6 +87,10 @@
     font-size: 0.875em;
 }
 
+.delete {
+    float: right;
+}
+
 /************ WIZIWIG *************/
 
 .center {

@@ -38,13 +38,7 @@
     background-color: rgb(235, 235, 235);
 }
 
-.edit,
-.delete {
+.edit {
     font-size: 13px;
     margin-left: 15px;
-}
-
-.delete {
-    float: right;
-    margin-top: 14px;
 }

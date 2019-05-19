@@ -44,6 +44,17 @@ const loadTemplate = async function () {
     let [DOM, data] = await getDataHTML('http://127.0.0.1/blog_api/loadTemplate.php', ['template'])
 
     if (data !== false) {
+        let div = document.createElement('div')
+        div.setAttribute('class', 'link icon accueil')
+        div.addEventListener("click", loadAccueil)
+        DOM.querySelector('#icons').appendChild(div)
+        if (localStorage.getItem('token') !== null) {
+            let div = document.createElement('div')
+            div.setAttribute('class', 'link icon add')
+            div.addEventListener("click", function () { loadEdit('new') })
+            DOM.querySelector('#icons').appendChild(div)
+        }
+
         // Articles
         for (var key in data) {
             if (data[key].type == 'article') {
@@ -75,11 +86,57 @@ const loadTemplate = async function () {
     // inscription / login
     document.querySelector('#inscription').addEventListener("click", inscription)
     document.querySelector('#connexion').addEventListener("click", connexion)
+}
 
-    // Retour vers l'accueil
-    document.querySelectorAll('.accueil').forEach(a => {
-        a.addEventListener("click", loadAccueil)
-    })
+/**
+ * Initialisation des données du template
+ */
+const updateTemplate = async function () {
+
+    let data = await promise('http://127.0.0.1/blog_api/loadTemplate.php', 'POST', { 'token': localStorage.getItem('token') })
+
+    if (data !== false) {
+        data = JSON.parse(data)
+        document.querySelector('#icons').innerHTML = ''
+        let div = document.createElement('div')
+        div.setAttribute('class', 'link icon accueil')
+        div.addEventListener("click", loadAccueil)
+        document.querySelector('#icons').appendChild(div)
+        if (localStorage.getItem('token') !== null) {
+            let div = document.createElement('div')
+            div.setAttribute('class', 'link icon add')
+            div.addEventListener("click", function () { loadEdit('new') })
+            document.querySelector('#icons').appendChild(div)
+        }
+
+        // Articles
+        document.querySelector('#list_article').innerHTML = ''
+        for (var key in data) {
+            if (data[key].type == 'article') {
+                let article = data[key]
+                let li = document.createElement('li')
+                li.id = 'article_' + article.id
+                li.setAttribute('class', 'link article')
+                li.innerHTML = article.title
+                li.addEventListener("click", function (e) { loadArticle(e.target.id.substr(8)) })
+                document.querySelector('#list_article').appendChild(li)
+            }
+        }
+
+        // Pages fixes
+        document.querySelector('#pages').innerHTML = ''
+        for (var key in data) {
+            if (data[key].type == 'page') {
+                let page = data[key]
+                let li = document.createElement('li')
+                li.id = 'article_' + page.id
+                li.setAttribute('class', 'link page item')
+                li.innerHTML = page.title
+                li.addEventListener("click", function (e) { loadArticle(e.target.id.substr(8)) })
+                document.querySelector('#pages').appendChild(li)
+            }
+        }
+    }
 }
 
 const inscription = async function () {

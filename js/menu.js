@@ -104,12 +104,6 @@ const loadArticle = async function (id) {
             modif.innerHTML = "modifier l'article"
             modif.addEventListener("click", function (e) { loadEdit(e.target.id.substr(8)) })
             h1.appendChild(modif)
-            // Supprimer
-            let suppr = document.createElement('span')
-            suppr.id = 'article_' + article.id
-            suppr.setAttribute('class', 'link delete')
-            suppr.innerHTML = "supprimer l'article"
-            h1.appendChild(suppr)
         }
 
         DOM.querySelector('#bloc_article').appendChild(h1)
@@ -175,46 +169,72 @@ const loadEdit = async function (id) {
         imported.src = './js/edit.js'
         imported.charset = 'utf-8'
         imported.id = 'editJS'
-        document.querySelector('body').appendChild(imported)
+        await document.querySelector('body').appendChild(imported)
     }
-
     let [DOM, article] = await getDataHTML('http://127.0.0.1/blog_api/edit.php', ['edit', 'edit'], 'POST', { 'id': id, 'token': localStorage.getItem('token') })
 
     if (article !== false) {
+        // Chargement
         DOM.querySelector('#title').setAttribute('value', article.title)
         DOM.querySelector('#article').innerHTML = article.content
+
+        // Suppression
+        let suppr = document.createElement('span')
+        suppr.id = 'article_' + article.id
+        suppr.setAttribute('class', 'link delete')
+        suppr.innerHTML = "supprimer l'article"
+        suppr.addEventListener("click", function (e) {
+            if (confirm("Voulez-vous vraiment supprimer l'article ?")) {
+                deleteArticle(e.target.id.substr(8))
+            }
+        })
+        DOM.appendChild(suppr)
+
+        // Sauvegarde
+        if (id != 'new') {
+            DOM.querySelector('#save_article').addEventListener("click", function () {
+                updateArticle(id, true)
+            })
+            DOM.querySelector('#article').addEventListener("keyup", function () {
+                setPrevisu()
+                if (saveEdit == null) {
+                    saveEdit = setInterval(function () { updateArticle(id) }, 5000)
+                }
+            })
+            DOM.querySelector('#title').addEventListener("keyup", function () {
+                if (saveEdit == null) {
+                    saveEdit = setInterval(function () { updateArticle(id, true) }, 5000)
+                }
+            })
+        } else {
+            DOM.querySelector('#save_article').innerHTML = "Créer l'article"
+            DOM.querySelector('#save_article').addEventListener("click", function () {
+                saveArticle()
+            })
+        }
+
+        // Prévisualisation
+        DOM.querySelector('#prev_button').addEventListener("click", function () {
+            if (DOM.querySelector('#prev').style.display == 'none') {
+                DOM.querySelector('#bloc_article').style.height = 'calc(100vh - 230px - 40vh)'
+                DOM.querySelector('#prev').style.display = null
+            } else {
+                DOM.querySelector('#bloc_article').style.height = 'calc(100vh - 220px)'
+                DOM.querySelector('#prev').style.display = 'none'
+            }
+        })
+
+        // Wiziwig
+        DOM.querySelectorAll('.wiziwig').forEach(w => {
+            w.addEventListener("click", wiziwig)
+        })
     }
 
-    // Sauvegarde
-    DOM.querySelector('#save_article').addEventListener("click", function () {
-        saveArticle(id)
-    })
-    DOM.querySelector('#article').addEventListener("keyup", function () {
-        setPrevisu()
-        if (saveEdit == null) {
-            saveEdit = setInterval(function () { saveArticle(id) }, 5000)
-        }
-    })
-
-    // Prévisualisation
-    DOM.querySelector('#prev_button').addEventListener("click", function () {
-        if (DOM.querySelector('#prev').style.display == 'none') {
-            DOM.querySelector('#bloc_article').style.height = 'calc(100vh - 230px - 40vh)'
-            DOM.querySelector('#prev').style.display = null
-        } else {
-            DOM.querySelector('#bloc_article').style.height = 'calc(100vh - 220px)'
-            DOM.querySelector('#prev').style.display = 'none'
-        }
-    })
-
-    // Wiziwig
-    DOM.querySelectorAll('.wiziwig').forEach(w => {
-        w.addEventListener("click", wiziwig)
-    })
-
     // Chargement du DOM
-    document.querySelector('#page').innerHTML = ''
-    document.querySelector('#page').appendChild(DOM)
+    if (document.querySelector('#page') != null) {
+        document.querySelector('#page').innerHTML = ''
+        document.querySelector('#page').appendChild(DOM)
+    }
 
     // Chargement du css
     if (document.querySelector('#articleCSS') != null) {
