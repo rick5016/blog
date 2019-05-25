@@ -99,8 +99,10 @@ const loadTemplate = async function () {
     document.querySelector('body').appendChild(DOM)
 
     // inscription / login
-    document.querySelector('#inscription').addEventListener("click", inscription)
-    document.querySelector('#connexion').addEventListener("click", connexion)
+    if (document.querySelector('#inscription') != null && document.querySelector('#connexion') != null) {
+        document.querySelector('#inscription').addEventListener("click", inscription)
+        document.querySelector('#connexion').addEventListener("click", connexion)
+    }
 }
 
 /**

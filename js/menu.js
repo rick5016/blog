@@ -174,9 +174,11 @@ const loadEdit = async function (id) {
     let [DOM, article] = await getDataHTML('edit.php', ['edit', 'edit'], 'POST', { 'id': id, 'token': localStorage.getItem('token') })
 
     if (article !== false) {
-        // Chargement
-        DOM.querySelector('#title').setAttribute('value', article.title)
-        DOM.querySelector('#article').innerHTML = article.content
+        if (article != 'new') {
+            // Chargement
+            DOM.querySelector('#title').setAttribute('value', article.title)
+            DOM.querySelector('#article').innerHTML = article.content
+        }
 
         // Suppression
         let suppr = document.createElement('span')
