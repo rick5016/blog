@@ -1,6 +1,5 @@
-//var api_url = 'http://rick5016.net/blog_api/'
-var api_url = 'http://127.0.0.1/blog_api/'
-
+var base = '/blog/'
+//var base = '/'
 /**
  * Récupération des données
  * 
@@ -24,7 +23,7 @@ const promise = async function (url, method = 'GET', data = {}, formElement = nu
         args = { method: method, body: form }
     }
 
-    return await fetch(api_url + url, args).then(response => response.text()).catch(error => console.error(error))
+    return await fetch('http://' + new URL(document.location.href).hostname + '/blog_api/' + url, args).then(response => response.text()).catch(error => console.error(error))
 }
 
 /**
@@ -34,122 +33,109 @@ const promise = async function (url, method = 'GET', data = {}, formElement = nu
  */
 const getDOM = async function (fileName) {
     // HTML
-    const dom = await fetch('./html/' + fileName[0] + '.html').then(response => response.text())
+    const dom = await fetch('./html/' + fileName).then(response => response.text())
     var wrapper = document.createElement('div')
     wrapper.innerHTML = dom
     return wrapper.firstChild
-}
-
-const deco = function () {
-    if (localStorage.getItem('token') !== null) {
-        localStorage.removeItem('token')
-        document.location.reload(true);
-    }
 }
 
 /**
  * Initialisation des données du template
  */
 const loadTemplate = async function () {
-    let [DOM, data] = await getDataHTML('loadTemplate.php', ['template'])
+    let DOM = await getDOM('template.html')
 
-    if (data !== false) {
+    let div = document.createElement('div')
+    let a = document.createElement('a')
+
+    // icône accueil
+    div.setAttribute('class', 'link icon accueil')
+    a.addEventListener("click", function (e) {
+        e.preventDefault()
+        history.pushState({ page: 'home' }, 'home', base)
+        loadAccueil()
+    })
+    div.appendChild(a)
+    DOM.querySelector('#icons').appendChild(div)
+
+    if (localStorage.getItem('token') !== null) {
+        // Bouton déco si logué
+        let span = document.createElement('span')
+        span.innerHTML = 'Déconnexion'
+        span.addEventListener("click", deco)
+        DOM.querySelector('#bloc_login').innerHTML = ''
+        DOM.querySelector('#bloc_login').appendChild(span)
+
+        // Bouton add si logué
         let div = document.createElement('div')
-        div.setAttribute('class', 'link icon accueil')
-        div.addEventListener("click", loadAccueil)
+        div.setAttribute('class', 'link icon add')
+        div.addEventListener("click", function () {
+            history.pushState({ page: 'edit' }, 'edit', base + 'index.html?edit=new')
+            loadEdit('new')
+        })
         DOM.querySelector('#icons').appendChild(div)
-        if (localStorage.getItem('token') !== null) {
-            let span = document.createElement('span')
-            span.innerHTML = 'Déconnexion'
-            span.addEventListener("click", deco )
-            DOM.querySelector('#bloc_login').innerHTML = ''
-            DOM.querySelector('#bloc_login').appendChild(span)
-            let div = document.createElement('div')
-            div.setAttribute('class', 'link icon add')
-            div.addEventListener("click", function () { loadEdit('new') })
-            DOM.querySelector('#icons').appendChild(div)
+    } else {
+        // inscription / login
+        if (DOM.querySelector('#inscription') != null && DOM.querySelector('#connexion') != null) {
+            DOM.querySelector('#inscription').addEventListener("click", inscription)
+            DOM.querySelector('#connexion').addEventListener("click", connexion)
         }
 
-        // Articles
-        for (var key in data) {
-            if (data[key].type == 'article') {
-                let article = data[key]
-                let li = document.createElement('li')
-                li.id = 'article_' + article.id
-                li.setAttribute('class', 'link article')
-                li.innerHTML = article.title
-                li.addEventListener("click", function (e) { loadArticle(e.target.id.substr(8)) })
-                DOM.querySelector('#list_article').appendChild(li)
-            }
-        }
-
-        // Pages fixes
-        for (var key in data) {
-            if (data[key].type == 'page') {
-                let page = data[key]
-                let li = document.createElement('li')
-                li.id = 'article_' + page.id
-                li.setAttribute('class', 'link page item')
-                li.innerHTML = page.title
-                li.addEventListener("click", function (e) { loadArticle(e.target.id.substr(8)) })
-                DOM.querySelector('#pages').appendChild(li)
-            }
-        }
     }
     document.querySelector('body').appendChild(DOM)
 
-    // inscription / login
-    if (document.querySelector('#inscription') != null && document.querySelector('#connexion') != null) {
-        document.querySelector('#inscription').addEventListener("click", inscription)
-        document.querySelector('#connexion').addEventListener("click", connexion)
-    }
+    // Gestion des menus
+    let json_data = await promise('index.php', 'POST', { 'find': 'page' })
+    loadMenus('all', JSON.parse(json_data))
+
 }
 
 /**
- * Initialisation des données du template
+ * Met à jour l'une des deux barres de menu (ou les deux)
  */
-const updateTemplate = async function () {
+const loadMenus = async function (type = 'page', data = null) {
 
-    let data = await promise('loadTemplate.php', 'POST', { 'token': localStorage.getItem('token') })
+    if (data == null && (type == 'page' || type == 'article')) {
+        let json_data = await promise('index.php', 'POST', { 'find': 'page', 'where': JSON.stringify({ 'type': type }) })
+        var data = JSON.parse(json_data)
+    }
 
     if (data !== false) {
-        data = JSON.parse(data)
-        document.querySelector('#icons').innerHTML = ''
-        let div = document.createElement('div')
-        div.setAttribute('class', 'link icon accueil')
-        div.addEventListener("click", loadAccueil)
-        document.querySelector('#icons').appendChild(div)
-        if (localStorage.getItem('token') !== null) {
-            let div = document.createElement('div')
-            div.setAttribute('class', 'link icon add')
-            div.addEventListener("click", function () { loadEdit('new') })
-            document.querySelector('#icons').appendChild(div)
+        // Clear menu
+        if (type == 'page') {
+            document.querySelector('#pages').innerHTML = ''
+        } else if (type == 'article') {
+            document.querySelector('#list_article').innerHTML = ''
+        } else {
+            document.querySelector('#pages').innerHTML = ''
+            document.querySelector('#list_article').innerHTML = ''
         }
 
-        // Articles
-        document.querySelector('#list_article').innerHTML = ''
+        // Load menu
         for (var key in data) {
-            if (data[key].type == 'article') {
-                let article = data[key]
-                let li = document.createElement('li')
-                li.id = 'article_' + article.id
-                li.setAttribute('class', 'link article')
-                li.innerHTML = article.title
-                li.addEventListener("click", function (e) { loadArticle(e.target.id.substr(8)) })
+            let article = data[key]
+            let li = document.createElement('li')
+            let a = document.createElement('a')
+
+            a.href = 'index.html?article=' + article.slug
+            a.innerHTML = article.title
+            a.addEventListener("click", function (e) {
+                e.preventDefault()
+                history.pushState({ page: 'article' }, 'article', base + 'index.html?article=' + article.slug)
+                loadArticle()
+            })
+
+            // Article
+            if (article.type == 'article') {
+                a.setAttribute('class', 'link article')
+                li.appendChild(a)
                 document.querySelector('#list_article').appendChild(li)
             }
-        }
 
-        // Pages fixes
-        document.querySelector('#pages').innerHTML = ''
-        for (var key in data) {
-            if (data[key].type == 'page') {
-                let page = data[key]
-                let li = document.createElement('li')
-                li.id = 'article_' + page.id
-                li.setAttribute('class', 'link page item')
-                li.innerHTML = page.title
-                li.addEventListener("click", function (e) { loadArticle(e.target.id.substr(8)) })
+            // Lien fixe
+            if (article.type == 'page') {
+                a.setAttribute('class', 'link page item')
+                li.appendChild(a)
                 document.querySelector('#pages').appendChild(li)
             }
         }
@@ -181,23 +167,37 @@ const connexion = async function () {
     }
 }
 
-const init = async function () {
-    loadTemplate()
-
-    // Récupération de la page courante sinon load accueil
-    let page = localStorage.getItem('page');
-    if (page == 'article' && localStorage.getItem('data') !== null) { // article
-        loadMenu('article', (JSON.parse(localStorage.getItem('data'))))
+const deco = function () {
+    if (localStorage.getItem('token') !== null) {
+        localStorage.removeItem('token')
+        document.location.reload(true);
     }
-    if (page == 'edit' && localStorage.getItem('data') !== null) { // edit
-        loadMenu('edit', JSON.parse(localStorage.getItem('data')))
+}
+
+const init = async function () {
+    await loadTemplate()
+
+    let url = new URL(document.location.href)
+    if (url.searchParams.has('edit')) {
+        loadEdit()
+    } else if (url.searchParams.has('article')) {
+        loadArticle()
     } else {
-        loadMenu('accueil');
+        loadAccueil()
     }
 }
 
 init()
 
-
-
-
+/**
+ * Gestion de l'historique du navigateur
+ */
+window.onpopstate = function (e) {
+    if (e.state.page == 'edit') {
+        editArticle()
+    } else if (e.state.page == 'article') {
+        loadArticle()
+    } else {
+        loadAccueil()
+    }
+}

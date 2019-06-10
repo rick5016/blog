@@ -49,23 +49,30 @@ const setPrevisu = function () {
     document.querySelector('#prev').innerHTML = content
 }
 
-const deleteArticle = async function (id) {
+const deleteArticle = async function () {
+    var slug = new URL(document.location.href).searchParams.get('edit');
     document.querySelector('#loader').style.display = null
-    let data = await promise('delete.php', 'POST', {'id': id, 'token': localStorage.getItem('token')})
-    updateTemplate()
+    let data = await promise('delete.php', 'POST', {'slug': slug, 'token': localStorage.getItem('token')})
+    clearInterval(saveEdit)
     document.querySelector('#loader').style.display = 'none'
     if (data !== false) {
+        history.pushState({ page: 'home' }, 'home', base)
+        data = JSON.parse(data)
+        loadMenus(data.type)
         loadAccueil()
     }
 }
 
-const updateArticle = async function (id, reload) {
+const updateArticle = async function (reload) {
+    var slug = new URL(document.location.href).searchParams.get('edit');
     document.querySelector('#loader').style.display = null
-    await promise('update.php', 'POST', { 'id': id, 'token': localStorage.getItem('token') }, document.getElementById('form_article'))
+    let data = await promise('update.php', 'POST', { 'slug': slug, 'token': localStorage.getItem('token') }, document.getElementById('form_article'))
     clearInterval(saveEdit)
     saveEdit = null
-    if (reload) {
-        updateTemplate()
+    if (reload && data !== false) {
+        data = JSON.parse(data)
+        history.pushState({ page: 'edit' }, 'edit', base + 'index.html?edit=' + data.slug)
+        loadMenus(data.type)
     }
     document.querySelector('#loader').style.display = 'none'
 }
@@ -73,9 +80,11 @@ const updateArticle = async function (id, reload) {
 const saveArticle = async function () {
     document.querySelector('#loader').style.display = null
     let data = await promise('save.php', 'POST', {'token': localStorage.getItem('token')}, document.getElementById('form_article'))
-    updateTemplate()
     if (data !== false) {
-        loadEdit(data)
+        data = JSON.parse(data)
+        loadMenus(data.type)
+        history.pushState({ page: 'edit' }, 'edit', base + 'index.html?edit=' + data.slug)
+        loadEdit(data.slug)
     }
     document.querySelector('#loader').style.display = 'none'
 }

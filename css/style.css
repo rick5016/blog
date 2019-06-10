@@ -41,18 +41,27 @@ body {
     color: #fff;
     display: flex;
 }
+
 #header-container #barre #icons {
     display: flex;
 }
 
 #header-container #barre #icons .icon {
-    padding: 35px 20px 0px 20px;
     align-items: center;
     background-repeat: no-repeat;
     background-position: center center;
     background-image: url(../img/home.png);
 }
+
+#header-container #barre #icons .icon a {
+    padding: 35px 20px 0px 20px;
+    display: block;
+    height: 100%;
+    width: 100%;
+}
+
 #header-container #barre #icons .add {
+    padding: 35px 20px 0px 20px;
     background-image: url(../img/add-15.png);
 }
 
@@ -60,11 +69,17 @@ body {
     display: flex;
     align-items: center;
 }
+#header-container #barre #pages li{
+    list-style: none;
+}
 
 #header-container #barre #pages .item {
     margin-left: 15px;
-    list-style: none;
     color: #ccc;
+}
+#header-container #barre #pages .item a {
+    color: rgb(204, 204, 204);
+    text-decoration: none;
 }
 
 #header-container #barre #pages::before {
@@ -109,8 +124,12 @@ body {
     list-style-type: none;
 }
 
-#menu li {
+#menu li a {
+    text-decoration: none;
+    color: #000;
     padding: 10px;
+    display: block;
+    width: 100%;
 }
 
 #login,
