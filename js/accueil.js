@@ -1,4 +1,5 @@
-const load = async function () {
-    history.pushState({ page: 'home' }, 'home', base)
-    document.querySelector('#page_content').innerHTML = 'Accueil'
+var Page = function () {
+    this.load = async function () {
+        document.querySelector('#page_content').innerHTML = 'Accueil'
+    }
 }

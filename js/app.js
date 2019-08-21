@@ -18,8 +18,10 @@ var error_messages = {
     'save_article_content_required': 'Le contenu de l’article est obligatoire.',
     'update_article_valide': "L’article a été mis à jour.",
 }
+
 /**
- * Récupération des données + gestion du token de connexion
+ * Récupération du DOM d'une page HTML ou Récupération des données
+ * Gère également le token de connexion
  * 
  * @param {string} url 
  * @param {string} method 
@@ -27,331 +29,117 @@ var error_messages = {
  */
 const promise = async function (url, method = 'GET', data = {}) {
 
-    // Cache l'alerte
-    /*document.querySelector('#alerte').removeAttribute('class')
-    document.querySelector('#alerte').innerHTML = ''
-    clearTimeout(intervalAlert)*/
+    if (url.indexOf('.html') !== -1) {
+        const dom = await fetch('./html/' + url).then(response => response.text())
+        var wrapper = document.createElement('div')
+        wrapper.innerHTML = dom
+        return wrapper.firstChild
+    } else {
+        // Auth (Ne fonctionne pas sur hebergement mutualisé)
+        /*var myHeaders = new Headers();
+        if (localStorage.getItem('token')) {
+            myHeaders.append("Authorization", 'Bearer ' + localStorage.getItem('token'));
+        }*/
 
-    /*var myHeaders = new Headers();
-    if (localStorage.getItem('token')) {
-        myHeaders.append("Authorization", 'Bearer ' + localStorage.getItem('token'));
-    }*/
-    let args = {}
-    if (method == 'POST') {
-        var form = new FormData()
-        form.append('token', localStorage.getItem('token'))
+        // Gestions des arguments
+        let args = {}
+        if (method == 'POST') {
+            var form = new FormData()
+            form.append('token', localStorage.getItem('token'))
 
-        for (var key in data) {
-            if (typeof data[key] === 'object') {
-                for (var arrayKey in data[key]) {
-                    form.append(key + '[' + arrayKey + ']', data[key][arrayKey])
-                }
-            } else {
-                form.append(key, data[key])
-            }
-        }
-        args = { method: method, body: form/*, headers: myHeaders, credentials: 'include'*/ }
-    }
-
-    let result = await fetch('http://' + new URL(document.location.href).hostname + '/api_rest/' + url, args).then(response => response.text()).catch(error => console.error(error))
-
-    if (result !== undefined) {
-        try {
-            result = JSON.parse(result)
-            if (result.error !== 0) {
-                alerte(result.error, 'ko', 10)
-            } else if (result.token != null && result.token != '') {
-                if (localStorage.hasOwnProperty('token') === false) {
-                    // Connexion
-                    localStorage.setItem('token', result.token)
-                    document.location.reload(true)
+            for (var key in data) {
+                if (typeof data[key] === 'object') {
+                    for (var arrayKey in data[key]) {
+                        form.append(key + '[' + arrayKey + ']', data[key][arrayKey])
+                    }
                 } else {
-                    // Regénération du token
-                    localStorage.setItem('token', result.token)
-                    clearInterval(intervalToken)
-                    connexion_increment = 0
-                    intervalToken = setInterval(function () { remainingTime() }, 1000)
+                    form.append(key, data[key])
                 }
-            } else if (localStorage.getItem('token') != null) {
-                // L'api n'a pas renvoyé de nouveau token alors que nous sommes connecté
-                alerte(error_messages.api_failed, 'ko', 10)
             }
-        } catch (error) {
-            result.error = error_messages.api_failed
-            document.querySelector('#page_content').innerHTML = ''
-            if (debug) {
-                alerte(error + result, 'ko', 100)
-            } else {
-                alerte(error_messages.api_failed, 'ko', 10)
-            }
+            args = { method: method, body: form/*, headers: myHeaders, credentials: 'include' // Auth (Ne fonctionne pas sur hebergement mutualisé)*/ }
         }
 
-        return result
-    } else {
-        alerte(error_messages.api_failed, 'ko', 10)
-    }
-}
+        // Appel
+        let result = await fetch('http://' + new URL(document.location.href).hostname + '/api_rest/' + url, args).then(response => response.text()).catch(error => console.error(error))
 
-/**
- * Récupération du DOM d'une page HTML
- * 
- * @param {string} fileName 
- */
-const getDOM = async function (fileName) {
-    // HTML
-    const dom = await fetch('./html/' + fileName).then(response => response.text())
-    var wrapper = document.createElement('div')
-    wrapper.innerHTML = dom
-    return wrapper.firstChild
-}
-
-/**
- * Récupération du DOM et des données d'une page HTML
- * 
- * @param {string} url Url du WS
- * @param {string} page fileName.html
- * @param {string} method GET/POST
- * @param {objet} data { 'id': 1 }
- */
-const getDataHTML = async function (url, page, method = 'GET', params = {}) {
-    let data = await promise(url, method, params)
-    let dom = await getDOM(page)
-
-    return [dom, data]
-}
-
-/**
- * Initialisation du template
- * 
- * @param {string} menu nom du js à charger
- */
-const loadTemplate = async function (menu) {
-
-    let DOM = await getDOM('template.html')
-
-    let div = document.createElement('div')
-    let a = document.createElement('a')
-
-    // icône accueil
-    div.setAttribute('class', 'link icon accueil')
-    a.addEventListener("click", function (e) {
-        e.preventDefault()
-        history.pushState({ page: 'home' }, 'home', base)
-        loadContent('accueil', base)
-    })
-    div.appendChild(a)
-    DOM.querySelector('#icons').appendChild(div)
-
-    if (localStorage.getItem('token') !== null) {
-        // Bouton déco si logué
-        let span = document.createElement('span')
-        span.innerHTML = 'Déconnexion'
-        span.addEventListener("click", deconnexion)
-        DOM.querySelector('#bloc_login').innerHTML = ''
-        DOM.querySelector('#bloc_login').appendChild(span)
-
-        // Bouton add article si logué
-        let div = document.createElement('div')
-        div.setAttribute('class', 'link icon add')
-        div.addEventListener("click", function (e) {
-            e.preventDefault()
-            loadContent('edit', base + 'index.html?edit=')
-        })
-        DOM.querySelector('#icons').appendChild(div)
-    } else {
-        // formulaire inscription / login si pas logué
-        if (DOM.querySelector('#inscription') != null && DOM.querySelector('#connexion') != null) {
-            DOM.querySelector('#inscription').addEventListener("click", inscription)
-            DOM.querySelector('#connexion').addEventListener("click", connexion)
-        }
-    }
-    document.querySelector('body').appendChild(DOM)
-
-    // Chargement du fichier JS du contenu
-    addJS(menu)
-
-    // Gestion des menus
-    let data = await promise('index.php', 'POST', { 'find': 'page' })
-    loadMenus('all', data)
-
-}
-
-/**
- * Met à jour l'une des deux barres de menu (ou les deux)
- */
-const loadMenus = async function (type = 'page', data = null) {
-    if (data == null && (type == 'page' || type == 'article')) {
-        data = await promise('index.php', 'POST', {
-            'find': 'page',
-            'where': {
-                'type': type
+        // Gestion du résultat et de la connexion grâce au token + affichage d'un message d'erreur en cas de problème ou de retour d'erreur de l'api 
+        // TODO : Le message de validation pourrai également être retourné par l'api
+        if (result !== undefined) {
+            try {
+                result = JSON.parse(result)
+                if (result.error !== 0) {
+                    alerte(result.error, 'ko', 10)
+                } else if (result.token != null && result.token != '') {
+                    if (localStorage.hasOwnProperty('token') === false) {
+                        // Connexion : reload de la page
+                        localStorage.setItem('token', result.token)
+                        document.location.reload(true)
+                    } else {
+                        // Regénération du token : Réactualisation du temps d'inactivité
+                        localStorage.setItem('token', result.token)
+                        clearInterval(intervalToken)
+                        connexion_increment = 0
+                        intervalToken = setInterval(function () { remainingTime() }, 1000)
+                    }
+                } else if (localStorage.getItem('token') != null) {
+                    // L'api n'a pas renvoyé de nouveau token alors que nous sommes connecté : Ne devrai jamais arriver
+                    alerte(error_messages.api_failed, 'ko', 10)
+                }
+                return result
+            } catch (error) { // La gestion du résultat a échoué
+                result.error = error_messages.api_failed
+                document.querySelector('#page_content').innerHTML = ''
+                if (debug) {
+                    alerte(error + result, 'ko', 100)
+                } else {
+                    alerte(error_messages.api_failed, 'ko', 10)
+                }
             }
-        })
-    }
-
-    if (data !== false) {
-        // Clear menu : TODO : ajouter le menu des séries TV autrement
-        if (type == 'page') {
-            document.querySelector('#pages').innerHTML = '<li><a href="index.html?serie=" class="link page item">Séries TV</a></li>'
-        } else if (type == 'article') {
-            document.querySelector('#list_article').innerHTML = ''
-        } else {
-            document.querySelector('#pages').innerHTML = '<li><a href="index.html?serie=" class="link page item">Séries TV</a></li>'
-            document.querySelector('#list_article').innerHTML = ''
-        }
-
-        // Load menu
-        for (var key in data.list) {
-            let article = data.list[key]
-            let li = document.createElement('li')
-            let a = document.createElement('a')
-
-            a.href = 'index.html?article=' + article.slug
-            a.innerHTML = article.title
-            a.addEventListener("click", function (e) {
-                e.preventDefault()
-                loadContent('article', base + 'index.html?article=' + article.slug)
-            })
-
-            // Article
-            if (article.type == 'article') {
-                a.setAttribute('class', 'link article')
-                li.appendChild(a)
-                document.querySelector('#list_article').appendChild(li)
-            }
-
-            // Lien fixe
-            if (article.type == 'page') {
-                a.setAttribute('class', 'link page item')
-                li.appendChild(a)
-                document.querySelector('#pages').appendChild(li)
-            }
+        } else { // L'appel a échoué
+            alerte(error_messages.api_failed, 'ko', 10)
         }
     }
 }
 
 /**
- * TODO : gestion de l'inscription
- * 
- */
-const inscription = async function () {
-    let login = document.querySelector('#login').value
-    let password = document.querySelector('#password').value
-    if (login != '' && password != '') {
-        let data = await promise('index.php', 'POST', { 'login': login, 'password': password, 'inscription': true })
-        if (data !== false) {
-            connexion()
-        }
-    }
-}
-
-/**
- * Gestion de la connexion
- * 
- */
-const connexion = async function () {
-    let login = document.querySelector('#login').value
-    let password = document.querySelector('#password').value
-    if (login != '' && password != '') {
-        await promise('index.php', 'POST', { 'login': login, 'password': password })
-    }
-}
-
-/**
- * Gestion de la déconnexion
- * 
- * 2 Appels possible : bouton déconnexion et inactivité
- */
-const deconnexion = function () {
-    clearInterval(intervalToken)
-    localStorage.removeItem('token')
-    document.location.reload(true)
-}
-
-/**
- * Gestion de l'inactivité
- * 
- * Abouti à une déconnexion au bout de x seconde (voir param connexion_duration_sec)
- */
-const remainingTime = function () {
-    connexion_increment++
-    if (connexion_increment > (connexion_duration_sec - (60 * 10))) {
-
-        document.querySelector('#alerte').setAttribute('class', 'ko')
-        document.querySelector('#alerte').innerHTML = 'Inactivité detectée, vous allez être déconnecté dans ' + (connexion_duration_sec - connexion_increment) + ' secondes.'
-    }
-    if (connexion_increment === connexion_duration_sec) {
-        deconnexion();
-    }
-}
-
-/**
- * Affiche une alerte (ok ou ko) pendant x temps
- * 
- * @param {string} $message 
- * @param {string : ok | ko} etat 
- * @param {int} duree 
- */
-const alerte = function ($message, etat = 'ok', duree = 5) {
-    document.querySelector('#alerte').setAttribute('class', etat)
-    document.querySelector('#alerte').innerHTML = $message
-    clearTimeout(intervalAlert)
-    intervalAlert = setTimeout(function () {
-        document.querySelector('#alerte').removeAttribute('class')
-        document.querySelector('#alerte').innerHTML = ''
-
-    }, duree * 1000);
-}
-
-/**
- * Ajoute un fichier JS au DOM
- * 
- * @param {string} name 
- */
-const addJS = async function (name) {
-    if (document.querySelector('#' + name + 'JS') == null) {
-        let imported = document.createElement('script')
-        imported.src = './js/' + name + '.js'
-        imported.charset = 'utf-8'
-        imported.id = name + 'JS'
-        document.querySelector('body').appendChild(imported)
-    }
-}
-
-/**
- * Ajoute un fichier CSS au DOM
- * 
- * @param {string} name 
- */
-const addCSS = async function (name) {
-    let link = document.createElement('link')
-    link.rel = 'stylesheet'
-    link.href = 'css/' + name + '.css'
-    link.id = name + 'CSS'
-    document.head.appendChild(link)
-
-}
-
-/**
- * event click : si le JS est le bon, alors on ne recharge pas la page
+ * Charge le fichier JS et supprime les autres si necessaire
  * 
  * @param {string} name 
  * @param {string} link 
  */
-const loadContent = function (name, url) {
-    history.pushState({ page: name }, name, url)
-    if (document.querySelector('#' + name + 'JS') == null) {
-        window.location.href = url;
+const loadContent = function (menu, url = false) {
+    if (url !== false) { // N'enregistre pas dans l'historique de navigation si on charge le contenu via les boutons de navigation du navigateur
+        history.pushState({ page: menu }, menu, url)
     }
 
-    load()
+    if (document.querySelector('#' + menu + 'JS') == null) {
+        let imported = document.createElement('script')
+        imported.src = './js/' + menu + '.js'
+        imported.charset = 'utf-8'
+        imported.id = menu + 'JS'
+        imported.setAttribute("class", "js");
+        imported.onload = function () {
+            var js = document.querySelectorAll('.js')
+            js.forEach(function (script) {
+                if (script.id !== imported.id) {
+                    script.remove()
+                }
+            });
+            let page = new Page()
+            page.load()
+        }
+        document.querySelector('body').appendChild(imported)
+    } else {
+        let page = new Page()
+        page.load()
+    }
 }
 
 /**
  * Récupère le nom du menu, s'il n'existe pas alors on renvoie : accueil
  * 
  * Si param est de type URL, alors on cherche le menu dans l'url
- * Si param est un string, alors on compare la pram aux noms de menus
+ * Si param est un string, alors on compare param aux noms de menus
  * 
  * @param {URL | string} param 
  */
@@ -369,14 +157,13 @@ const getMenu = function (param) {
         }
     }
 
-    return 'accueil'
+    return menus[0]
 }
 
 const init = async function () {
     let url = new URL(document.location.href)
-    let menu = getMenu(url)
-    await loadTemplate(menu)
-    loadContent(menu, url)
+    await loadTemplate()
+    loadContent(getMenu(url), url)
 }
 
 init()
@@ -388,7 +175,8 @@ init()
  */
 window.onpopstate = async function (e) {
     if (e.state !== null) {
-        addJS(getMenu(e.state.page))
-        load()
+        loadContent(getMenu(e.state.page))
+    } else {
+        console.log('Impossible de revnir en arrière') // TODO : ne devrai jamais arriver
     }
 }
