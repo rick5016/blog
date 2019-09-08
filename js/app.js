@@ -1,5 +1,5 @@
-//var base = '/blog/'
-var base = '/'
+var base = (window.location.hostname === '127.0.0.1') ? '/' : '/blog/'
+var www = (window.location.hostname === '127.0.0.1') ? 'www/' : ''
 var intervalToken, intervalAlert
 var connexion_increment = 0
 var connexion_duration_sec = 60 * 60
@@ -69,7 +69,7 @@ const promise = async function (url, method = 'GET', data = {}) {
         }
 
         // Appel
-        let result = await fetch('http://' + new URL(document.location.href).hostname + '/api_rest/www/' + url, args).then(response => response.text()).catch(error => console.error(error))
+        let result = await fetch('http://' + new URL(document.location.href).hostname + '/api_rest/' + www + url, args).then(response => response.text()).catch(error => console.error(error))
 
         // Gestion du résultat et de la connexion grâce au token + affichage d'un message d'erreur en cas de problème ou de retour d'erreur de l'api 
         // TODO : Le message de validation pourrai également être retourné par l'api
