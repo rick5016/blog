@@ -107,8 +107,6 @@ var Page = function () {
             link.style.color = '#ccc'
         })
         if (article.type == 'article') {
-            console.log("[href='index.html?article=" + article.slug + "']")
-            console.log(document.querySelector("[href='index.html?article=" + article.slug + "']"))
             document.querySelector("[href='index.html?article=" + article.slug + "']").style.background = '#fff'
             document.querySelector("[href='index.html?article=" + article.slug + "']").style.boxShadow = '0px 0px 5px #888, 0px 0px 5px #aaa'
         } else {

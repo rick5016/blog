@@ -32,7 +32,7 @@ const api = async function (action, entite, values = [], where = [], propReturn 
             if (propReturn !== '') {
                 param = data[propReturn]
             }
-            await loadContent(page, base + 'index.html?' + urlArgs + entite + '=' + param)
+            await loadContent(page, base + 'index.html?' + urlArgs)
             // TODO : gestion de la validation
             //alerte(error_messages.save_serie_valide, 'ok', 1)
             alerte('message de Validation', 'ok', 1)

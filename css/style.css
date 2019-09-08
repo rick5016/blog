@@ -121,11 +121,11 @@ p {
     height: 20px;
 }
 
-#alerte.ko{
+#alerte.ko {
     background-color: rgb(214, 88, 88);
 }
 
-#alerte.ok{
+#alerte.ok {
     background-color: rgb(88, 214, 94);
 }
 
@@ -138,10 +138,10 @@ p {
     flex-direction: column;
 }
 
-.link:hover {
+/*.link:hover {
     cursor: pointer;
     text-decoration: underline
-}
+}*/
 
 #menu ul {
     list-style-type: none;
@@ -207,4 +207,27 @@ input {
 
 .flex {
     display: flex;
+}
+
+#navigation a {
+    color: #7a8695;
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: all ease-in-out .4s;
+}
+
+#navigation a:hover {
+    cursor: pointer;
+    color: #000;
+    border-color: #000;
+}
+
+.arrow {
+    border: solid #7a8695;
+    border-width: 0 1px 1px 0;
+    display: inline-block;
+    padding: 4px;
+    transform: rotate(-45deg);
+    -webkit-transform: rotate(-45deg);
+    margin-right: 5px;
 }

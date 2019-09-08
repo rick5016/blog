@@ -19,6 +19,16 @@ var error_messages = {
     'update_article_valide': "L’article a été mis à jour.",
 }
 
+const setDOM = function (html) {
+    var wrapper = document.createElement('div')
+    wrapper.innerHTML = html
+    return wrapper
+}
+
+const getDOM = function (wrapper) {
+    return wrapper.firstChild
+}
+
 /**
  * Récupération du DOM d'une page HTML ou Récupération des données
  * Gère également le token de connexion
@@ -28,7 +38,6 @@ var error_messages = {
  * @param {abjet} data
  */
 const promise = async function (url, method = 'GET', data = {}) {
-
     if (url.indexOf('.html') !== -1) {
         const dom = await fetch('./html/' + url).then(response => response.text())
         var wrapper = document.createElement('div')
@@ -60,7 +69,7 @@ const promise = async function (url, method = 'GET', data = {}) {
         }
 
         // Appel
-        let result = await fetch('http://' + new URL(document.location.href).hostname + '/api_rest/' + url, args).then(response => response.text()).catch(error => console.error(error))
+        let result = await fetch('http://' + new URL(document.location.href).hostname + '/api_rest/www/' + url, args).then(response => response.text()).catch(error => console.error(error))
 
         // Gestion du résultat et de la connexion grâce au token + affichage d'un message d'erreur en cas de problème ou de retour d'erreur de l'api 
         // TODO : Le message de validation pourrai également être retourné par l'api
@@ -172,6 +181,7 @@ init()
  * Gestion de l'historique du navigateur
  * 
  * TODO : problème pour revenir au site précédent // Le probleme semble etre à charque rechargement de page
+ * Je pense qu'au chargement d'une page le navigateur fait un pushState et moi j'en refait un (j'ai tester : ça déplace le bug)
  */
 window.onpopstate = async function (e) {
     if (e.state !== null) {

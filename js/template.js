@@ -66,11 +66,11 @@ const loadMenus = async function (type = 'page', data = null) {
     if (data !== false) {
         // Clear menu : TODO : ajouter le menu des séries TV autrement
         if (type == 'page') {
-            document.querySelector('#pages').innerHTML = '<li><a href="index.html?serie=" class="link page item serie">Séries TV</a></li>'
+            document.querySelector('#pages').innerHTML = '<li><a href="./index.html?serie=" class="link page item serie">Séries TV</a></li>'
         } else if (type == 'article') {
             document.querySelector('#list_article').innerHTML = ''
         } else {
-            document.querySelector('#pages').innerHTML = '<li><a href="index.html?serie=" class="link page item serie">Séries TV</a></li>'
+            document.querySelector('#pages').innerHTML = '<li><a href="./index.html?serie=" class="link page item serie">Séries TV</a></li>'
             document.querySelector('#list_article').innerHTML = ''
         }
 
