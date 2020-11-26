@@ -107,6 +107,16 @@ p {
     display: flex;
 }
 
+#menu {
+    background-color: rgba(243, 243, 243, 1);
+    /*padding: 20px 20px 0px 20px;*/
+    height: 100%;
+    /*max-width: 15vw;*/
+    min-width: 25vw;
+    overflow: auto;
+    box-shadow: inset 0 0 5px #aaa;
+}
+
 #alerte {
     height: 20px;
 }
@@ -132,6 +142,19 @@ p {
     cursor: pointer;
     text-decoration: underline
 }*/
+
+#menu ul {
+    list-style-type: none;
+}
+
+#menu li a {
+    text-overflow: ellipsis;
+    text-decoration: none;
+    color: rgba(51, 51, 51, 0.75);
+    padding: 10px;
+    display: block;
+    width: 100%;
+}
 
 #login,
 #password {
@@ -208,16 +231,7 @@ input {
     -webkit-transform: rotate(-45deg);
     margin-right: 5px;
 }
-#page_content {
-    -webkit-transition: opacity 0.9s ease-in-out;
-    -moz-transition: opacity 0.9s ease-in-out;
-    -ms-transition: opacity 0.9s ease-in-out;
-    -o-transition: opacity 0.9s ease-in-out;
-    transition: opacity 0.9 ease-in-out;
-}
-#page_content.fadeOut {
-    opacity: 0;
-}
-#page_content.fadeIn {
-    opacity: 1;
+
+@media (max-width: 640px) {
+
 }

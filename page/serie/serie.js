@@ -1,8 +1,10 @@
-var Page = function () {
+var serie = function () {
     this.load = async function () {
         var serie = new URL(document.location.href).searchParams.get('serie')
         var saison = new URL(document.location.href).searchParams.get('saison')
-        var DOM = await promise('serie.html')
+        var DOM = await promise('page/serie/serie.html')
+        var bloc = DOM.querySelector('#blocs')
+        DOM.querySelector('#blocs').remove()
 
         if (serie !== '' && (saison !== null && saison !== '')) { // Episode
             DOM.querySelectorAll('.add_serie').forEach(function (elt) {
@@ -15,11 +17,11 @@ var Page = function () {
             navSaison.href = 'index.html?serie=' + serie + '&saison='
             navSaison.addEventListener("click", function (e) {
                 e.preventDefault()
-                loadContent('serie', base + 'index.html?serie=' + serie + '&saison=')
+                load('serie', [], 'page', 'index.html?serie=' + serie + '&saison=')
             })
             DOM.querySelector('.serie').addEventListener("click", function (e) {
                 e.preventDefault()
-                loadContent('serie', base + 'index.html?serie=')
+                load('serie', [], 'page', 'index.html?serie=')
             })
 
             let data = await promise('index.php', 'POST', {
@@ -31,14 +33,14 @@ var Page = function () {
             })
             if (data.error === 0) {
                 // Série
-                DOM.querySelector('#list').appendChild(await serieDisplay(serie))
+                DOM.querySelector('#list').appendChild(await serieDisplay(bloc, serie))
 
                 // Saison
-                DOM.querySelector('#list').appendChild(await saisonDisplay(serie, saison))
+                DOM.querySelector('#list').appendChild(await saisonDisplay(bloc, serie, saison))
 
                 // Liste
                 for (var key in data.list) {
-                    DOM.querySelector('#list').appendChild(await episodeDisplay(serie, saison, data.list[key]))
+                    DOM.querySelector('#list').appendChild(await episodeDisplay(bloc.cloneNode(true), serie, saison, data.list[key]))
                 }
 
                 // Event : Ajouter un épisode
@@ -58,7 +60,13 @@ var Page = function () {
                             'serie'
                         )
                     })
+                    DOM.querySelector('.noter').addEventListener("click", function () {
+
+                    })
                 } else {
+                    DOM.querySelectorAll('.noter').forEach(function (elt) {
+                        elt.remove()
+                    });
                     DOM.querySelectorAll('.add_episode').forEach(function (elt) {
                         elt.remove()
                     });
@@ -80,7 +88,7 @@ var Page = function () {
 
             DOM.querySelector('.serie').addEventListener("click", function (e) {
                 e.preventDefault()
-                loadContent('serie', base + 'index.html?serie=')
+                load('serie', [], 'page', 'index.html?serie=')
             })
 
             let data = await promise('index.php', 'POST', {
@@ -91,11 +99,11 @@ var Page = function () {
             })
             if (data.error === 0) {
                 // Série
-                DOM.querySelector('#list').appendChild(await serieDisplay(serie))
+                DOM.querySelector('#list').appendChild(await serieDisplay(bloc, serie))
 
                 // Liste
                 for (var key in data.list) {
-                    DOM.querySelector('#list').appendChild(await saisonDisplay(serie, data.list[key]))
+                    DOM.querySelector('#list').appendChild(await saisonDisplay(bloc.cloneNode(true), serie, data.list[key]))
                 }
 
                 // Event : Ajouter une saison
@@ -119,7 +127,7 @@ var Page = function () {
                     });
                 }
 
-                document.querySelector('#page_content').innerHTML = ''
+                //document.querySelector('#page_content').innerHTML = ''
                 document.querySelector('#page_content').appendChild(DOM)
             }
         } else { // Séries
@@ -136,9 +144,9 @@ var Page = function () {
             })
 
             if (data.error === 0) {
-                // Liste
+                // Liste des séries
                 for (var key in data.list) {
-                    DOM.querySelector('#list').appendChild(await serieDisplay(data.list[key])) // Liste
+                    DOM.querySelector('#list').appendChild(await serieDisplay(bloc.cloneNode(true), data.list[key]))
                 }
 
                 // Event : Ajouter une série
@@ -151,7 +159,8 @@ var Page = function () {
                                 'slug': document.querySelector('#title_serie').value
                             },
                             {},
-                            'slug'
+                            'slug',
+                            'serie='
                         )
                     })
                 } else {
@@ -162,7 +171,7 @@ var Page = function () {
             }
         }
 
-        // Spoil
+        // show spoil
         DOM.querySelectorAll('.showSpoil').forEach(function (spoil) {
             spoil.addEventListener("click", function () {
                 if (spoil.children[0].style.display === 'none') {
@@ -171,6 +180,19 @@ var Page = function () {
                 } else {
                     spoil.children[0].setAttribute('style', 'display:none')
                     spoil.children[1].setAttribute('style', 'display:initial;cursor:pointer')
+                }
+            })
+        });
+
+        // show description
+        DOM.querySelectorAll('.show_description').forEach(function (desc) {
+            desc.addEventListener("click", function () {
+                if (desc.nextSibling.style.display === 'none') {
+                    desc.innerHTML = 'Cacher le résumé de l\'épisode'
+                    desc.nextSibling.setAttribute('style', 'display:initial')
+                } else {
+                    desc.innerHTML = 'Afficher le résumé de l\'épisode'
+                    desc.nextSibling.setAttribute('style', 'display:none')
                 }
             })
         });
@@ -192,38 +214,46 @@ var Page = function () {
         return txt
     }
 
-    var element_episode =
-        '<li class="episode" style="list-style-type: none; display: flex;" id="">' + // id épisode
-        '<figure><img class="cover" src="" alt="" width="300"></figure>' + // cover
-        '<div style="padding-left: 20px;">' +
-        '<h2 style="float: left;"><span class="number"></span> - <span class="title"></span></h1>' + // number + title
-        '<a class="edit" style="text-decoration: none;"><span style="color: blue;">edit</span></a>' + // edit
-        '<br style="clear: both;">' +
-        '<span class="description"></span>' + // description
-        '</div>' +
-        '</li>'
+    const episodeNoteDisplay = async function (episode) {
+        console.log(episode)
+        let element = getElement(element_episode_note, [
+            { 'selector': '.note', 'attributs': { 'value': episode.note } },
+            { 'selector': '.commentaire', 'attributs': { 'innerHTML': episode.commentaire } },
+            {
+                'selector': '.valider', 'attributs': {},
+                'multiple': false,
+                'callback': {
+                    'event': 'click',
+                    'function': async function (e) {
+                        e.preventDefault()
+                        api('save',
+                            'note',
+                            {
+                                'note': element.querySelector('.note').value,
+                                'commentaire': element.querySelector('.commentaire').value,
+                                'episode': episode.id
+                            },
+                            {},
+                            '',
+                            '',
+                            'serie'
+                        )
+                    }
+                },
+                'connexion': true
+            },
+        ])
 
-    var element_episode_edit =
-        '<li style="list-style-type: none; display: flex;">' +
-        '<figure><a href=""><img class="cover" src="" alt="" width="300"></a></figure>' + // cover
-        '<div style="padding-left: 20px;">' +
-        '<input class="number" type="number" name="number" style="width:40px"> - <input class="title" type="text" name="title">' + // number + title
-        '<a class="delete"><span style="color: red; font-weight: bold">X</span></a>' + // delete
-        '<br style="clear: both;">' +
-        'Modifier l\'image: <input type="file" class="img" name="img" accept="image/png, image/jpeg">' + // file
-        '<br style="clear: both;">' +
-        '<div>' +
-        '<textarea class="description" name="serie_desc" rows="8" cols="90" placeholder="Description de l\'épisode"></textarea>' + // description
-        '<div class="button edit" class="button">Modifier l\'épisode</div>' + // validation
-        '</div>' +
-        '</div>' +
-        '</li>'
+        document.querySelector('#episode' + episode.id).children[1].children[4].style.display = 'none'
+        document.querySelector('#episode' + episode.id).children[1].children[3].innerHTML = ''
+        document.querySelector('#episode' + episode.id).children[1].children[3].appendChild(element)
+    }
 
-    const episodeDisplay = async function (serie, saison, episode) {
-        let element = getElement(element_episode, [
+    const episodeDisplay = async function (bloc, serie, saison, episode) {
+        let element = setDOMElement(bloc.querySelector('#episode'), [
             {
                 'selector': '.cover', 'attributs': {
-                    'src': 'http://' + new URL(document.location.href).hostname + '/api_rest/www/img/' + episode.img,
+                    'src': 'http://' + new URL(document.location.href).hostname + '/api_rest/' + www + 'img/' + episode.img,
                     'alt': episode.title,
                 }
             },
@@ -243,6 +273,19 @@ var Page = function () {
                 },
                 'connexion': true
             },
+            { 'selector': '.note', 'attributs': { 'innerHTML': episode.note + '/10' } },
+            {
+                'selector': '.noter', 'attributs': {},
+                'multiple': false,
+                'callback': {
+                    'event': 'click',
+                    'function': function (e) {
+                        e.preventDefault()
+                        episodeNoteDisplay(episode)
+                    }
+                },
+                'connexion': true
+            }
         ])
 
         if (localStorage.getItem('token') === null) {
@@ -255,7 +298,7 @@ var Page = function () {
         let element = getElement(element_episode_edit, [
             {
                 'selector': '.cover', 'attributs': {
-                    'src': 'http://' + new URL(document.location.href).hostname + '/api_rest/www/img/' + episode.img,
+                    'src': 'http://' + new URL(document.location.href).hostname + '/api_rest/' + www + 'img/' + episode.img,
                     'alt': episode.title,
                 }
             },
@@ -317,26 +360,7 @@ var Page = function () {
         }
     }
 
-    var element_saison =
-        '<li class="saison" style="list-style-type: none;margin: 15px 0 30px 0;text-align: center" id="">' + // id saison
-        '<a class="link" href=""><h1 class="title"></h1></a>' + // number
-        '<a class="edit" style="text-decoration: none;"><span style="color: blue;">edit</span></a>' + // edit
-        '<br style="clear: both;">' +
-        '<span class="description"></span>' + // description
-        '</li>'
-
-    var element_saison_edit =
-        '<li class="saison" style="list-style-type: none" id="">' + // id saison
-        '<h1 class="title">Saison </h1> <input class="number" type="number" name="saison_number" style="width:40px">' + // number
-        '<a class="delete"><span style="color: red; font-weight: bold">X</span></a>' + // delete
-        '<br style="clear: both;">' +
-        '<div>' +
-        '<textarea class="description" name="serie_desc" rows="8" cols="90" placeholder="Description de la saison"></textarea>' + // description
-        '<div class="button edit_saison" class="button">Modifier la saison</div>' + // validation
-        '</div>' +
-        '</li>'
-
-    const saisonDisplay = async function (serie, saison) {
+    const saisonDisplay = async function (bloc, serie, saison) {
         if (serie instanceof Object === false) {
             let data = await promise('index.php', 'POST', {
                 'find': 'serie',
@@ -356,7 +380,7 @@ var Page = function () {
             })
             saison = data.list[0]
         }
-        let element = getElement(element_saison, [
+        let element = setDOMElement(bloc.querySelector('#saison'), [
             { 'selector': 'li', 'attributs': { 'id': 'saison' + saison.id } },
             {
                 'selector': '.link', 'attributs': { 'href': 'index.html?serie=' + serie.slug + '&saison=' + saison.saison, 'style': 'text-decoration: none;color: #000;' },
@@ -365,7 +389,7 @@ var Page = function () {
                     'event': 'click',
                     'function': function (e) {
                         e.preventDefault()
-                        loadContent('serie', base + 'index.html?serie=' + serie.slug + '&saison=' + saison.saison)
+                        load('serie', [], 'page', 'index.html?serie=' + serie.slug + '&saison=' + saison.saison)
                     }
                 }
             },
@@ -458,32 +482,7 @@ var Page = function () {
         }
     }
 
-    var element_serie =
-        '<li class="serie" style="list-style-type: none; display: flex;" id="">' + // id serie
-        '<figure><a class="link" href=""><img class="cover" src="" alt="" width="200"></a></figure>' + // cover
-        '<div style="padding-left: 20px;">' +
-        '<a class="link" href="" style="float: left; text-decoration: none; color: rgb(0, 0, 0);"><h1 class="title"></h1></a>' + // title
-        '<a class="edit" style="text-decoration: none;"><span style="color: blue;">edit</span></a>' + // edit
-        '<br style="clear: both;">' +
-        '<span class="description"></span>' + // description
-        '</div>' +
-        '</li>'
-
-    var element_serie_edit =
-        '<li style="list-style-type: none; display: flex;">' +
-        '<figure><a href=""><img class="cover" src="" alt="" width="200"></a></figure>' + // cover
-        '<div style="padding-left: 20px;">' +
-        '<input class="title" type="text" name="serie_name">' + // title
-        '<a class="delete"><span style="color: red; font-weight: bold">X</span></a>' + // delete
-        '<br style="clear: both;">' +
-        'Modifier l\'image: <input type="file" class="serie_img" name="serie_img" accept="image/png, image/jpeg">' + // file
-        '<br style="clear: both;">' +
-        '<textarea class="description" name="serie_desc" rows="8" cols="90" placeholder="Description de la série"></textarea>' + // description
-        '<div class="button edit_serie" class="button">Modifier la série</div>' + // validation
-        '</div>' +
-        '</li>'
-
-    const serieDisplay = async function (serie) {
+    const serieDisplay = async function (bloc, serie) {
         if (serie instanceof Object === false) {
             let data = await promise('index.php', 'POST', {
                 'find': 'serie',
@@ -493,7 +492,7 @@ var Page = function () {
             })
             serie = data.list[0]
         }
-        let element = getElement(element_serie, [
+        let element = setDOMElement(bloc.querySelector('#serie'), [
             { 'selector': 'li', 'attributs': { 'id': serie.slug } },
             {
                 'selector': '.link', 'attributs': { 'href': 'index.html?serie=' + serie.slug },
@@ -502,13 +501,13 @@ var Page = function () {
                     'event': 'click',
                     'function': function (e) {
                         e.preventDefault()
-                        loadContent('serie', base + 'index.html?serie=' + serie.slug)
+                        load('serie', [], 'page', 'index.html?serie=' + serie.slug)
                     }
                 }
             },
             {
                 'selector': '.cover', 'attributs': {
-                    'src': 'http://' + new URL(document.location.href).hostname + '/api_rest/www/img/' + serie.img,
+                    'src': 'http://' + new URL(document.location.href).hostname + '/api_rest/' + www + 'img/' + serie.img,
                     'alt': serie.title,
                 }
             },
@@ -531,6 +530,7 @@ var Page = function () {
         if (localStorage.getItem('token') === null) {
             element.querySelector('.edit').remove()
         }
+        
         return element
     }
 
@@ -538,7 +538,7 @@ var Page = function () {
         let element = getElement(element_serie_edit, [
             {
                 'selector': '.cover', 'attributs': {
-                    'src': 'http://' + new URL(document.location.href).hostname + '/api_rest/www/img/' + serie.img,
+                    'src': 'http://' + new URL(document.location.href).hostname + '/api_rest/' + www + 'img/' + serie.img,
                     'alt': serie.title,
                 }
             },
@@ -593,14 +593,14 @@ var Page = function () {
     }
 
     const serieDelete = async function (serie) {
-        let data = await promise('index.php', 'POST', {
-            'find': 'saison',
-            'where': {
-                'serie': serie.slug
-            }
-        })
-
         if (confirm("Voulez-vous vraiment supprimer cette série ?")) {
+            let data = await promise('index.php', 'POST', {
+                'find': 'saison',
+                'where': {
+                    'serie': serie.slug
+                }
+            })
+
             if (data.list.length > 0) {
                 if (confirm("Il existe des saisons pour cette série, la supprimer supprimera également toutes les saisons ainsi que leurs épisodes")) {
                     api('delete', 'serie', {}, { 'slug': serie.slug })
@@ -609,51 +609,6 @@ var Page = function () {
                 api('delete', 'serie', {}, { 'slug': serie.slug })
             }
         }
-    }
-
-    const getElement = function (html, params) {
-        let element = setDOM(html)
-
-        for (var key in params) {
-            let param = params[key]
-            if (param.connexion !== undefined) {
-                if (localStorage.getItem('token') === null) {
-                    continue
-                }
-            }
-
-            if (param.multiple !== undefined && param.multiple === true) {
-                element.querySelectorAll(param.selector).forEach(function (obj) {
-                    for (var attribut in param.attributs) {
-                        if (param.attributs[attribut] !== null) {
-                            if (attribut != 'innerHTML') {
-                                obj.setAttribute(attribut, param.attributs[attribut])
-                            } else {
-                                obj.innerHTML = param.attributs[attribut]
-                            }
-                        }
-                    }
-                    if (param.callback !== undefined) {
-                        obj.addEventListener(param.callback.event, param.callback.function)
-                    }
-                });
-            } else {
-                for (var attribut in param.attributs) {
-                    if (param.attributs[attribut] !== null) {
-                        if (attribut != 'innerHTML') {
-                            element.querySelector(param.selector).setAttribute(attribut, param.attributs[attribut])
-                        } else {
-                            element.querySelector(param.selector).innerHTML = param.attributs[attribut]
-                        }
-                    }
-                }
-                if (param.callback !== undefined) {
-                    element.querySelector(param.selector).addEventListener(param.callback.event, param.callback.function)
-                }
-            }
-        }
-
-        return getDOM(element)
     }
 
     function parseMd(md) {
@@ -691,7 +646,7 @@ var Page = function () {
 
             //font styles
             md = md.replace(/[\*\_]{2}([^\*\_]+)[\*\_]{2}/g, '<b>$1</b>');
-            md = md.replace(/[\*\_]{1}([^\*\_]+)[\*\_]{1}/g, '<i>$1</i>');
+            //md = md.replace(/[\*\_]{1}([^\*\_]+)[\*\_]{1}/g, '<i>$1</i>');
             md = md.replace(/[\~]{2}([^\~]+)[\~]{2}/g, '<del>$1</del>');
 
             //pre

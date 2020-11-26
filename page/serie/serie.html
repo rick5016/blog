@@ -1,0 +1,121 @@
+<div>
+    <div id="serie_bloc" style="max-width: 1024px;font-family: 'MS Sans Serif', Geneva, sans-serif;">
+        <div id="navigation" style="padding-bottom: 20px;font-family: Arial, Helvetica, sans-serif;">
+            <a class="serie link" href="./index.html?serie=">Liste des séries</a>
+            <span class="arrow"></span>
+            <a id="navSaison" class="link" id="navSaison" href="">Liste des saisons</a>
+            <span id="navSaisonCurrent" style="display: none">Liste des saisons</span>
+            <span id="navEpisode">
+                <span class="arrow"></span>
+                <span>Liste des épisode</span>
+            </span>
+        </div>
+        <form action="" method="post" name="form" id="form">
+            <ul id="list"></ul>
+
+            <div style="clear: both;"></div>
+            <div class="flex">
+                <!-- Ajouter une série  -->
+                <input type="text" name="title_serie" id="title_serie" class="add_serie">
+                <div id="save_serie" class="button add_serie">Ajouter une série</div>
+                <!-- Ajouter une saison  -->
+                <input type="text" name="title_saison" id="title_saison" class="add_saison">
+                <div id="save_saison" class="button add_saison">Ajouter une saison</div>
+
+                <!-- Ajouter un épisode  -->
+                <input type="text" name="num_episode" id="num_episode" placeholder="Numéro de l'épisode"
+                    class="add_episode"><br>
+                <input type="text" name="title_episode" id="title_episode" placeholder="Titre de l'épisode"
+                    class="add_episode">
+                <div id="save_episode" class="button add_episode">Ajouter un épisode</div>
+            </div>
+        </form>
+    </div>
+    <div id="blocs">
+        <div id="serie">
+            <li class="serie" style="list-style-type: none; display: flex;" id=""> <!-- id serie -->
+                <figure><a class="link" href=""><img class="cover" src="" alt="" width="200"></a></figure> <!-- cover -->
+                <div style="padding-left: 20px;">
+                    <a class="link" href="" style="float: left; text-decoration: none; color: rgb(0, 0, 0);">
+                        <h1 class="title"></h1>
+                    </a> <!-- title -->
+                    <a class="edit" style="text-decoration: none;"><span style="color: blue;">edit</span></a> <!-- edit -->
+                    <br style="clear: both;">
+                    <span class="description"></span> <!-- description -->
+                </div>
+            </li>
+        </div>
+        <div id="serie_edit">
+            <li style="list-style-type: none; display: flex;">
+                <figure><a href=""><img class="cover" src="" alt="" width="200"></a></figure> <!-- cover -->
+                <div style="padding-left: 20px;">
+                    <input class="title" type="text" name="serie_name"> <!-- title -->
+                    <a class="delete"><span style="color: red; font-weight: bold">X</span></a> <!-- delete -->
+                    <br style="clear: both;">
+                    Modifier l'image: <input type="file" class="serie_img" name="serie_img" accept="image/png, image/jpeg">
+                    <!-- file -->
+                    <br style="clear: both;">
+                    <textarea class="description" name="serie_desc" rows="8" cols="90"
+                        placeholder="Description de la série"></textarea> <!-- description -->
+                    <div class="button edit_serie" class="button">Modifier la série</div> <!-- validation -->
+                </div>
+            </li>
+        </div>
+        <div id="saison">
+            <li class="saison" style="list-style-type: none;margin: 15px 0 30px 0;text-align: center" id=""> <!-- id saison -->
+                <a class="link" href=""><h1 class="title"></h1></a> <!-- number -->
+                <a class="edit" style="text-decoration: none;"><span style="color: blue;">edit</span></a> <!-- edit -->
+                <br style="clear: both;">
+                <span class="description"></span> <!-- description -->
+            </li>
+        </div>
+        <div id="saison_edit">
+            <li class="saison" style="list-style-type: none" id=""> <!-- id saison -->
+                <h1 class="title">Saison </h1> <input class="number" type="number" name="saison_number" style="width:40px"> <!-- number -->
+                <a class="delete"><span style="color: red; font-weight: bold">X</span></a> <!-- delete -->
+                <br style="clear: both;">
+                <div>
+                    <textarea class="description" name="serie_desc" rows="8" cols="90" placeholder="Description de la saison"></textarea> <!-- description -->
+                    <div class="button edit_saison" class="button">Modifier la saison</div> <!-- validation -->
+                </div>
+            </li>
+        </div>
+        <div id="episode">
+            <li class="episode" style="list-style-type: none; display: flex;" id=""> <!-- id épisode -->
+                <figure><img class="cover" src="" alt="" width="300"></figure> <!-- cover -->
+                <div style="padding-left: 20px;">
+                <h2 style="float: left;"><span class="number"></span> - <span class="title"></span></h1> <!-- number + title -->
+                <a class="edit" style="text-decoration: none;"><span style="color: blue;">editer</span></a> <!-- editer -->
+                <br style="clear: both;">
+                <span class="note"></span><a class="noter" style="text-decoration: none;"><span style="color: blue;">noter</span></a> <!-- Note -->
+                <br style="clear: both;">
+                <span class="show_description" style="cursor:pointer">Afficher le résumé de l\'épisode</span>
+                <span class="description" style="display:none"></span> <!-- description -->
+                </div>
+            </li>
+        </div>
+        <div id="episode_note">
+            <div>
+                <div style="float:left"><input class="note" type="number" name="note_number" style="width:40px">/10</div> <!-- note -->
+                <textarea class="commentaire" name="note_com" rows="8" cols="90" placeholder="Votre commentaire"></textarea> <!-- commentaire -->
+                <div style="float:left" class="button valider" class="button">Valider</div> <!-- validation -->
+            </div>
+        </div>
+        <div id="episode_edit">
+            <li style="list-style-type: none; display: flex;">
+            <figure><a href=""><img class="cover" src="" alt="" width="300"></a></figure> <!-- cover -->
+            <div style="padding-left: 20px;">
+            <input class="number" type="number" name="number" style="width:40px"> - <input class="title" type="text" name="title"> <!-- number + title -->
+            <a class="delete"><span style="color: red; font-weight: bold">X</span></a> <!-- delete -->
+            <br style="clear: both;">
+            Modifier l\'image: <input type="file" class="img" name="img" accept="image/png, image/jpeg"> <!-- file -->
+            <br style="clear: both;">
+            <div>
+            <textarea class="description" name="serie_desc" rows="8" cols="90" placeholder="Description de l\'épisode"></textarea> <!-- description -->
+            <div class="button edit" class="button">Modifier l\'épisode</div> <!-- validation -->
+            </div>
+            </div>
+            </li>
+        </div>
+    </div>
+</div>

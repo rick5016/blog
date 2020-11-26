@@ -1,10 +1,10 @@
 var saveEdit
 
-var Page = function () {
+var edit = function () {
     this.load = async function () {
         if (localStorage.getItem('token') !== null) {
             var slug = new URL(document.location.href).searchParams.get('edit')
-            var DOM = await promise('edit.html')
+            var DOM = await promise('page/edit/edit.html')
             if (slug !== '') {
                 let data = await promise('index.php', 'POST', {
                     'find': 'page',
@@ -13,7 +13,7 @@ var Page = function () {
                     }
                 })
 
-                if (data.error === 0) {
+                if (data !== undefined && data.error === 0) {
                     if (data.list != null) {
                         var article = data.list[0]
 
@@ -21,7 +21,6 @@ var Page = function () {
                             DOM.querySelector('#title').setAttribute('value', article.title)
                             DOM.querySelector('#type').value = article.type
                             DOM.querySelector('#article').innerHTML = article.content
-                            setStyleMenu(article)
                         } else {
                             alerte(error_messages.edit_article_not_allowed, 'ko', 10)
                         }
@@ -89,28 +88,9 @@ var Page = function () {
             document.querySelector('#page_content').innerHTML = ''
             document.querySelector('#page_content').appendChild(DOM)
 
-            // Chargement du css
-            addCSS('edit')
-
             //setPrevisu()
         } else {
             loadContent('accueil', base)
-        }
-    }
-
-    const setStyleMenu = function (article) {
-        document.querySelectorAll('.article').forEach(link => {
-            link.style.background = 'initial'
-            link.style.boxShadow = 'none'
-        })
-        document.querySelectorAll('.page').forEach(link => {
-            link.style.color = '#ccc'
-        })
-        if (article.type == 'article') {
-            document.querySelector("[href='index.html?article=" + article.slug + "']").style.background = '#fff'
-            document.querySelector("[href='index.html?article=" + article.slug + "']").style.boxShadow = '0px 0px 5px #888, 0px 0px 5px #aaa'
-        } else {
-            document.querySelector("[href='index.html?article=" + article.slug + "']").style.color = '#fff'
         }
     }
 
@@ -266,8 +246,8 @@ var Page = function () {
             saveEdit = null
             if (data.error === 0) {
                 if (reload) {
-                    await loadMenus(data.type)
-                    loadContent('edit', base + 'index.html?edit=' + data.slug)
+                    history.pushState({ page: 'edit' }, 'edit', 'index.html?edit=' + data.slug)
+                    load('menu', [], 'plugin', false, true)
                 }
                 alerte(error_messages.update_article_valide, 'ok', 1)
                 document.querySelector('#loader').style.display = 'none'
@@ -302,8 +282,11 @@ var Page = function () {
             })
 
             if (data.error === 0) {
-                loadMenus(data.type)
-                loadContent('edit', base + 'index.html?edit=' + data.slug)
+
+                //loadMenus(data.type)
+                load('menu', [], 'plugin')
+                load('edit', [], 'page', 'index.html?edit=' + data.slug)
+                //loadContent('edit', base + 'index.html?edit=' + data.slug)
                 alerte(error_messages.save_article_valide, 'ok', 1)
                 document.querySelector('#loader').style.display = 'none'
             }

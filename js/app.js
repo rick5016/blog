@@ -1,12 +1,13 @@
+var host = (window.location.hostname === '127.0.0.1') ? window.location.hostname + ':8081' : window.location.hostname
 var base = (window.location.hostname === '127.0.0.1') ? '/' : '/blog/'
-var www = (window.location.hostname === '127.0.0.1') ? 'www/' : ''
+var www = (window.location.hostname === '127.0.0.1') ? '' : ''
 var intervalToken, intervalAlert
 var connexion_increment = 0
 var connexion_duration_sec = 60 * 60
 
 const DEBUG_PROD = false
 var debug = (window.location.hostname === '127.0.0.1') ? true : (DEBUG_PROD ? true : false)
-var menus = ['accueil', 'article', 'edit', 'serie']
+var menus = ['accueil', 'article', 'edit', 'serie', 'reminder']
 
 var error_messages = {
     'api_failed': 'Une erreur est survenue.',
@@ -19,16 +20,6 @@ var error_messages = {
     'update_article_valide': "L’article a été mis à jour.",
 }
 
-const setDOM = function (html) {
-    var wrapper = document.createElement('div')
-    wrapper.innerHTML = html
-    return wrapper
-}
-
-const getDOM = function (wrapper) {
-    return wrapper.firstChild
-}
-
 /**
  * Récupération du DOM d'une page HTML ou Récupération des données
  * Gère également le token de connexion
@@ -39,7 +30,7 @@ const getDOM = function (wrapper) {
  */
 const promise = async function (url, method = 'GET', data = {}) {
     if (url.indexOf('.html') !== -1) {
-        const dom = await fetch('./html/' + url).then(response => response.text())
+        const dom = await fetch('./' + url).then(response => response.text())
         var wrapper = document.createElement('div')
         wrapper.innerHTML = dom
         return wrapper.firstChild
@@ -69,7 +60,7 @@ const promise = async function (url, method = 'GET', data = {}) {
         }
 
         // Appel
-        let result = await fetch('http://' + new URL(document.location.href).hostname + '/api_rest/' + www + url, args).then(response => response.text()).catch(error => console.error(error))
+        let result = await fetch('http://' + host + '/api_rest/' /*+ www */ + url, args).then(response => response.text()).catch(error => console.error(error))
 
         // Gestion du résultat et de la connexion grâce au token + affichage d'un message d'erreur en cas de problème ou de retour d'erreur de l'api 
         // TODO : Le message de validation pourrai également être retourné par l'api
@@ -111,36 +102,67 @@ const promise = async function (url, method = 'GET', data = {}) {
 }
 
 /**
- * Charge le fichier JS et supprime les autres si necessaire
+ * Charge un plugin ou une page
  * 
  * @param {string} name 
- * @param {string} link 
+ * @param {string page|plugin} type 
+ * @param {string} url 
+ * @param {bool} loadByTemplate 
  */
-const loadContent = function (menu, url = false) {
-    if (url !== false) { // N'enregistre pas dans l'historique de navigation si on charge le contenu via les boutons de navigation du navigateur
-        history.pushState({ page: menu }, menu, url)
+const load = function (name, data = [], type = 'page', url = false, loadByTemplate = false) {
+    // Gestion de la navigation du navigateur
+    if (url !== false) {
+        history.pushState({ page: name }, name, url)
     }
-
-    if (document.querySelector('#' + menu + 'JS') == null) {
+    
+    addCSS(name, type)
+    // Chargement de la page ou du plugin
+    if (document.querySelector('#' + name + 'JS') == null) {
         let imported = document.createElement('script')
-        imported.src = './js/' + menu + '.js'
+        imported.src = './' + type + '/' + name + '/' + name + '.js'
         imported.charset = 'utf-8'
-        imported.id = menu + 'JS'
-        imported.setAttribute("class", "js");
+        imported.id = name + 'JS'
+        //imported.type = 'module'
         imported.onload = function () {
-            var js = document.querySelectorAll('.js')
-            js.forEach(function (script) {
-                if (script.id !== imported.id) {
-                    script.remove()
-                }
-            });
-            let page = new Page()
-            page.load()
+            obj = new window[name]()
+            //obj.load(document.querySelector('#page_content'))
+            obj.load(data)
         }
         document.querySelector('body').appendChild(imported)
     } else {
-        let page = new Page()
-        page.load()
+        /*function myMove(elem) {
+            document.querySelector('body').style['overflow-x'] = 'hidden'
+            //elem.classList.remove('fadeIn');
+            //elem.classList.toggle('fadeOut');
+            var width = elem.offsetWidth
+            elem.style['width'] = width + "px"; 
+            var pos = 0;
+            var id = setInterval(frame, 1);
+            function frame() {
+                //console.log(pos)
+                if (pos > width) {
+                    clearInterval(id);
+                    elem.remove()
+                    document.querySelector('body').style['overflow'] = 'auto'
+                } else {
+                    pos+= 1; 
+                    elem.style['margin-left'] = pos + "px"; 
+                }
+            }
+        }
+        myMove(document.querySelector('#page_content'))*/
+        //document.querySelector('#page_content')
+
+        //var newElt = document.createElement('div')
+        /*newElt.class = 'fadeOut'
+        newElt.id = 'page_content_new'*/
+        obj = new window[name]()
+        obj.load(data)
+    }
+
+    // Réinitialisation du css du plugin menu
+    if (loadByTemplate === false) {
+        new menu().setStyleMenu()
     }
 }
 
@@ -169,24 +191,107 @@ const getMenu = function (param) {
     return menus[0]
 }
 
-const init = async function () {
-    let url = new URL(document.location.href)
-    await loadTemplate()
-    loadContent(getMenu(url), url)
+const init = function () {
+    let obj = new template()
+    obj.load()
 }
 
 init()
 
 /**
- * Gestion de l'historique du navigateur
- * 
- * TODO : problème pour revenir au site précédent // Le probleme semble etre à charque rechargement de page
- * Je pense qu'au chargement d'une page le navigateur fait un pushState et moi j'en refait un (j'ai tester : ça déplace le bug)
+ * Gestion de la navigation du navigateur
  */
-window.onpopstate = async function (e) {
+window.onpopstate = function (e) {
     if (e.state !== null) {
-        loadContent(getMenu(e.state.page))
+        load(getMenu(e.state.page))
     } else {
-        console.log('Impossible de revnir en arrière') // TODO : ne devrai jamais arriver
+        console.log('Impossible de revenir en arrière')
     }
+}
+
+/**
+ * Ajoute un fichier CSS au DOM
+ * 
+ * @param {string} name 
+ */
+const addCSS = function (name, type = 'page') {
+    let link = document.createElement('link')
+    link.rel = 'stylesheet'
+    link.href = type + '/' + name + '/' + name + '.css'
+    link.id = name + 'CSS'
+    document.head.appendChild(link)
+}
+
+/**
+ * Set le html avec les paramètres
+ * 
+ * @param {String} html 
+ * @param {Array} params 
+ */
+const setDOMElement = function (DOM, params) {
+    let div = document.createElement('div')
+    //console.log(DOM)
+    //console.log(params)
+    div.appendChild(DOM)
+
+    for (var key in params) {
+        let param = params[key]
+        if (param.connexion !== undefined) {
+            if (localStorage.getItem('token') === null) {
+                continue
+            }
+        }
+        
+        // Création d'un élément
+        if (param.element !== undefined) {
+            var element = document.createElement(param.element)
+            attrParam(element, param)
+            // Création d'un sous élément
+            if (param.sub !== undefined) {
+                for (var keySub in param.sub) {
+                    let element2 = document.createElement(param.sub[keySub].element)
+                    attrParam(element2, param.sub[keySub])
+                    element.appendChild(element2)
+                }
+            }
+            div.querySelector(param.selector).appendChild(element)
+        } else {
+            // Attribution des paramètres
+            if (param.multiple !== undefined && param.multiple === true) { // Sur tous les éléments
+                div.querySelectorAll(param.selector).forEach(function (obj) {
+                    attrParam(obj, param)
+                });
+            } else { // Sur un seul élément
+                attrParam(div.querySelector(param.selector), param)
+            }
+        }
+    }
+
+    return div.firstChild
+}
+
+const attrParam = function (element,  param) {
+    for (var attribut in param.attributs) {
+        if (param.attributs[attribut] !== null) {
+            if (attribut != 'innerHTML') {
+                element.setAttribute(attribut, param.attributs[attribut])
+            } else {
+                element.innerHTML = param.attributs[attribut]
+            }
+        }
+    }
+    if (param.callback !== undefined) {
+        element.addEventListener(param.callback.event, param.callback.function)
+    }
+}
+
+
+/**
+ * Remplacement du contenu de la page par un autre
+ * 
+ * @param {DOM} DOM 
+ */
+const setContent = function (DOM) {
+    document.querySelector('#page_content').innerHTML = ''
+    document.querySelector('#page_content').appendChild(DOM)
 }
