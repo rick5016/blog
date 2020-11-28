@@ -1,6 +1,7 @@
 var template = function () {
     this.load = async function () {
         var DOM = await promise('page/template/template.html')
+        addCSS('template', 'page')
 
         // Retrait du bouton d'ajout d'article si non connecté
         if (localStorage.getItem('token') === null) {

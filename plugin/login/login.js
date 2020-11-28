@@ -12,10 +12,19 @@ var login = function () {
         } else {
             //DOM.querySelector('.add').remove()
             // formulaire inscription / login si pas logué
+            DOM.querySelector('#login-form').style.display = "none";
+            DOM.querySelector('#logo_connexion').addEventListener("click", function (e) {
+                e.preventDefault()
+                if (document.querySelector('#login-form').style.display == 'none') {
+                    document.querySelector('#login-form').style.display = "block";
+                } else {
+                    document.querySelector('#login-form').style.display = "none";
+                }
+            })
             if (DOM.querySelector('#inscription') != null && DOM.querySelector('#connexion') != null) {
                 DOM.querySelector('#inscription').addEventListener("click", function (e) {
                     e.preventDefault()
-                    inscription()
+                    //inscription()
                 })
                 DOM.querySelector('#connexion').addEventListener("click", function (e) {
                     e.preventDefault()

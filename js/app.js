@@ -1,6 +1,7 @@
 var host = (window.location.hostname === '127.0.0.1') ? window.location.hostname + ':8081' : window.location.hostname
 var base = (window.location.hostname === '127.0.0.1') ? '/' : '/blog/'
 var www = (window.location.hostname === '127.0.0.1') ? '' : ''
+var http = (window.location.hostname === '127.0.0.1') ? 'http' : 'https'
 var intervalToken, intervalAlert
 var connexion_increment = 0
 var connexion_duration_sec = 60 * 60
@@ -60,7 +61,7 @@ const promise = async function (url, method = 'GET', data = {}) {
         }
 
         // Appel
-        let result = await fetch('http://' + host + '/api_rest/' /*+ www */ + url, args).then(response => response.text()).catch(error => console.error(error))
+        let result = await fetch(http + '://' + host + '/api_rest/' /*+ www */ + url, args).then(response => response.text()).catch(error => console.error(error))
 
         // Gestion du résultat et de la connexion grâce au token + affichage d'un message d'erreur en cas de problème ou de retour d'erreur de l'api 
         // TODO : Le message de validation pourrai également être retourné par l'api
@@ -88,7 +89,7 @@ const promise = async function (url, method = 'GET', data = {}) {
                 return result
             } catch (error) { // La gestion du résultat a échoué
                 result.error = error_messages.api_failed
-                document.querySelector('#page_content').innerHTML = ''
+                document.querySelector('#content').innerHTML = ''
                 if (debug) {
                     alerte(error + result, 'ko', 100)
                 } else {
@@ -125,37 +126,10 @@ const load = function (name, data = [], type = 'page', url = false, loadByTempla
         //imported.type = 'module'
         imported.onload = function () {
             obj = new window[name]()
-            //obj.load(document.querySelector('#page_content'))
             obj.load(data)
         }
         document.querySelector('body').appendChild(imported)
     } else {
-        /*function myMove(elem) {
-            document.querySelector('body').style['overflow-x'] = 'hidden'
-            //elem.classList.remove('fadeIn');
-            //elem.classList.toggle('fadeOut');
-            var width = elem.offsetWidth
-            elem.style['width'] = width + "px"; 
-            var pos = 0;
-            var id = setInterval(frame, 1);
-            function frame() {
-                //console.log(pos)
-                if (pos > width) {
-                    clearInterval(id);
-                    elem.remove()
-                    document.querySelector('body').style['overflow'] = 'auto'
-                } else {
-                    pos+= 1; 
-                    elem.style['margin-left'] = pos + "px"; 
-                }
-            }
-        }
-        myMove(document.querySelector('#page_content'))*/
-        //document.querySelector('#page_content')
-
-        //var newElt = document.createElement('div')
-        /*newElt.class = 'fadeOut'
-        newElt.id = 'page_content_new'*/
         obj = new window[name]()
         obj.load(data)
     }
@@ -215,11 +189,14 @@ window.onpopstate = function (e) {
  * @param {string} name 
  */
 const addCSS = function (name, type = 'page') {
-    let link = document.createElement('link')
-    link.rel = 'stylesheet'
-    link.href = type + '/' + name + '/' + name + '.css'
-    link.id = name + 'CSS'
-    document.head.appendChild(link)
+    
+    if (document.querySelector('#' + name + 'CSS') == null) {
+        let link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = type + '/' + name + '/' + name + '.css'
+        link.id = name + 'CSS'
+        document.head.appendChild(link)
+    }
 }
 
 /**
@@ -249,8 +226,17 @@ const setDOMElement = function (DOM, params) {
             // Création d'un sous élément
             if (param.sub !== undefined) {
                 for (var keySub in param.sub) {
-                    let element2 = document.createElement(param.sub[keySub].element)
-                    attrParam(element2, param.sub[keySub])
+                    var param2 = param.sub[keySub]
+                    let element2 = document.createElement(param2.element)
+                    attrParam(element2, param2)
+                    if (param2.sub !== undefined) {
+                        for (var keySub2 in param2.sub) {
+                            var param3 = param2.sub[keySub2]
+                            let element3 = document.createElement(param3.element)
+                            attrParam(element3, param3)
+                            element2.appendChild(element3)
+                        }
+                    }
                     element.appendChild(element2)
                 }
             }
@@ -292,6 +278,6 @@ const attrParam = function (element,  param) {
  * @param {DOM} DOM 
  */
 const setContent = function (DOM) {
-    document.querySelector('#page_content').innerHTML = ''
-    document.querySelector('#page_content').appendChild(DOM)
+    document.querySelector('#content').innerHTML = ''
+    document.querySelector('#content').appendChild(DOM)
 }

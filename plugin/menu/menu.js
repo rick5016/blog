@@ -1,6 +1,6 @@
 var menu = function (menus = 3) {
     this.load = async function () {
-        let data = await promise('index.php', 'POST', { 'find': 'page' })
+        let data = await promise('index.php', 'POST', { 'find': 'page', 'order': 'id desc' })
         var type = 'all'
         if (data == null && (type == 'page' || type == 'article')) {
             data = await promise('index.php', 'POST', {

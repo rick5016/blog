@@ -30,8 +30,8 @@ var article = function () {
                 { 'selector': '#article_content', 'attributs': { 'innerHTML': article.content_parsdown } },
             ])
 
-            document.querySelector('#page_content').innerHTML = ''
-            document.querySelector('#page_content').appendChild(article_DOM)
+            document.querySelector('#content').innerHTML = ''
+            document.querySelector('#content').appendChild(article_DOM)
 
             } else {
                 alerte(error_messages.load_article_not_found, 'ko', 10)

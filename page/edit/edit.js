@@ -41,7 +41,7 @@ var edit = function () {
 
                 } else {
                     document.querySelector('#alerte').innerHTML = "L'article n'existe pas."
-                    document.querySelector('#page_content').innerHTML = ""
+                    document.querySelector('#content').innerHTML = ""
                 }
             }
 
@@ -85,12 +85,12 @@ var edit = function () {
             }
 
             // Chargement du DOM
-            document.querySelector('#page_content').innerHTML = ''
-            document.querySelector('#page_content').appendChild(DOM)
+            document.querySelector('#content').innerHTML = ''
+            document.querySelector('#content').appendChild(DOM)
 
             //setPrevisu()
         } else {
-            loadContent('accueil', base)
+            load('accueil')
         }
     }
 
@@ -213,7 +213,7 @@ var edit = function () {
         document.querySelector('#loader').style.display = 'none'
         if (data.error === 0) {
             alerte("L'article a été supprimé de manière définitive.") // TODO : on recharge forcement la page, il faudrai revoir le système d'alerte pour ce genre de cas
-            loadContent('accueil', base)
+            load('accueil')
         }
     }
 

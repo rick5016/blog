@@ -32,7 +32,7 @@ const api = async function (action, entite, values = [], where = [], propReturn 
             if (propReturn !== '') {
                 param = data[propReturn]
             }
-
+console.log('ici')
             let url = new URL(document.location.href)
             await loadContent(page, base + 'index.html' + url.search)
             // TODO : gestion de la validation

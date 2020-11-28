@@ -72,8 +72,8 @@ var serie = function () {
                     });
                 }
 
-                document.querySelector('#page_content').innerHTML = ''
-                document.querySelector('#page_content').appendChild(DOM)
+                document.querySelector('#content').innerHTML = ''
+                document.querySelector('#content').appendChild(DOM)
             }
         } else if (serie !== '' && (saison === null || saison === '')) { // Saison
             DOM.querySelectorAll('.add_serie').forEach(function (elt) {
@@ -128,7 +128,7 @@ var serie = function () {
                 }
 
                 //document.querySelector('#page_content').innerHTML = ''
-                document.querySelector('#page_content').appendChild(DOM)
+                document.querySelector('#content').appendChild(DOM)
             }
         } else { // Séries
             DOM.querySelectorAll('.add_saison').forEach(function (elt) {
@@ -197,8 +197,8 @@ var serie = function () {
             })
         });
 
-        document.querySelector('#page_content').innerHTML = ''
-        document.querySelector('#page_content').appendChild(DOM)
+        document.querySelector('#content').innerHTML = ''
+        document.querySelector('#content').appendChild(DOM)
     }
 
     function setSpoil(txt) {
