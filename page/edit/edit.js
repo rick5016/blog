@@ -16,7 +16,7 @@ var edit = function () {
                 if (data !== undefined && data.error === 0) {
                     if (data.list != null) {
                         var article = data.list[0]
-
+                        
                         if (article.own === true) {
                             DOM.querySelector('#title').setAttribute('value', article.title)
                             DOM.querySelector('#type').value = article.type
@@ -38,7 +38,6 @@ var edit = function () {
                         }
                     })
                     DOM.appendChild(suppr)
-
                 } else {
                     document.querySelector('#alerte').innerHTML = "L'article n'existe pas."
                     document.querySelector('#content').innerHTML = ""
@@ -282,11 +281,8 @@ var edit = function () {
             })
 
             if (data.error === 0) {
-
-                //loadMenus(data.type)
                 load('menu', [], 'plugin')
                 load('edit', [], 'page', 'index.html?edit=' + data.slug)
-                //loadContent('edit', base + 'index.html?edit=' + data.slug)
                 alerte(error_messages.save_article_valide, 'ok', 1)
                 document.querySelector('#loader').style.display = 'none'
             }

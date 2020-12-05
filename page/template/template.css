@@ -68,11 +68,11 @@ button:hover {
     display: flex;
 }
 
-#header-container #barre #icons a.home {
+#header-container #barre #icons a#home {
     background-image: url(../../img/home.png);
 }
 
-#header-container #barre #icons a.add {
+#header-container #barre #icons a#add {
     background-image: url(../../img/add-15.png);
 }
 
@@ -175,12 +175,7 @@ button:hover {
 
 
 
-
-.link:hover {
-    cursor: pointer;
-    text-decoration: underline
-}
-
+/*
 input {
     height: 30px;
     width: 300px;
@@ -224,4 +219,4 @@ input {
 }
 #page_content.fadeIn {
     opacity: 1;
-}
+}*/

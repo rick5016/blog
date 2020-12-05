@@ -1,10 +1,13 @@
-var accueil = function () {
+var categorie = function () {
     this.load = async function () {
+        var categorie = new URL(document.location.href).searchParams.get('categorie')
+        var tag = new URL(document.location.href).searchParams.get('tag')
         data = await promise('index.php', 'POST', {
-            'find': 'page',
+            'findAllByCategorie': 'page',
             'order': 'id desc',
             'where': {
-                'type': 'article'
+                'type': 'article',
+                'categories': '{"categorie":"' + categorie + '","tag":"' + tag + '"}'
             }
         })
 
@@ -18,7 +21,8 @@ var accueil = function () {
                     if (article.created != article.updated) {
                         updateDate = ' modifié le ' + article.updated
                     }
-                    articles.push({
+                    
+                    articles.push( {
                         'element': 'li', 'attributs': {}, 'sub':
                         [
                             {
@@ -36,26 +40,30 @@ var accueil = function () {
                                 ]
                             },
                             { 'element': 'div', 'attributs': { 'class': 'info', 'innerHTML': 'Par ' + article.user + ' dans ' + article.type + ' le ' + article.created + updateDate } },
-                            { 'element': 'div', 'attributs': { 'innerHTML': article.content } }
+                            { 'element': 'div', 'attributs': { 'innerHTML': article.content.split('\n')[0] + '...' } }
                         ]
                     })
                 }
             }
             var articles_data = [{
-                'element': 'div', 'attributs': {'id': 'bloc'}, 'sub':
+                'element': 'div', 'attributs': {'id': 'c-bloc'}, 'sub':
                 [
+                    {'selector': '#article', 'element': 'span', 'attributs': {'innerHTML': 'Recherche par <b>' + categorie + '</b>: <b>'+ tag + '</b>'}},
                     {'element': 'ul', 'attributs': {}, 'sub': articles}
                 ]
             }]
-            let DOM = setDOMElement(articles_data)
-            DOM.querySelectorAll('.link').forEach(function (a) {
+            if (document.querySelector('#accueilCSS')) {
+                document.querySelector('#accueilCSS').remove()
+            }
+            article_DOM = setDOMElement(articles_data)
+            article_DOM.querySelectorAll('.link').forEach(function (a) {
                 a.addEventListener("click", function (e) {
                     e.preventDefault()
                     load(a.getAttribute('b-entity'), [], 'page', a.getAttribute('href'))
                 })
             });
             document.querySelector('#content').innerHTML = ''
-            document.querySelector('#content').appendChild(DOM)
+            document.querySelector('#content').appendChild(article_DOM)
         }
     }
 }

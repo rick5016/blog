@@ -5,7 +5,7 @@ var template = function () {
 
         // Retrait du bouton d'ajout d'article si non connecté
         if (localStorage.getItem('token') === null) {
-            DOM.querySelector('.add').remove()
+            DOM.querySelector('#add').remove()
         }
 
         // Plugins
@@ -17,10 +17,9 @@ var template = function () {
         load(getMenu(url), [], 'page', url.href, true)
         
         // Gestion des liens présent directement dans le template
-        DOM.querySelectorAll('.link').forEach(function (a) {
+        DOM.querySelectorAll('a').forEach(function (a) {
             a.addEventListener("click", function (e) {
                 e.preventDefault()
-                //load('article', 'page', 'index.html?article=' + article.slug)
                 load(a.getAttribute('b-entity'), [], 'page', a.getAttribute('href'))
             })
         });

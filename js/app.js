@@ -1,5 +1,4 @@
 var host = (window.location.hostname === '127.0.0.1') ? window.location.hostname + ':8081' : window.location.hostname
-var base = (window.location.hostname === '127.0.0.1') ? '/' : '/blog/'
 var www = (window.location.hostname === '127.0.0.1') ? '' : ''
 var http = (window.location.hostname === '127.0.0.1') ? 'http' : 'https'
 var intervalToken, intervalAlert
@@ -8,7 +7,7 @@ var connexion_duration_sec = 60 * 60
 
 const DEBUG_PROD = false
 var debug = (window.location.hostname === '127.0.0.1') ? true : (DEBUG_PROD ? true : false)
-var menus = ['accueil', 'article', 'edit', 'serie', 'reminder']
+var menus = ['accueil', 'article', 'edit', 'categorie', 'serie', 'reminder']
 
 var error_messages = {
     'api_failed': 'Une erreur est survenue.',
@@ -189,7 +188,7 @@ window.onpopstate = function (e) {
  * @param {string} name 
  */
 const addCSS = function (name, type = 'page') {
-    
+
     if (document.querySelector('#' + name + 'CSS') == null) {
         let link = document.createElement('link')
         link.rel = 'stylesheet'
@@ -205,10 +204,50 @@ const addCSS = function (name, type = 'page') {
  * @param {String} html 
  * @param {Array} params 
  */
-const setDOMElement = function (DOM, params) {
+const setDOMElement = function (params, DOM) {
+    if (DOM === undefined) {
+        DOM = document.createElement('div')
+    }
+
+    for (var key in params) {
+        let param = params[key]
+        if (param.connexion !== undefined) {
+            if (localStorage.getItem('token') === null) {
+                continue
+            }
+        }
+
+        // Création d'un élément
+        if (param.element !== undefined) {
+            DOM = setDOMElement2(param, DOM)
+        } else {
+            // Attribution des paramètres
+            if (param.multiple !== undefined && param.multiple === true) { // Sur tous les éléments
+                DOM.querySelectorAll(param.selector).forEach(function (obj) {
+                    attrParam(obj, param)
+                });
+            } else { // Sur un seul élément
+                attrParam(DOM.querySelector(param.selector), param)
+            }
+        }
+    }
+
+    return DOM.firstChild
+}
+const setDOMElement2 = function (param, DOM) {
+    var element = document.createElement(param.element)
+    attrParam(element, param)
+    if (param.sub !== undefined) {
+        for (var keySub in param.sub) {
+            DOM.appendChild(setDOMElement2(param.sub[keySub], element))
+        }
+    } else {
+        DOM.appendChild(element)
+    }
+    return DOM
+}
+const setDOMElementsave = function (DOM, params) {
     let div = document.createElement('div')
-    //console.log(DOM)
-    //console.log(params)
     div.appendChild(DOM)
 
     for (var key in params) {
@@ -218,7 +257,7 @@ const setDOMElement = function (DOM, params) {
                 continue
             }
         }
-        
+
         // Création d'un élément
         if (param.element !== undefined) {
             var element = document.createElement(param.element)
@@ -256,7 +295,7 @@ const setDOMElement = function (DOM, params) {
     return div.firstChild
 }
 
-const attrParam = function (element,  param) {
+const attrParam = function (element, param) {
     for (var attribut in param.attributs) {
         if (param.attributs[attribut] !== null) {
             if (attribut != 'innerHTML') {

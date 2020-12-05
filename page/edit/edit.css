@@ -12,12 +12,13 @@
 }
 
 #article:focus,
-#title:focus {
+#title:focus,
+#categories:focus {
     border-color: #f84812a8;
 }
 
 #title,
-#article {
+#article, #categories {
     width: 100%;
     height: 100%;
     padding: 5px;
@@ -26,7 +27,7 @@
     float: right;
 }
 
-#title {
+#title, #categories {
     height: 30px;
 }
 
@@ -52,7 +53,7 @@
 }
 
 #loader {
-    background-image: url(../img/loader.gif);
+    background-image: url(../../img/loader.gif);
     height: 30px;
     width: 30px;
     background-size: cover;

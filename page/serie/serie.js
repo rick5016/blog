@@ -215,7 +215,6 @@ var serie = function () {
     }
 
     const episodeNoteDisplay = async function (episode) {
-        console.log(episode)
         let element = getElement(element_episode_note, [
             { 'selector': '.note', 'attributs': { 'value': episode.note } },
             { 'selector': '.commentaire', 'attributs': { 'innerHTML': episode.commentaire } },

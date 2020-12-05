@@ -12,19 +12,17 @@ var menu = function (menus = 3) {
         }
 
         if (data !== undefined && data !== false) {
-            var articles_data = []
-            var pages_data = []
+            var pages = []
             for (var key in data.list) {
                 let article = data.list[key]
 
-                if (menus == 1 || menus == 3) {
-                    if (article.type == 'article') {
-                        articles_data.push({
-                            'selector': '#articles', 'element': 'li', 'attributs': {}, 'sub':
+                if (menus == 2 || menus == 3) {
+                    if (article.type == 'page') {
+                        pages.push({
+                            'element': 'li', 'attributs': {}, 'sub':
                             [
                                 {
-                                    'element': 'a', 'attributs': { 'href': 'index.html?article=' + article.slug, 'innerHTML': article.title },
-                                    'callback': {
+                                    'element': 'a', 'attributs': { 'href': 'index.html?article=' + article.slug, 'innerHTML': article.title, 'class': 'link page item' }, 'callback': {
                                         'event': 'click',
                                         'function': function (e) {
                                             e.preventDefault()
@@ -36,38 +34,14 @@ var menu = function (menus = 3) {
                         })
                     }
                 }
-
-                if (menus == 2 || menus == 3) {
-                    if (article.type == 'page') {
-                        pages_data.push({
-                            'selector': '#pages', 'element': 'li', 'attributs': {}, 'sub':
-                            {
-                                'element': 'a', 'attributs': { 'href': 'index.html?article=' + article.slug, 'innerHTML': article.title, 'class': 'link page item' },
-                                'callback': {
-                                    'event': 'click',
-                                    'function': function (e) {
-                                        e.preventDefault()
-                                        load('article', [], 'page', 'index.html?article=' + article.slug)
-                                    }
-                                }
-                            }
-                        })
-                    }
-                }
             }
+            var page_data = [{'element': 'ul', 'attributs': {'id': 'pages'}, 'sub': pages}]
             
-            if (menus == 1 || menus == 3) {
-                let DOM_menu_vertical = document.createElement('ul')
-                DOM_menu_vertical.id = 'articles'
-                let articles = setDOMElement(DOM_menu_vertical, articles_data)
-                document.querySelector('#menu').innerHTML = ''
-                document.querySelector('#menu').appendChild(articles)
-            }
             if (menus == 2 || menus == 3) {
-                let DOM_menu_horizontal = document.createElement('ul')
-                DOM_menu_horizontal.id = 'pages'
-                let pages = setDOMElement(DOM_menu_horizontal, pages_data)
-                document.querySelector('#pages').appendChild(pages.firstChild) // TODO : ça passe car en dev j'en ai qu'un mais faudra le faire foncitonner avec plusieurs
+                if(document.querySelector('#pages') !== null) {
+                    document.querySelector('#pages').remove()
+                }
+                document.querySelector('#barre').appendChild(setDOMElement(page_data))
             }
 
             this.setStyleMenu()

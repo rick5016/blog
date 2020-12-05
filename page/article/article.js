@@ -1,37 +1,50 @@
 var article = function () {
     this.load = async function (elm) {
         var slug = new URL(document.location.href).searchParams.get('article')
-        var DOM = await promise('page/article/article.html')
         let data = await promise('index.php', 'POST', {
             'find': 'page',
             'where': {
                 'slug': slug
             }
         })
-        
+
         if (data !== undefined && data.error === 0) {
             if (data.list.length > 0) {
                 var article = data.list[0]
 
-            // Chargement de l'article
-            let article_DOM = setDOMElement(DOM, [
-                { 'selector': 'h1', 'attributs': { 'innerHTML': article.title } },
-                {
-                    'selector': '.modifier_article', 'attributs': { 'innerHTML': "modifier l'article" },
-                    'multiple': false,
-                    'callback': {
-                        'event': 'click',
-                        'function': function () {
-                            load('edit', [], 'page', 'index.html?edit=' + article.slug)
-                        }
-                    },
-                    'connexion': true
-                },
-                { 'selector': '#article_content', 'attributs': { 'innerHTML': article.content_parsdown } },
-            ])
+                // Chargement de l'article
+                var updateDate = ''
+                if (article.created != article.updated) {
+                    updateDate = ' modifié le ' + article.updated
+                }
 
-            document.querySelector('#content').innerHTML = ''
-            document.querySelector('#content').appendChild(article_DOM)
+                let article_DOM = setDOMElement([
+                    {
+                        'element': 'div', 'attributs': {'id': 'article'}, 'sub':
+                        [
+                            {'element': 'h1', 'attributs': {'innerHTML': article.title}},
+                            {'element': 'div', 'attributs': {'id': 'info', 'innerHTML': 'Par ' + article.user + ' dans ' + article.type + ' le ' + article.created + updateDate } },
+                            {
+                                'element': 'span', 'attributs': {'class': 'modifier_article', 'innerHTML': "modifier l'article" }, 'multiple': false, 'callback': {
+                                    'event': 'click',
+                                    'function': function () {
+                                        load('edit', [], 'page', 'index.html?edit=' + article.slug)
+                                    }
+                                },
+                                'connexion': true
+                            },
+                            { 'element': 'div', 'attributs': {'id': 'article_content', 'innerHTML': article.content_parsdown } },
+                        ]
+                    }
+                ])
+                article_DOM.querySelectorAll('.link').forEach(function (a) {
+                    a.addEventListener("click", function (e) {
+                        e.preventDefault()
+                        load(a.getAttribute('b-entity'), [], 'page', a.getAttribute('href'))
+                    })
+                });
+                document.querySelector('#content').innerHTML = ''
+                document.querySelector('#content').appendChild(article_DOM)
 
             } else {
                 alerte(error_messages.load_article_not_found, 'ko', 10)
