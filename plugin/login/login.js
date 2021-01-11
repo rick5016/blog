@@ -2,25 +2,26 @@ var login = function () {
     this.load = async function () {
         var DOM = await promise('plugin/login/login.html')
 
+        // Affichage du bloc de connexion
+        DOM.querySelector('#connexion-btn').addEventListener("click", function () {
+            if (document.querySelector('#connexion-bloc').style.display == 'none') {
+                document.querySelector('#connexion-bloc').style.display = "block";
+            } else {
+                document.querySelector('#connexion-bloc').style.display = "none";
+            }
+        })
+
         if (localStorage.getItem('token') !== null) {
-            // Bouton déco si logué
+            // Bouton déconnexion si logué
             let span = document.createElement('span')
             span.innerHTML = 'Déconnexion'
             span.addEventListener("click", deconnexion)
-            DOM.innerHTML = ''
-            DOM.appendChild(span)
+            DOM.querySelector('#connexion-bloc').innerHTML = ''
+            DOM.querySelector('#connexion-bloc').appendChild(span)
+            
+            document.querySelector('#connexion-container').appendChild(DOM)
         } else {
-            //DOM.querySelector('.add').remove()
-            // formulaire inscription / login si pas logué
-            DOM.querySelector('#login-form').style.display = "none";
-            DOM.querySelector('#logo_connexion').addEventListener("click", function (e) {
-                e.preventDefault()
-                if (document.querySelector('#login-form').style.display == 'none') {
-                    document.querySelector('#login-form').style.display = "block";
-                } else {
-                    document.querySelector('#login-form').style.display = "none";
-                }
-            })
+            // Gestion des evenements
             if (DOM.querySelector('#inscription') != null && DOM.querySelector('#connexion') != null) {
                 DOM.querySelector('#inscription').addEventListener("click", function (e) {
                     e.preventDefault()
@@ -31,10 +32,10 @@ var login = function () {
                     connexion()
                 })
             }
+
+            document.querySelector('#connexion-container').appendChild(DOM)
         }
 
-        //return DOM
-        document.querySelector('#bloc_login').appendChild(DOM)
     }
 }
 

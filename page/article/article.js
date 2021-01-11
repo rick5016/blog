@@ -20,20 +20,28 @@ var article = function () {
 
                 let article_DOM = setDOMElement([
                     {
-                        'element': 'div', 'attributs': {'id': 'article'}, 'sub':
+                        'element': 'div', 'attributs': {'id': 'bloc'}, 'sub':
                         [
-                            {'element': 'h1', 'attributs': {'innerHTML': article.title}},
-                            {'element': 'div', 'attributs': {'id': 'info', 'innerHTML': 'Par ' + article.user + ' dans ' + article.type + ' le ' + article.created + updateDate } },
                             {
-                                'element': 'span', 'attributs': {'class': 'modifier_article', 'innerHTML': "modifier l'article" }, 'multiple': false, 'callback': {
-                                    'event': 'click',
-                                    'function': function () {
-                                        load('edit', [], 'page', 'index.html?edit=' + article.slug)
-                                    }
-                                },
-                                'connexion': true
-                            },
-                            { 'element': 'div', 'attributs': {'id': 'article_content', 'innerHTML': article.content_parsdown } },
+                                'element': 'div', 'attributs': {'class': 'article'}, 'sub':
+                                [
+                                    {'element': 'div', 'attributs': {'class': 'title', 'innerHTML': article.title}},
+                                    {'element': 'div', 'attributs': {'id': 'info', 'innerHTML': 'Par ' + article.user + ' dans ' + article.type + ' le ' + article.created + updateDate } },
+                                    {
+                                        'element': 'span', 'attributs': {'class': 'modifier_article', 'innerHTML': "modifier l'article" }, 
+                                        'connexion': true,
+                                        'multiple': false, 
+                                        'callback': {
+                                            'event': 'click',
+                                            'function': function () {
+                                                load('edit', [], 'page', 'index.html?edit=' + article.slug)
+                                            }
+                                        },
+                                        'connexion': true
+                                    },
+                                    { 'element': 'div', 'attributs': {'id': 'article_content', 'innerHTML': article.content } },
+                                ]
+                            }
                         ]
                     }
                 ])

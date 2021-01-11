@@ -1,25 +1,40 @@
 #bloc {
-    margin: 15px;
     width: 100%;
 }
 
-#bloc li {
-    list-style: none;
-    margin-bottom: 30px;
+/*** Article ***/
+#bloc .article {
+    /*padding: 15px;*/
+    width: 100%;
 }
-#bloc li .title {
+#bloc .article a {
+    color: #b32b18;
+    text-decoration: none;
+}
+#bloc .article a:hover {
+    font-weight: bold;
+    text-decoration: none;
+}
+#bloc .article ul li {
+    margin-left: 30px;
+}
+
+/*** Tilte ***/
+#bloc .article .title {
     margin-bottom: 5px;
     text-align: center;
     background: linear-gradient(to right, #fdba4a, 20%, #ff8e38, 30%, #bf461d, 40%, #770a04, 50%, #440000);
 }
-#bloc li .info {
-    margin-bottom: 10px;
-    color: #888;
-}
-#bloc li .title a {
+#bloc .article .title a {
     font-weight: bold;
     font-size: 15px;
     color: #fff;
     display: block;
     text-decoration: none;
+}
+
+/*** Info ***/
+#bloc .article .info {
+    margin-bottom: 10px;
+    color: #888;
 }

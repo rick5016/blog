@@ -7,7 +7,7 @@ var connexion_duration_sec = 60 * 60
 
 const DEBUG_PROD = false
 var debug = (window.location.hostname === '127.0.0.1') ? true : (DEBUG_PROD ? true : false)
-var menus = ['accueil', 'article', 'edit', 'categorie', 'serie', 'reminder']
+var menus = ['search', 'article', 'edit', 'search', 'serie', 'reminder']
 
 var error_messages = {
     'api_failed': 'Une erreur est survenue.',
@@ -134,9 +134,9 @@ const load = function (name, data = [], type = 'page', url = false, loadByTempla
     }
 
     // Réinitialisation du css du plugin menu
-    if (loadByTemplate === false) {
+    /*if (loadByTemplate === false) {
         new menu().setStyleMenu()
-    }
+    }*/
 }
 
 /**
@@ -152,16 +152,16 @@ const getMenu = function (param) {
         for (var key in menus) {
             let menu = menus[key]
             if (param.searchParams.has(menu)) {
-                return menu
+                return menu.replace('[]', '')
             }
         }
     } else {
         if (menus.indexOf(param) !== -1) {
-            return param
+            return param.replace('[]', '')
         }
     }
 
-    return menus[0]
+    return menus[0].replace('[]', '')
 }
 
 const init = function () {
@@ -211,12 +211,6 @@ const setDOMElement = function (params, DOM) {
 
     for (var key in params) {
         let param = params[key]
-        if (param.connexion !== undefined) {
-            if (localStorage.getItem('token') === null) {
-                continue
-            }
-        }
-
         // Création d'un élément
         if (param.element !== undefined) {
             DOM = setDOMElement2(param, DOM)
@@ -236,6 +230,11 @@ const setDOMElement = function (params, DOM) {
 }
 const setDOMElement2 = function (param, DOM) {
     var element = document.createElement(param.element)
+    if (param.connexion !== undefined) {
+        if (localStorage.getItem('token') === null) {
+            return DOM
+        }
+    }
     attrParam(element, param)
     if (param.sub !== undefined) {
         for (var keySub in param.sub) {
@@ -246,7 +245,8 @@ const setDOMElement2 = function (param, DOM) {
     }
     return DOM
 }
-const setDOMElementsave = function (DOM, params) {
+
+/*const setDOMElementsave = function (DOM, params) {
     let div = document.createElement('div')
     div.appendChild(DOM)
 
@@ -293,7 +293,7 @@ const setDOMElementsave = function (DOM, params) {
     }
 
     return div.firstChild
-}
+}*/
 
 const attrParam = function (element, param) {
     for (var attribut in param.attributs) {
@@ -319,4 +319,12 @@ const attrParam = function (element, param) {
 const setContent = function (DOM) {
     document.querySelector('#content').innerHTML = ''
     document.querySelector('#content').appendChild(DOM)
+}
+
+const inArray = function (needle, haystack) {
+    var length = haystack.length;
+    for(var i = 0; i < length; i++) {
+        if(haystack[i] == needle) return true;
+    }
+    return false;
 }

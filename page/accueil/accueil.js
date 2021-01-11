@@ -19,7 +19,7 @@ var accueil = function () {
                         updateDate = ' modifié le ' + article.updated
                     }
                     articles.push({
-                        'element': 'li', 'attributs': {}, 'sub':
+                        'element': 'div', 'attributs': {'class': 'article'}, 'sub':
                         [
                             {
                                 'element': 'div', 'attributs': { 'class': 'title' }, 'sub':
@@ -41,12 +41,7 @@ var accueil = function () {
                     })
                 }
             }
-            var articles_data = [{
-                'element': 'div', 'attributs': {'id': 'bloc'}, 'sub':
-                [
-                    {'element': 'ul', 'attributs': {}, 'sub': articles}
-                ]
-            }]
+            var articles_data = [{'element': 'div', 'attributs': {'id': 'bloc'}, 'sub': articles}]
             let DOM = setDOMElement(articles_data)
             DOM.querySelectorAll('.link').forEach(function (a) {
                 a.addEventListener("click", function (e) {

@@ -16,7 +16,6 @@ var edit = function () {
                 if (data !== undefined && data.error === 0) {
                     if (data.list != null) {
                         var article = data.list[0]
-                        
                         if (article.own === true) {
                             DOM.querySelector('#title').setAttribute('value', article.title)
                             DOM.querySelector('#type').value = article.type

@@ -1,22 +1,87 @@
-#menu {
-    background-color: rgba(243, 243, 243, 1);
-    /*padding: 20px 20px 0px 20px;*/
-    height: 100%;
-    /*max-width: 15vw;*/
-    min-width: 25vw;
-    overflow: auto;
-    box-shadow: inset 0 0 5px #aaa;
+/********** Barre de menu **********/
+header nav.nav-scroll {
+    opacity: 0 !important;
 }
-
-#menu ul {
-    list-style-type: none;
+header nav {
+    transition: opacity .3s ease;
+    opacity: 1;
+    height: 44px;
+    width: 100%;
+    color: #fff;
+    font-size: 400;
+    z-index: 1;
+    position: absolute;
+    bottom: -22px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    padding: 0;
 }
-
-#menu li a {
-    text-overflow: ellipsis;
+header nav #pages {
+    width: 100%;
+    display: flex;
+}
+header nav #pages li {
+    text-align: center;
+    padding-top: 12px;
+    height: 44px;
+    list-style: none;
+}
+header nav ul li.transition-orange {
+    height: 44px;
+    width: 241px !important;
+    background: linear-gradient(45deg, #f46036 47%, #353535 0% 53%, #f46036 50% );
+}
+header nav ul li.transition-fonce {
+    height: 44px;
+    width: 241px !important;
+    background: linear-gradient(45deg, #f46036 50%, #353535 50%);
+}
+header nav ul li a.nav {
+    color:#fff;
     text-decoration: none;
-    color: rgba(51, 51, 51, 0.75);
-    padding: 10px;
-    display: block;
+    text-transform: uppercase;
+    font-weight: 500;
+    position: relative;
+    text-align: center;
+    line-height: 16px;
+    padding-left: 15px;
+}
+/*
+nav #icons a#home {
+    background-image: url(../../img/home.png);
+}
+
+nav #icons a#add {
+    background-image: url(../../img/add-15.png);
+}*/
+
+/********** Barre de menu Fin **********/
+
+/********** Menu déroulant **********/
+#menu-container {
+    position:fixed;
+    top: 67px;
     width: 100%;
 }
+#menu {
+    width: 100%;
+    border-left: solid 1px #f46036;
+    border-right: solid 1px #f46036;
+    border-bottom: solid 1px #f46036;
+    position:absolute;
+    background-color: #fff;
+    max-width: 1280px;
+    justify-content: space-between;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+@media (max-width: 1023px) {
+    header nav {
+        opacity: 0 !important;
+    }
+}
+/********** Menu déroulant Fin **********/

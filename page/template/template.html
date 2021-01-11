@@ -1,22 +1,49 @@
 <div>
-    <div id="header-container">
-        <div id="header">
-            <span class="title">rick5016.net/blog</span>
-            <div id="bloc_login"></div>
-        </div>
-        <div id="barre">
-            <div id="icons">
-                <a id="home" class="icon" b-entity="accueil" href="/blog/"></a>
-                <a id="add" class="icon" b-entity="edit" href="index.html?edit="></a>
+    <header>
+        <div class="container" style="margin-bottom: 5px;">
+
+            <div id="nav-btn">
             </div>
-            <!--<ul id="pages">
-                <li><a b-entity="reminder" href="index.html?reminder" class="link page item">Reminder</a></li>
-                <li><a b-entity="serie" href="index.html?serie=" class="page item serie">Séries TV</a></li>
-            </ul>-->
+
+            <div id="logo-container">
+                <div id="logo"></div>
+                <div id="logo-txt">
+                    <a id="rick5016" b-entity="accueil" href="/blog/">rick5016.net</a>
+                    <a id="rick5016-sub" b-entity="accueil" href="/blog/">Drama, anime & manga</a>
+                </div>
+            </div>
+
+            <div id="search-container">
+                <input id="search-input" placeholder="Chercher un drama, un manga, une catégorie..." type="text">
+                <button id="search-icone">
+                    <div id="search-svg"></div>
+                </button>
+            </div>
+
+            <div id="connexion-container"></div>
+
+            <nav class="container">
+                <!--<div id="icons">
+                    <a id="home" class="icon" b-entity="accueil" href="/blog/"></a>
+                    <a id="add" class="icon" b-entity="edit" href="index.html?edit="></a>
+                </div>-->
+                <!--<ul id="pages">
+                    <li><a b-entity="reminder" href="index.html?reminder" class="link page item">Reminder</a></li>
+                    <li><a b-entity="serie" href="index.html?serie=" class="page item serie">Séries TV</a></li>
+                </ul>-->
+            </nav>
         </div>
-    </div>
-    <div id="content-container">
-        <div id="menu" style="display:none"></div>
+    </header>
+
+    <div id="content-container" class="container" style="padding-top:150px">
+        <div id="menu-container" style="display: none;">
+            <div id="menu">
+                <h1>Genre</h1>
+                <div>Dramas</div>
+                <div>Animes</div>
+                <div>Mangas</div>
+            </div>
+        </div>
         <div id="page">
             <div id="alerte"></div>
             <div id="content"></div>

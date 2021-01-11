@@ -1,18 +1,71 @@
 var template = function () {
     this.load = async function () {
+        // Chargement du HTML et du CSS
         var DOM = await promise('page/template/template.html')
         addCSS('template', 'page')
 
+        // Logo Totoro
+        var img = document.createElement('img')
+        img.src = 'img\\totoro\\totoro_' + ((Math.floor(Math.random() * Math.floor(6))) + 1) + '_60.png'
+        DOM.querySelector('#logo').appendChild(img)
+
+        // Gestion du scroll
+        var scrollPos = 0;
+        window.addEventListener('scroll', function(){
+            if (scrollPos < -99) {
+                DOM.querySelector('header').classList.add("header-scroll")
+                DOM.querySelector('#nav-btn').classList.add("nav-btn-scroll")
+                DOM.querySelector('#logo-container').classList.add("logo-container-scroll")
+                DOM.querySelector('#rick5016-sub').classList.add("rick5016-sub-scroll")
+                DOM.querySelector('#logo img').classList.add("img-scroll")
+                DOM.querySelector('#search-container').classList.add("search-container-scroll")
+                DOM.querySelector('#search-input').classList.add("search-input-scroll")
+                DOM.querySelector('#search-icone').classList.add("search-icone-scroll")
+                DOM.querySelector('#connexion-titre').classList.add("connexion-titre-scroll")
+                DOM.querySelector('#connexion-container').classList.add("connexion-container-scroll")
+                DOM.querySelector('#connexion-svg').classList.add("connexion-svg-scroll")
+                DOM.querySelector('#connexion-bloc').classList.add("connexion-bloc-scroll")
+                DOM.querySelector('nav').classList.add("nav-scroll")
+            } else {
+                DOM.querySelector('header').classList.remove("header-scroll")
+                DOM.querySelector('#nav-btn').classList.remove("nav-btn-scroll")
+                DOM.querySelector('#logo-container').classList.remove("logo-container-scroll")
+                DOM.querySelector('#rick5016-sub').classList.remove("rick5016-sub-scroll")
+                DOM.querySelector('#logo img').classList.remove("img-scroll")
+                DOM.querySelector('#search-container').classList.remove("search-container-scroll")
+                DOM.querySelector('#search-input').classList.remove("search-input-scroll")
+                DOM.querySelector('#search-icone').classList.remove("search-icone-scroll")
+                DOM.querySelector('#connexion-titre').classList.remove("connexion-titre-scroll")
+                DOM.querySelector('#connexion-container').classList.remove("connexion-container-scroll")
+                DOM.querySelector('#connexion-svg').classList.remove("connexion-svg-scroll")
+                DOM.querySelector('#connexion-bloc').classList.remove("connexion-bloc-scroll")
+                DOM.querySelector('nav').classList.remove("nav-scroll")
+                DOM.querySelector('#menu-container').style.display = 'none'
+            }
+            scrollPos = (document.body.getBoundingClientRect()).top;
+        });
+
         // Retrait du bouton d'ajout d'article si non connecté
         if (localStorage.getItem('token') === null) {
-            DOM.querySelector('#add').remove()
+            //DOM.querySelector('#add').remove()
         }
 
-        // Plugins
+        // Affichage du menu déroulant
+        DOM.querySelector('#nav-btn').addEventListener("click", function (e) {
+            if (DOM.querySelector('#menu-container').style.display == 'none') {
+                DOM.querySelector('#menu-container').style.display = 'block'
+            } else {
+                DOM.querySelector('#menu-container').style.display = 'none'
+            }
+        })
+
+        // Chargement du plugin nav + menu déroulant
         load('menu', [], 'plugin', false, true)
+
+        // Chargement du plugin connexion
         load('login', [], 'plugin', false, true)
 
-        // Contenu
+        // Chargement du contenu
         let url = new URL(document.location.href)
         load(getMenu(url), [], 'page', url.href, true)
         
