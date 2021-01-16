@@ -17,6 +17,13 @@ var article = function () {
                 if (article.created != article.updated) {
                     updateDate = ' modifié le ' + article.updated
                 }
+                
+                var date_created = new Date(article.created)
+                var updateDate = ''
+                if (article.created != article.updated) {
+                    var date_updated = new Date(article.updated)
+                    updateDate = ' modifié le ' + (date_updated.getDate() < 9 ? '0' + date_updated.getDate() : date_updated.getDate()) + '/' + (date_updated.getMonth() < 9 ? '0' + (date_updated.getMonth() + 1) : (date_updated.getMonth() + 1)) + '/' + date_updated.getFullYear()
+                }
 
                 let article_DOM = setDOMElement([
                     {
@@ -25,21 +32,43 @@ var article = function () {
                             {
                                 'element': 'div', 'attributs': {'class': 'article'}, 'sub':
                                 [
-                                    {'element': 'div', 'attributs': {'class': 'title', 'innerHTML': article.title}},
-                                    {'element': 'div', 'attributs': {'id': 'info', 'innerHTML': 'Par ' + article.user + ' dans ' + article.type + ' le ' + article.created + updateDate } },
                                     {
-                                        'element': 'span', 'attributs': {'class': 'modifier_article', 'innerHTML': "modifier l'article" }, 
-                                        'connexion': true,
-                                        'multiple': false, 
-                                        'callback': {
-                                            'event': 'click',
-                                            'function': function () {
-                                                load('edit', [], 'page', 'index.html?edit=' + article.slug)
+                                        'element': 'div', 'attributs': {'id': 'article-title-container'}, 'sub':
+                                        [
+                                            {'element': 'img', 'attributs': {'src': 'img\\vignette\\' + article.vignette}},
+                                            {'element': 'div', 'attributs': {'id': 'article-title-info'}, 'sub':
+                                                [
+                                                    {'element': 'h1', 'attributs': {'class': 'title', 'innerHTML': article.title}},
+                                                    {'element': 'div', 'attributs': {'class': 'info', 'innerHTML': ' Par ' + article.user.login + ' le ' + (date_created.getDate() < 9 ? '0' + date_created.getDate() : date_created.getDate()) + '/' + (date_created.getMonth() < 9 ? '0' + (date_created.getMonth() + 1) : (date_created.getMonth() + 1)) + '/' + date_created.getFullYear() + updateDate } },
+                                                ]
                                             }
-                                        },
-                                        'connexion': true
+                                        ]
                                     },
-                                    { 'element': 'div', 'attributs': {'id': 'article_content', 'innerHTML': article.content } },
+                                    {
+                                        'element': 'div', 'attributs': {'id': 'article-content-commentaire-container'}, 'sub':
+                                        [
+                                            {
+                                                'element': 'div', 'attributs': {'id': 'article-content-commentaire', 'innerHTML': ''}, 'sub':
+                                                [
+                                                    {
+                                                        'element': 'a', 'attributs': {'class': 'modifier_article', 'innerHTML': "modifier l'article", 'href': 'index.html?edit=' + article.slug}, 
+                                                        'connexion': true,
+                                                        'multiple': false, 
+                                                        'callback': {
+                                                            'event': 'click',
+                                                            'function': function (e) {
+                                                                e.preventDefault()
+                                                                load('edit', [], 'page', 'index.html?edit=' + article.slug)
+                                                            }
+                                                        },
+                                                        'connexion': true
+                                                    }
+                                                ]
+                                            },
+                                            {'element': 'div', 'attributs': {'id': 'article-content-commentaire-end'}},
+                                        ]
+                                    },
+                                    {'element': 'div', 'attributs': {'id': 'article-content', 'innerHTML': article.content}},
                                 ]
                             }
                         ]

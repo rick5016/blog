@@ -43,37 +43,10 @@ var edit = function () {
                 }
             }
 
-            // event Prévisualisation : TODO : A revoir
-            /*DOM.querySelector('#prev_button').addEventListener("click", function () {
-                if (DOM.querySelector('#prev').style.display == 'none') {
-                    DOM.querySelector('#bloc_article').style.height = 'calc(100vh - 230px - 40vh)'
-                    DOM.querySelector('#prev').style.display = null
-                } else {
-                    DOM.querySelector('#bloc_article').style.height = 'calc(100vh - 220px)'
-                    DOM.querySelector('#prev').style.display = 'none'
-                }
-            })*/
-
-            // event Wiziwig
-            DOM.querySelectorAll('.wiziwig').forEach(w => {
-                w.addEventListener("click", wiziwig)
-            })
-
             // event Sauvegarde
             if (slug != '') {
                 DOM.querySelector('#save_article').addEventListener("click", function () {
                     updateArticle(true)
-                })
-                DOM.querySelector('#article').addEventListener("keyup", function () {
-                    //setPrevisu()
-                    if (saveEdit == null) {
-                        saveEdit = setInterval(function () { updateArticle() }, 5000)
-                    }
-                })
-                DOM.querySelector('#title').addEventListener("keyup", function () {
-                    if (saveEdit == null) {
-                        saveEdit = setInterval(function () { updateArticle(true) }, 5000)
-                    }
                 })
             } else {
                 DOM.querySelector('#save_article').innerHTML = "Créer l'article"
@@ -179,7 +152,7 @@ var edit = function () {
         //setPrevisu()
     }
 
-    /*const setPrevisu = function () {
+    const setPrevisu = function () {
         let content = document.querySelector('#article').value
     
         var pos = content.indexOf("<BLOC_CODE>")
@@ -194,7 +167,7 @@ var edit = function () {
         }
     
         document.querySelector('#prev').innerHTML = content
-    }*/
+    }
 
     const deleteArticle = async function () {
         var slug = new URL(document.location.href).searchParams.get('edit')

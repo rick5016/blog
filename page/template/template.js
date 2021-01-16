@@ -47,7 +47,7 @@ var template = function () {
 
         // Retrait du bouton d'ajout d'article si non connecté
         if (localStorage.getItem('token') === null) {
-            //DOM.querySelector('#add').remove()
+            DOM.querySelector('#add').remove()
         }
 
         // Affichage du menu déroulant
@@ -70,7 +70,7 @@ var template = function () {
         load(getMenu(url), [], 'page', url.href, true)
         
         // Gestion des liens présent directement dans le template
-        DOM.querySelectorAll('a').forEach(function (a) {
+        DOM.querySelectorAll('a[b-entity]').forEach(function (a) {
             a.addEventListener("click", function (e) {
                 e.preventDefault()
                 load(a.getAttribute('b-entity'), [], 'page', a.getAttribute('href'))

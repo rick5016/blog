@@ -8,8 +8,8 @@
             <div id="logo-container">
                 <div id="logo"></div>
                 <div id="logo-txt">
-                    <a id="rick5016" b-entity="accueil" href="/blog/">rick5016.net</a>
-                    <a id="rick5016-sub" b-entity="accueil" href="/blog/">Drama, anime & manga</a>
+                    <a id="rick5016" b-entity="search" href="/blog/">rick5016.net</a>
+                    <a id="rick5016-sub" b-entity="search" href="/blog/">Drama, anime & manga</a>
                 </div>
             </div>
 
@@ -23,19 +23,20 @@
             <div id="connexion-container"></div>
 
             <nav class="container">
-                <!--<div id="icons">
-                    <a id="home" class="icon" b-entity="accueil" href="/blog/"></a>
-                    <a id="add" class="icon" b-entity="edit" href="index.html?edit="></a>
-                </div>-->
-                <!--<ul id="pages">
-                    <li><a b-entity="reminder" href="index.html?reminder" class="link page item">Reminder</a></li>
-                    <li><a b-entity="serie" href="index.html?serie=" class="page item serie">Séries TV</a></li>
-                </ul>-->
+                <a id="add" class="icon" b-entity="edit" href="index.html?edit=">+</a>
+                <ul id="pages">
+                    <li style="background-color: #f46036;width:100%"><a b-entity="search" href="index.html?search=&categories[]=type:drama" class="link page item nav">Dramas</a></li>
+                    <li class="transition-orange"></li>
+                    <li style="background-color: #f46036;width:100%"><a b-entity="search" href="index.html?search=&categories[]=type:anime" class="link page item nav">Animes</a></li>
+                    <li class="transition-orange"></li>
+                    <li style="background-color: #f46036;width:100%"><a b-entity="search" href="index.html?search=&categories[]=type:webtoon" class="link page item nav">Webtoon</a></li>
+                    <li class="transition-fonce"></li><li style="background-color: #353535;width:100%"><a href="https://rick5016.net/autres/" class="nav">Autres</a></li>
+                </ul>
             </nav>
         </div>
     </header>
 
-    <div id="content-container" class="container" style="padding-top:150px">
+    <div id="content-container" class="container">
         <div id="menu-container" style="display: none;">
             <div id="menu">
                 <h1>Genre</h1>

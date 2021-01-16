@@ -1,8 +1,8 @@
 var menu = function () {
     this.load = async function () {
-        let data = await promise('index.php', 'POST', { 'find': 'page', 'order': 'id desc', 'where': { 'type': 'page' } })
+        //let data = await promise('index.php', 'POST', { 'find': 'page', 'order': 'id desc', 'where': { 'type': 'page' } })
 
-        if (data !== undefined && data !== false) {
+        /*if (data !== undefined && data !== false) {
             var pages = []
             for (var key in data.list) {
                 let article = data.list[key]
@@ -50,6 +50,6 @@ var menu = function () {
                     ]
             })
             document.querySelector('nav').appendChild(setDOMElement(page_data))
-        }
+        }*/
     }
 }
