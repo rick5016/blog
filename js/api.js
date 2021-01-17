@@ -21,7 +21,7 @@ const api = async function (action, entite, values = [], where = [], propReturn 
     }*/
 
     if (error === '') {
-        let data = await promise('index.php', 'POST', {
+        let data = await promise('api.php', 'POST', {
             [action]: entite,
             'values': values,
             'where': where

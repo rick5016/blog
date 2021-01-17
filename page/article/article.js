@@ -1,7 +1,7 @@
 var article = function () {
     this.load = async function (elm) {
         var slug = new URL(document.location.href).searchParams.get('article')
-        let data = await promise('index.php', 'POST', {
+        let data = await promise('api.php', 'POST', {
             'find': 'page',
             'where': {
                 'slug': slug

@@ -1,6 +1,6 @@
 var menu = function () {
     this.load = async function () {
-        //let data = await promise('index.php', 'POST', { 'find': 'page', 'order': 'id desc', 'where': { 'type': 'page' } })
+        //let data = await promise('api.php', 'POST', { 'find': 'page', 'order': 'id desc', 'where': { 'type': 'page' } })
 
         /*if (data !== undefined && data !== false) {
             var pages = []

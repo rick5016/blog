@@ -1,1 +1,1 @@
-http://rick5016.net/blog/
+http://rick5016.net

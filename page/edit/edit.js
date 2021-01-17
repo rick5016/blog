@@ -6,7 +6,7 @@ var edit = function () {
             var slug = new URL(document.location.href).searchParams.get('edit')
             var DOM = await promise('page/edit/edit.html')
             if (slug !== '') {
-                let data = await promise('index.php', 'POST', {
+                let data = await promise('api.php', 'POST', {
                     'find': 'page',
                     'where': {
                         'slug': slug
@@ -173,7 +173,7 @@ var edit = function () {
         var slug = new URL(document.location.href).searchParams.get('edit')
         document.querySelector('#loader').style.display = null
 
-        let data = await promise('index.php', 'POST', {
+        let data = await promise('api.php', 'POST', {
             'delete': 'page',
             'where': {
                 'slug': slug,
@@ -202,7 +202,7 @@ var edit = function () {
             error = error_messages.save_article_content_required
         }
         if (error === '') {
-            let data = await promise('index.php', 'POST', {
+            let data = await promise('api.php', 'POST', {
                 'save': 'page',
                 'values': {
                     'title': title,
@@ -242,7 +242,7 @@ var edit = function () {
             error = error_messages.save_article_content_required
         }
         if (error === '') {
-            let data = await promise('index.php', 'POST', {
+            let data = await promise('api.php', 'POST', {
                 'save': 'page',
                 'values': {
                     'title': document.querySelector('#title').value,

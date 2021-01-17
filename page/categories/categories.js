@@ -2,7 +2,7 @@ var categories = function () {
     this.load = async function () {
         // Exemple : index.html?categories[]=tite:the-kng-s-avatar|test_categorie:test_tag
         var params = new URL(document.location.href).searchParams.get('categories[]')
-        data = await promise('index.php', 'POST', {
+        data = await promise('api.php', 'POST', {
             'find': 'categorie',
             //'order': 'id desc',
             'where': {
@@ -128,7 +128,7 @@ var categories = function () {
             for (var keyC in categories_tags) {
                 libelleCategorie += '<b>' + keyC + '</b>: ' + categories_tags[keyC] + '<br>'
             }*/
-            /*var categories = await promise('index.php', 'POST', {
+            /*var categories = await promise('api.php', 'POST', {
                 'find': 'Categorie',
                 'where': {
                     'categorie-': categorie,

@@ -11,7 +11,7 @@ var search = function () {
             search = false
         }
 
-        data = await promise('index.php', 'POST', {
+        data = await promise('api.php', 'POST', {
             'find': 'categorie',
             'where': params,
             'page': page
@@ -50,8 +50,11 @@ var search = function () {
                     if (search && inArray(categorie.slug + ':' + tag.slug, selection)) {
                         // Si une recherche a été effectué on récupère les tags afin de les afficher dans le bloc du résumé de la recherche
                         selectionElts.push({
-                            'element': 'div', 'attributs': { 'class': 'search-tag-selection', 'innerHTML': tag.tag }, 'sub': [
-                                { 'element': 'div', 'class': 'search-tag-selection', 'attributs': { 'class': 'search-tag-selection-croix' } }
+                            'element': 'a', 'attributs': {
+                                'b-entity': 'search', 'class': 'search-tag-selection link', 'innerHTML': tag.tag,
+                                'href': changeURL(null, null, categorie.slug + ':' + tag.slug, params['categories'])
+                            }, 'sub': [
+                                { 'element': 'span', 'attributs': { 'class': 'search-tag-selection-croix' } }
                             ]
                         })
 
@@ -111,8 +114,6 @@ var search = function () {
                     var vignette = ''
                     if (article.vignette != undefined) {
                         vignette = 'img\\vignette\\' + article.vignette
-                    } else {
-                        vignette = 'img\\totoro\\totoro_' + ((Math.floor(Math.random() * Math.floor(6))) + 1) + '_60.png'
                     }
 
                     // Construction du tableau des articles
@@ -212,7 +213,7 @@ var search = function () {
                         }
                     }
                 }
-                
+
                 // Commentaire en fin de pagination affichant le numéro des articles affiché à l'écran
                 var max = page * 5
                 if (nb_article < max) {
@@ -249,9 +250,17 @@ var search = function () {
 
                 // Si affine existe on l'ajoute en tps que tag à selectionElts (en début de liste)
                 if (params['affine'] !== '') {
-                    selectionElts.push({
+                    /*selectionElts.unshift({
                         'element': 'div', 'attributs': { 'class': 'search-tag-selection', 'innerHTML': data.affine }, 'sub': [
-                            { 'element': 'div', 'class': 'search-tag-selection', 'attributs': { 'class': 'search-tag-selection-croix' } }
+                            { 'element': 'div', 'attributs': { 'class': 'search-tag-selection-croix' } }
+                        ]
+                    })*/
+                    selectionElts.unshift({
+                        'element': 'a', 'attributs': {
+                            'b-entity': 'search', 'class': 'search-tag-selection link', 'innerHTML': data.affine,
+                            'href': changeURL(null, '')
+                        }, 'sub': [
+                            { 'element': 'span', 'attributs': { 'class': 'search-tag-selection-croix' } }
                         ]
                     })
                 }
@@ -294,8 +303,15 @@ var search = function () {
                             {
                                 'element': 'div', 'attributs': { 'id': 'search-input-affine-bloc' }, 'sub': [
                                     { 'element': 'span', 'attributs': { 'id': 'search-input-affine-title', 'innerHTML': 'Affiner votre recherche' } },
-                                    { 'element': 'input', 'attributs': { 'type': 'text', 'id': 'search-input-affine', 'name': 'search', 'placeholder': "Titre, artiste ..." } },
-                                    { 'element': 'button', 'attributs': { 'id': 'search-input-affine-btn', 'innerHTML': 'Ok' } },
+                                    { 'element': 'input', 'attributs': { 'type': 'text', 'id': 'search-input-affine', 'name': 'search', 'placeholder': "Titre, artiste ...", 'value': params['affine']} },
+                                    {
+                                        'element': 'button', 'attributs': { 'id': 'search-input-affine-btn', 'innerHTML': 'Ok' }, 'callback': {
+                                            'event': 'click',
+                                            'function': function () {
+                                                load('search', [], 'page', setURL())
+                                            }
+                                        }
+                                    },
                                 ]
                             },
                             { 'element': 'ul', 'attributs': {}, 'sub': categoriesElts }
@@ -340,6 +356,7 @@ var search = function () {
             });
 
             // Fini !!!
+            document.querySelector('#search-input').value = params['search']
             document.querySelector('#content').innerHTML = ''
             document.querySelector('#content').appendChild(result_DOM)
         }
@@ -347,19 +364,66 @@ var search = function () {
 }
 
 setURL = function () {
-    var search = new URL(document.location.href).searchParams.get('search')
-    var url = 'index.html?search='
-    if (search != null) {
+    let search = document.querySelector('#search-input').value
+    let affine = document.querySelector('#search-input-affine').value
+    let caseCoches = document.querySelectorAll('input[type="checkbox"]:checked')
+
+    let url = 'index.html?'
+
+    url += 'search=' + search
+
+    if (affine != '') {
+        url += '&affine=' + affine
+    }
+
+    if (caseCoches != null) {
+        url += '&categories[]='
+        caseCoches.forEach(function (i) {
+            url += i.id + '|'
+        })
+        url = url.substring(0, url.length - 1);
+    }
+
+    return url
+}
+
+changeURL = function (searchReplace = null, affineReplace = null, categorieReplace = null) {
+    let search = (new URL(document.location.href).searchParams.get('search') != null) ? new URL(document.location.href).searchParams.get('search') : ''
+    let affine = (new URL(document.location.href).searchParams.get('affine') != null) ? new URL(document.location.href).searchParams.get('affine') : ''
+    let categories = (new URL(document.location.href).searchParams.get('categories[]') != null) ? new URL(document.location.href).searchParams.get('categories[]') : ''
+
+    let url = 'index.html?'
+
+    url += 'search='
+    if (searchReplace != null) {
+        url += searchReplace
+    } else {
         url += search
     }
-    url += '&categories[]='
-    var p = false
-    document.querySelectorAll('input[type="checkbox"]:checked').forEach(function (i) {
-        p = true
-        url += i.id + '|'
-    })
-    if (p) {
-        url = url.substring(0, url.length - 1);
+
+    if (affine != '' && affineReplace != '') {
+        url += '&affine='
+        if (affineReplace != null) {
+            url += affineReplace
+        } else {
+            url += affine
+        }
+    }
+
+    if (categories != null) {
+        url += '&categories[]='
+        let result = categories
+        if (categorieReplace != null) {
+            if (categories.indexOf('|') != -1) {
+                result = categories.replace(categorieReplace + '|', '')
+                if (categories == result) {
+                    result = categories.replace('|' + categorieReplace, '')
+                }
+            } else {
+                result = categories.replace(categorieReplace, '')
+            }
+        }
+        url += result
     }
 
     return url

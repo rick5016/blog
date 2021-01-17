@@ -26,6 +26,7 @@ var template = function () {
                 DOM.querySelector('#connexion-svg').classList.add("connexion-svg-scroll")
                 DOM.querySelector('#connexion-bloc').classList.add("connexion-bloc-scroll")
                 DOM.querySelector('nav').classList.add("nav-scroll")
+                document.querySelector('#menu-container').style.top = '70px'
             } else {
                 DOM.querySelector('header').classList.remove("header-scroll")
                 DOM.querySelector('#nav-btn').classList.remove("nav-btn-scroll")
@@ -41,9 +42,19 @@ var template = function () {
                 DOM.querySelector('#connexion-bloc').classList.remove("connexion-bloc-scroll")
                 DOM.querySelector('nav').classList.remove("nav-scroll")
                 DOM.querySelector('#menu-container').style.display = 'none'
+                document.querySelector('#menu-container').style.top = '140px'
             }
             scrollPos = (document.body.getBoundingClientRect()).top;
         });
+
+        // Affichage du menu déroulant
+        DOM.querySelector('#other').addEventListener("click", function () {
+            if (document.querySelector('#menu-container').style.display == 'none') {
+                document.querySelector('#menu-container').style.display = 'block'
+            } else {
+                document.querySelector('#menu-container').style.display = 'none'
+            }
+        })
 
         // Retrait du bouton d'ajout d'article si non connecté
         if (localStorage.getItem('token') === null) {
@@ -58,6 +69,14 @@ var template = function () {
                 DOM.querySelector('#menu-container').style.display = 'none'
             }
         })
+        DOM.querySelectorAll('#menu-title li').forEach(function (li) {
+            li.addEventListener("mouseover", function () {
+                document.querySelectorAll('#menu-content .article-content').forEach(function (div) {
+                    div.style.display = 'none'
+                })
+                document.querySelector('#' + li.getAttribute('id') + '-content').style.display = 'block'
+            })
+        });
 
         // Chargement du plugin nav + menu déroulant
         load('menu', [], 'plugin', false, true)
@@ -72,10 +91,16 @@ var template = function () {
         // Gestion des liens présent directement dans le template
         DOM.querySelectorAll('a[b-entity]').forEach(function (a) {
             a.addEventListener("click", function (e) {
+                document.querySelector('#menu-container').style.display = 'none'
                 e.preventDefault()
                 load(a.getAttribute('b-entity'), [], 'page', a.getAttribute('href'))
             })
         });
+
+        // Event sur les liens de la pagination
+        DOM.querySelector('#search-icone').addEventListener("click", function (a) {
+            load('search', [], 'page', 'index.html?search=' + document.querySelector('#search-input').value)
+        })
 
         document.querySelector('body').appendChild(DOM)
     }

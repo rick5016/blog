@@ -49,6 +49,7 @@ header {
 /********** Bouton menu **********/
 header #nav-btn.nav-btn-scroll {
     opacity: 1 !important;
+    width: 30px;
 }
 header #nav-btn {
     transition: opacity .3s ease;
@@ -56,7 +57,7 @@ header #nav-btn {
     background: url('data:image/svg+xml;utf8,<svg class="svg-inline--fa fa-bars fa-w-14 c-opener__open" aria-hidden="true" focusable="false" data-prefix="fal" data-icon="bars" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M442 114H6a6 6 0 0 1-6-6V84a6 6 0 0 1 6-6h436a6 6 0 0 1 6 6v24a6 6 0 0 1-6 6zm0 160H6a6 6 0 0 1-6-6v-24a6 6 0 0 1 6-6h436a6 6 0 0 1 6 6v24a6 6 0 0 1-6 6zm0 160H6a6 6 0 0 1-6-6v-24a6 6 0 0 1 6-6h436a6 6 0 0 1 6 6v24a6 6 0 0 1-6 6z"></path></svg>');
     opacity:0;
     position:absolute;
-    width:30px;
+    width:0px;
     height:35px;
     color: #f46036;
     margin-top: 11px;

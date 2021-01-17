@@ -1,6 +1,6 @@
 var accueil = function () {
     this.load = async function () {
-        data = await promise('index.php', 'POST', {
+        data = await promise('api.php', 'POST', {
             'find': 'page',
             'order': 'id desc',
             'where': {

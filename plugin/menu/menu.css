@@ -74,10 +74,12 @@ nav #icons a#add {
 /********** Menu déroulant **********/
 #menu-container {
     position:fixed;
-    top: 67px;
+    top: 140px;
     width: 100%;
+    z-index: 999;
 }
 #menu {
+    display: flex;
     width: 100%;
     border-left: solid 1px #f46036;
     border-right: solid 1px #f46036;
@@ -85,11 +87,65 @@ nav #icons a#add {
     position:absolute;
     background-color: #fff;
     max-width: 1280px;
-    justify-content: space-between;
-    padding-right: 15px;
-    padding-left: 15px;
     margin-left: auto;
     margin-right: auto;
+}
+#menu #menu-title {
+    flex: 1;
+    background-color: #efefef;
+}
+#menu #menu-title li {
+    border-bottom: 1px solid #d4d4d4;
+}
+#menu #menu-title li {
+    display: inline-block;
+    width: 100%;
+    font-family: Tahoma,Century Gothic,CenturyGothic,AppleGothic,sans-serif;
+    font-size: 16px;
+    padding: 10px;
+    color: #353535;
+    background: url('data:image/svg+xml;utf8,<svg class="svg-inline--fa fa-chevron-right fa-w-10" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="chevron-right" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-fa-i2svg=""><path fill="currentColor" d="M285.476 272.971L91.132 467.314c-9.373 9.373-24.569 9.373-33.941 0l-22.667-22.667c-9.357-9.357-9.375-24.522-.04-33.901L188.505 256 34.484 101.255c-9.335-9.379-9.317-24.544.04-33.901l22.667-22.667c9.373-9.373 24.569-9.373 33.941 0L285.475 239.03c9.373 9.372 9.373 24.568.001 33.941z"></path></svg>');
+    transition: all .3s;
+    background-repeat: no-repeat;
+    background-position: right 10px bottom 50%;
+    background-size: 8px;
+    cursor: pointer;
+}
+#menu #menu-title li:hover {
+    background-color: #fff;
+    
+}
+#menu #menu-content {
+    flex: 4;
+    padding: 15px;;
+}
+
+#menu #menu-content .title {
+    text-transform: uppercase;
+    display: inline-block;
+    font-family: Tahoma,Century Gothic,CenturyGothic,AppleGothic,sans-serif;
+    color: #353535;
+    font-weight: 700;
+}
+
+#menu #menu-content ul {
+    margin-bottom: 15px;
+    padding-left: 10px;
+}
+
+#menu #menu-content ul li {
+    list-style: none;
+    font-family: Arial,Helvetica Neue,Helvetica,sans-serif;
+}
+
+#menu #menu-content ul li a {
+    font-size: 14px;
+    color: #515151;
+    text-decoration: none;
+}
+
+#menu #menu-content ul li a:hover {
+    text-decoration: underline;
 }
 
 @media (max-width: 1023px) {

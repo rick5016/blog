@@ -24,7 +24,7 @@ var serie = function () {
                 load('serie', [], 'page', 'index.html?serie=')
             })
 
-            let data = await promise('index.php', 'POST', {
+            let data = await promise('api.php', 'POST', {
                 'find': 'episode',
                 'where': {
                     'serie': serie,
@@ -91,7 +91,7 @@ var serie = function () {
                 load('serie', [], 'page', 'index.html?serie=')
             })
 
-            let data = await promise('index.php', 'POST', {
+            let data = await promise('api.php', 'POST', {
                 'find': 'saison',
                 'where': {
                     'serie': serie
@@ -139,7 +139,7 @@ var serie = function () {
             });
             DOM.querySelector('#navigation').remove()
 
-            let data = await promise('index.php', 'POST', {
+            let data = await promise('api.php', 'POST', {
                 'find': 'serie'
             })
 
@@ -361,7 +361,7 @@ var serie = function () {
 
     const saisonDisplay = async function (bloc, serie, saison) {
         if (serie instanceof Object === false) {
-            let data = await promise('index.php', 'POST', {
+            let data = await promise('api.php', 'POST', {
                 'find': 'serie',
                 'where': {
                     'slug': serie
@@ -370,7 +370,7 @@ var serie = function () {
             serie = data.list[0]
         }
         if (saison instanceof Object === false) {
-            let data = await promise('index.php', 'POST', {
+            let data = await promise('api.php', 'POST', {
                 'find': 'saison',
                 'where': {
                     'serie': serie.id,
@@ -462,7 +462,7 @@ var serie = function () {
     }
 
     const saisonDelete = async function (serie, saison) {
-        let data = await promise('index.php', 'POST', {
+        let data = await promise('api.php', 'POST', {
             'find': 'episode',
             'where': {
                 'serie': serie,
@@ -483,7 +483,7 @@ var serie = function () {
 
     const serieDisplay = async function (bloc, serie) {
         if (serie instanceof Object === false) {
-            let data = await promise('index.php', 'POST', {
+            let data = await promise('api.php', 'POST', {
                 'find': 'serie',
                 'where': {
                     'slug': serie
@@ -593,7 +593,7 @@ var serie = function () {
 
     const serieDelete = async function (serie) {
         if (confirm("Voulez-vous vraiment supprimer cette série ?")) {
-            let data = await promise('index.php', 'POST', {
+            let data = await promise('api.php', 'POST', {
                 'find': 'saison',
                 'where': {
                     'serie': serie.slug

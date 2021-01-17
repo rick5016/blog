@@ -91,7 +91,7 @@ const inscription = async function () {
     let login = document.querySelector('#login').value
     let password = document.querySelector('#password').value
     if (login != '' && password != '') {
-        let data = await promise('index.php', 'POST', { 'login': login, 'password': password, 'inscription': true })
+        let data = await promise('api.php', 'POST', { 'login': login, 'password': password, 'inscription': true })
         if (data !== false) {
             connexion()
         }
@@ -106,6 +106,6 @@ const connexion = async function () {
     let login = document.querySelector('#login').value
     let password = document.querySelector('#password').value
     if (login != '' && password != '') {
-        await promise('index.php', 'POST', { 'login': login, 'password': password })
+        await promise('api.php', 'POST', { 'login': login, 'password': password })
     }
 }
