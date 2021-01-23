@@ -1,0 +1,50 @@
+#footer-container {
+    margin-top: 20px;
+    background: linear-gradient(90deg, #353535 0, #515151 20%, #515151 46%, #353535);
+    color: #fff
+}
+
+#footer {
+    display: flex;
+    padding: 20px 0;
+    font-size: 13px;
+    max-width: 1600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#footer .bloc {
+    flex: 1;
+    margin: 0 50px;
+}
+
+#footer .title {
+    text-align: center;
+    font-size: 24px;
+    font-family: Tahoma, Century Gothic, CenturyGothic, AppleGothic, sans-serif;
+}
+
+#footer .lien-container {
+    height: 40px;
+    margin-top: 20px;
+}
+
+#footer img {
+    margin-right: 10px;
+}
+
+#footer .lien {
+    position: absolute;
+    margin-top: 12px;
+    font-size: 20px;
+}
+
+#footer .lien a {
+    display: flex;
+    color: #fff;
+    text-decoration: none;
+}
+
+#footer .lien a:hover {
+    text-decoration: underline;
+}

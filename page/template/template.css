@@ -49,7 +49,7 @@ header {
 /********** Bouton menu **********/
 header #nav-btn.nav-btn-scroll {
     opacity: 1 !important;
-    width: 30px;
+    width: 30px !important;
 }
 header #nav-btn {
     transition: opacity .3s ease;
@@ -202,6 +202,7 @@ header #search-container #search-icone #search-svg:hover {
     /********** Bouton menu **********/
     header #nav-btn {
         opacity:1 !important;
+        width: 30px !important;
     }
 
     /********** Logo et titre du site **********/

@@ -299,22 +299,27 @@ var search = function () {
             result_data.push({
                 'element': 'div', 'attributs': { 'id': 'search-bloc' }, 'sub': [
                     {
-                        'element': 'div', 'attributs': { 'id': 'search-list' }, 'sub': [
+                        'element': 'div', 'attributs': { 'id': 'search-bloc2', 'style': 'display:flex'}, 'sub': [
                             {
-                                'element': 'div', 'attributs': { 'id': 'search-input-affine-bloc' }, 'sub': [
-                                    { 'element': 'span', 'attributs': { 'id': 'search-input-affine-title', 'innerHTML': 'Affiner votre recherche' } },
-                                    { 'element': 'input', 'attributs': { 'type': 'text', 'id': 'search-input-affine', 'name': 'search', 'placeholder': "Titre, artiste ...", 'value': params['affine']} },
+                                'element': 'div', 'attributs': { 'id': 'search-list' }, 'sub': [
                                     {
-                                        'element': 'button', 'attributs': { 'id': 'search-input-affine-btn', 'innerHTML': 'Ok' }, 'callback': {
-                                            'event': 'click',
-                                            'function': function () {
-                                                load('search', [], 'page', setURL())
-                                            }
-                                        }
+                                        'element': 'div', 'attributs': { 'id': 'search-input-affine-bloc' }, 'sub': [
+                                            { 'element': 'span', 'attributs': { 'id': 'search-input-affine-title', 'innerHTML': 'Affiner votre recherche' } },
+                                            { 'element': 'input', 'attributs': { 'type': 'text', 'id': 'search-input-affine', 'name': 'search', 'placeholder': "Titre, artiste ...", 'value': params['affine']} },
+                                            {
+                                                'element': 'button', 'attributs': { 'id': 'search-input-affine-btn', 'innerHTML': 'Ok' }, 'callback': {
+                                                    'event': 'click',
+                                                    'function': function () {
+                                                        load('search', [], 'page', setURL())
+                                                    }
+                                                }
+                                            },
+                                        ]
                                     },
+                                    { 'element': 'ul', 'attributs': {}, 'sub': categoriesElts }
                                 ]
                             },
-                            { 'element': 'ul', 'attributs': {}, 'sub': categoriesElts }
+                            {'element': 'div', 'attributs': { 'id': 'menuToggle' }}
                         ]
                     },
                     {
@@ -354,6 +359,21 @@ var search = function () {
                     load(a.getAttribute('b-entity'), [], 'page', a.getAttribute('href'))
                 })
             });
+
+            
+            result_DOM.querySelector('#menuToggle').addEventListener("click", function () {
+                if (document.querySelector('#search-list').classList.contains('search-list-show')) {
+                    document.querySelector('#search-list-result').classList.remove("search-list-result-hide")
+                    document.querySelector('#menuToggle').classList.remove("menuToggle-show")
+                    document.querySelector('#search-list').classList.remove("search-list-show")
+                } else {
+                    document.querySelector('#search-list-result').classList.add("search-list-result-hide")
+                    document.querySelector('#menuToggle').classList.add("menuToggle-show")
+                    document.querySelector('#search-list').classList.add("search-list-show")
+                }
+            })
+            
+
 
             // Fini !!!
             document.querySelector('#search-input').value = params['search']

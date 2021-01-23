@@ -72,11 +72,14 @@ nav #icons a#add {
 /********** Barre de menu Fin **********/
 
 /********** Menu déroulant **********/
+#menu-container.menu-container-scroll {
+    top: 70px;
+}
 #menu-container {
     position:fixed;
     top: 140px;
     width: 100%;
-    z-index: 999;
+    z-index: 2;
 }
 #menu {
     display: flex;
@@ -149,6 +152,9 @@ nav #icons a#add {
 }
 
 @media (max-width: 1023px) {
+    #menu-container {
+        top: 70px;
+    }
     header nav {
         opacity: 0 !important;
     }

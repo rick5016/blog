@@ -25,8 +25,8 @@ var template = function () {
                 DOM.querySelector('#connexion-container').classList.add("connexion-container-scroll")
                 DOM.querySelector('#connexion-svg').classList.add("connexion-svg-scroll")
                 DOM.querySelector('#connexion-bloc').classList.add("connexion-bloc-scroll")
+                DOM.querySelector('#menu-container').classList.add("menu-container-scroll")
                 DOM.querySelector('nav').classList.add("nav-scroll")
-                document.querySelector('#menu-container').style.top = '70px'
             } else {
                 DOM.querySelector('header').classList.remove("header-scroll")
                 DOM.querySelector('#nav-btn').classList.remove("nav-btn-scroll")
@@ -40,9 +40,9 @@ var template = function () {
                 DOM.querySelector('#connexion-container').classList.remove("connexion-container-scroll")
                 DOM.querySelector('#connexion-svg').classList.remove("connexion-svg-scroll")
                 DOM.querySelector('#connexion-bloc').classList.remove("connexion-bloc-scroll")
+                DOM.querySelector('#menu-container').classList.remove("menu-container-scroll")
                 DOM.querySelector('nav').classList.remove("nav-scroll")
                 DOM.querySelector('#menu-container').style.display = 'none'
-                document.querySelector('#menu-container').style.top = '140px'
             }
             scrollPos = (document.body.getBoundingClientRect()).top;
         });
@@ -78,11 +78,20 @@ var template = function () {
             })
         });
 
+        document.querySelector('body').addEventListener("click", function (elt) {
+            if (document.querySelector('#menu-container').style.display !== 'none' && elt.target.id != 'menu' && elt.target.id != 'other' && elt.target.id != 'nav-btn') {
+                document.querySelector('#menu-container').style.display = 'none'
+            }
+        });
+
         // Chargement du plugin nav + menu déroulant
         load('menu', [], 'plugin', false, true)
 
         // Chargement du plugin connexion
         load('login', [], 'plugin', false, true)
+
+        // Chargement du plugin footer
+        load('footer', [], 'plugin', false, true)
 
         // Chargement du contenu
         let url = new URL(document.location.href)

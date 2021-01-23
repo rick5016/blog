@@ -9,12 +9,12 @@
                 <div id="logo"></div>
                 <div id="logo-txt">
                     <a id="rick5016" b-entity="search" href="/">rick5016.net</a>
-                    <a id="rick5016-sub" b-entity="search" href="/">Drama, anime & manga</a>
+                    <a id="rick5016-sub" b-entity="search" href="/">Drama, anime & autres</a>
                 </div>
             </div>
 
             <div id="search-container">
-                <input id="search-input" placeholder="Chercher un drama, un manga, une catégorie..." type="text">
+                <input id="search-input" placeholder="Chercher un drama, un anime, un webtoon..." type="text">
                 <button id="search-icone">
                     <div id="search-svg"></div>
                 </button>
@@ -25,12 +25,17 @@
             <nav class="container">
                 <a id="add" class="icon" b-entity="edit" href="index.html?edit=">+</a>
                 <ul id="pages">
-                    <li style="background-color: #f46036;width:100%"><a b-entity="search" href="index.html?search=&categories[]=type:drama" class="link page item nav">Dramas</a></li>
+                    <li style="background-color: #f46036;width:100%"><a b-entity="search"
+                            href="index.html?search=&categories[]=type:drama" class="link page item nav">Drama</a></li>
                     <li class="transition-orange"></li>
-                    <li style="background-color: #f46036;width:100%"><a b-entity="search" href="index.html?search=&categories[]=type:anime" class="link page item nav">Animes</a></li>
+                    <li style="background-color: #f46036;width:100%"><a b-entity="search"
+                            href="index.html?search=&categories[]=type:anime" class="link page item nav">Anime</a></li>
                     <li class="transition-orange"></li>
-                    <li style="background-color: #f46036;width:100%"><a b-entity="search" href="index.html?search=&categories[]=type:webtoon" class="link page item nav">Webtoons</a></li>
-                    <li class="transition-fonce"></li><li  id="other" style="background-color: #353535;width:100%">Autres</li>
+                    <li style="background-color: #f46036;width:100%"><a b-entity="search"
+                            href="index.html?search=&categories[]=type:webtoon" class="link page item nav">Webtoon</a>
+                    </li>
+                    <li class="transition-fonce"></li>
+                    <li id="other" style="background-color: #353535;width:100%">Autres</li>
                 </ul>
             </nav>
         </div>
@@ -51,24 +56,32 @@
                             <div style="flex: 1">
                                 <span class="title">Par type</span>
                                 <ul>
-                                    <li><a b-entity="search" href="index.html?search=&categories[]=type:drama" class="link page item nav">Drama</a></li>
-                                    <li><a b-entity="search" href="index.html?search=&categories[]=type:anime" class="link page item nav">Anime</a></li>
-                                    <li><a b-entity="search" href="index.html?search=&categories[]=type:webtoon" class="link page item nav">Webtoon</a></li>
+                                    <li><a b-entity="search" href="index.html?search=&categories[]=type:drama"
+                                            class="link page item nav">Drama</a></li>
+                                    <li><a b-entity="search" href="index.html?search=&categories[]=type:anime"
+                                            class="link page item nav">Anime</a></li>
+                                    <li><a b-entity="search" href="index.html?search=&categories[]=type:webtoon"
+                                            class="link page item nav">Webtoon</a></li>
                                 </ul>
                             </div>
                             <div style="flex: 1">
                                 <span class="title">Par genre</span>
                                 <ul>
-                                    <li><a b-entity="search" href="index.html?search=&categories[]=genre:comedie" class="link page item nav">Comédie</a></li>
-                                    <li><a b-entity="search" href="index.html?search=&categories[]=genre:aventure" class="link page item nav">Aventure</a></li>
-                                    <li><a b-entity="search" href="index.html?search=&categories[]=genre:action" class="link page item nav">Action</a></li>
+                                    <li><a b-entity="search" href="index.html?search=&categories[]=genre:comedie"
+                                            class="link page item nav">Comédie</a></li>
+                                    <li><a b-entity="search" href="index.html?search=&categories[]=genre:aventure"
+                                            class="link page item nav">Aventure</a></li>
+                                    <li><a b-entity="search" href="index.html?search=&categories[]=genre:action"
+                                            class="link page item nav">Action</a></li>
                                 </ul>
                             </div>
                             <div style="flex: 1">
                                 <span class="title">Par année de sortie</span>
                                 <ul>
-                                    <li><a b-entity="search" href="index.html?search=&categories[]=annee-de-sortie:2020" class="link page item nav">2020</a></li>
-                                    <li><a b-entity="search" href="index.html?search=&categories[]=annee-de-sortie:2017" class="link page item nav">2017</a></li>
+                                    <li><a b-entity="search" href="index.html?search=&categories[]=annee-de-sortie:2020"
+                                            class="link page item nav">2020</a></li>
+                                    <li><a b-entity="search" href="index.html?search=&categories[]=annee-de-sortie:2017"
+                                            class="link page item nav">2017</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -92,5 +105,7 @@
             <div id="alerte"></div>
             <div id="content"></div>
         </div>
+    </div>
+    <div id="footer-container">
     </div>
 </div>

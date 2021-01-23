@@ -9,12 +9,86 @@
 }
 #search-bloc {
     display:flex;
-    margin-top: 35px;
+    padding-top: 15px;
 }
 
 #search-list {
-    width:25%;
+    width: 300px;
+    z-index: 1;
 }
+#menuToggle {
+    display: none;
+}
+
+@media (max-width: 1200px) {
+
+    #search-list {
+        width: 300px;
+    }
+}
+@media (max-width: 900px) {
+
+    .search-list-result-hide {
+        opacity: 0.3;
+    }
+    .menuToggle-show::before {
+        transform: translate(-50%, -50%) rotate(-135deg) !important;
+    }
+    .menuToggle-show {
+        margin-left: 285px !important;
+    }
+    #menuToggle {
+        z-index: 1;
+        position: absolute;
+        display: block;
+        background-color: #f46036;
+        margin-left: -15px;
+        width: 60px;
+        width: 60px;
+        height: 40px;
+        cursor: pointer;
+        transition: all .3s;
+    }
+    #menuToggle::before {
+        content: "";
+        display: block;
+        box-sizing: border-box;
+        width: 15px;
+        height: 15px;
+        border: .5em solid currentColor;
+            border-top-width: 0.5em;
+            border-right-width: 0.5em;
+            border-bottom-width: 0.5em;
+            border-left-width: 0.5em;
+        border-width: .5em .5em 0 0;
+        color: #fff;
+        transition: all .5s;
+        transform: translate(-50%, -50%) rotate(45deg);
+        margin-left: 40px;
+        margin-top: 19px;
+        transition: all .3s;
+    }
+    #search-list-result {
+        margin-top: 50px !important;;
+        margin-left: 0px !important;
+        width: 100% !important;
+    }
+
+    #search-list.search-list-show {
+        margin-left: -15px;
+    }
+    #search-bloc {
+        padding-top: 0px;
+    }
+    #search-list {
+        margin-left: -315px;
+        width: 75%;
+        max-width: 300px;
+        position: absolute;
+        transition: all .3s;
+    }
+}
+
 #search-input-affine-bloc {
     text-align: center;
     padding: 20px;
@@ -64,7 +138,8 @@
 
 #search-list-result {
     width:80%;
-    margin-left: 25px;
+    margin-left: 20px;
+    transition: all .3s;
 }
 #search-selection {
     background-color: #353535;

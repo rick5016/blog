@@ -101,6 +101,7 @@
 }
 
 #article-content .description-picture .picture {
+    margin-right: 20px;
     flex: 1;
 }
 #article-content .description-picture .description {
