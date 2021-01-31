@@ -46,6 +46,7 @@ header nav ul li a.nav {
     text-align: center;
     line-height: 16px;
     padding-left: 15px;
+    font-weight: bold;
 }
 
 header nav a#add {
@@ -160,3 +161,63 @@ nav #icons a#add {
     }
 }
 /********** Menu déroulant Fin **********/
+
+
+
+.nav {
+    display: block;
+    height: 100%;
+}
+
+#pages li {
+    transition: background-color .5s ease;
+    background-repeat: no-repeat;
+    background-image: url("/img/icone/sprite-min.png");
+}
+
+#nav-accueil {
+    background-position-y: -100px;
+    background-position-x: 67px;
+    background-size: 30px;
+}
+
+#nav-news {
+    background-position-y: -50px;
+    background-position-x: 70px;
+    background-size: 32px;
+}
+
+#nav-articles {
+    background-position-y: -165px;
+    background-position-x: 58px;
+    background-size: 32px;
+}
+
+#nav-tutoriels {
+    background-position-y: 5px;
+    background-position-x: 54px;
+    background-size: 36px;
+}
+
+#nav-others-svg {
+    background: url('data:image/svg+xml;utf8,<svg class="svg-inline--fa fa-chevron-down fa-w-14" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="chevron-down" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"></path></svg>');
+    filter: invert(99%) sepia(12%) saturate(0%) hue-rotate(260deg) brightness(117%) contrast(100%);
+    transition: all .3s;
+    height: 22px;
+    width: 22px;
+    display: inline-block;
+    background-repeat: no-repeat;
+    margin-left: 8px;
+}
+
+#nav-others {
+    background-image: initial !important;
+}
+
+#nav-accueil:hover, #nav-others:hover {
+    background-color: #ea3e0d !important;
+}
+
+#nav-news:hover, #nav-articles:hover, #nav-tutoriels:hover {
+    background-color: #5b5b5b !important;
+}

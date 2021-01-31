@@ -1,14 +1,16 @@
 #search {
     width: 100%;
 }
+
 #search-resume {
     font-size: 25px;
     margin-top: 20px;
     font-weight: 500;
-    font-family: Tahoma,Century Gothic,CenturyGothic,AppleGothic,sans-serif;
+    font-family: Tahoma, Century Gothic, CenturyGothic, AppleGothic, sans-serif;
 }
+
 #search-bloc {
-    display:flex;
+    display: flex;
     padding-top: 15px;
 }
 
@@ -16,6 +18,7 @@
     width: 300px;
     z-index: 1;
 }
+
 #menuToggle {
     display: none;
 }
@@ -26,17 +29,21 @@
         width: 300px;
     }
 }
+
 @media (max-width: 900px) {
 
     .search-list-result-hide {
         opacity: 0.3;
     }
+
     .menuToggle-show::before {
         transform: translate(-50%, -50%) rotate(-135deg) !important;
     }
+
     .menuToggle-show {
         margin-left: 285px !important;
     }
+
     #menuToggle {
         z-index: 1;
         position: absolute;
@@ -49,6 +56,7 @@
         cursor: pointer;
         transition: all .3s;
     }
+
     #menuToggle::before {
         content: "";
         display: block;
@@ -56,10 +64,10 @@
         width: 15px;
         height: 15px;
         border: .5em solid currentColor;
-            border-top-width: 0.5em;
-            border-right-width: 0.5em;
-            border-bottom-width: 0.5em;
-            border-left-width: 0.5em;
+        border-top-width: 0.5em;
+        border-right-width: 0.5em;
+        border-bottom-width: 0.5em;
+        border-left-width: 0.5em;
         border-width: .5em .5em 0 0;
         color: #fff;
         transition: all .5s;
@@ -68,8 +76,10 @@
         margin-top: 19px;
         transition: all .3s;
     }
+
     #search-list-result {
-        margin-top: 50px !important;;
+        margin-top: 50px !important;
+        ;
         margin-left: 0px !important;
         width: 100% !important;
     }
@@ -77,9 +87,11 @@
     #search-list.search-list-show {
         margin-left: -15px;
     }
+
     #search-bloc {
         padding-top: 0px;
     }
+
     #search-list {
         margin-left: -315px;
         width: 75%;
@@ -94,11 +106,13 @@
     padding: 20px;
     background-color: #fff;
 }
+
 #search-input-affine-title {
     font-weight: 500;
-    font-family: Tahoma,Century Gothic,CenturyGothic,AppleGothic,sans-serif;
+    font-family: Tahoma, Century Gothic, CenturyGothic, AppleGothic, sans-serif;
     font-size: 21px;
 }
+
 #search-input-affine {
     width: 75%;
     margin-right: 2%;
@@ -107,9 +121,11 @@
     height: 35px;
     padding: 8px
 }
+
 #search-input-affine::placeholder {
     font-style: italic;
 }
+
 #search-input-affine-btn {
     border: 0;
     background-color: #f2410f;
@@ -121,9 +137,11 @@
     color: #fff;
     cursor: pointer;
 }
+
 .valider-container {
     text-align: center;
 }
+
 .valider {
     border: 0;
     background-color: #f2410f;
@@ -137,23 +155,27 @@
 }
 
 #search-list-result {
-    width:80%;
+    width: 80%;
     margin-left: 20px;
     transition: all .3s;
 }
+
 #search-selection {
     background-color: #353535;
-    color:#fff;
+    color: #fff;
     padding: 20px;
     margin-bottom: 20px;
 }
+
 #search-selection-nb {
     font-size: 23px;
-    font-family: Tahoma,Century Gothic,CenturyGothic,AppleGothic,sans-serif;
+    font-family: Tahoma, Century Gothic, CenturyGothic, AppleGothic, sans-serif;
 }
+
 #search-tag-selection {
     padding: 5px 5px 10px 5px;
 }
+
 .search-tag-selection {
     color: #fff;
     text-decoration: none;
@@ -161,18 +183,20 @@
     display: inline-flex;
     cursor: pointer;
     font-size: 15px;
-    font-family: Tahoma,Century Gothic,CenturyGothic,AppleGothic,sans-serif;
+    font-family: Tahoma, Century Gothic, CenturyGothic, AppleGothic, sans-serif;
 }
+
 .search-tag-selection:hover {
     text-decoration: line-through;
 }
+
 .search-tag-selection-croix {
     background: url('data:image/svg+xml;utf8,<svg class="svg-inline--fa fa-times fa-w-10" aria-hidden="true" focusable="false" data-prefix="fal" data-icon="times" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-fa-i2svg=""><path fill="currentColor" d="M193.94 256L296.5 153.44l21.15-21.15c3.12-3.12 3.12-8.19 0-11.31l-22.63-22.63c-3.12-3.12-8.19-3.12-11.31 0L160 222.06 36.29 98.34c-3.12-3.12-8.19-3.12-11.31 0L2.34 120.97c-3.12 3.12-3.12 8.19 0 11.31L126.06 256 2.34 379.71c-3.12 3.12-3.12 8.19 0 11.31l22.63 22.63c3.12 3.12 8.19 3.12 11.31 0L160 289.94 262.56 392.5l21.15 21.15c3.12 3.12 8.19 3.12 11.31 0l22.63-22.63c3.12-3.12 3.12-8.19 0-11.31L193.94 256z"></path></svg>');
     transition: all .3s;
     height: 16px;
     width: 16px;
     display: inline-block;
-    background-repeat:no-repeat;
+    background-repeat: no-repeat;
     filter: invert(100%) sepia(0%) saturate(7492%) hue-rotate(238deg) brightness(98%) contrast(99%);
     margin-left: 5px;
     margin-top: 4px;
@@ -188,37 +212,45 @@
     color: #fff;
     cursor: pointer;
 }
+
 #search-selection-delete a {
     color: #fff;
     text-decoration: none;
     width: 100%;
-    height : 100%;
+    height: 100%;
     display: block;
     padding: 11px 15px;
 }
 
 .search-categorie {
-    background: linear-gradient(90deg, #f46036 5px, #d4d4d4 0% );
+    background: linear-gradient(90deg, #f46036 5px, #d4d4d4 0%);
     text-transform: uppercase;
     font-size: 13px;
     font-weight: 700;
     line-height: 30px;
     padding-left: 12px;
 }
+
 .search-tag-list {
     padding-top: 5px;
     background-color: #fff;
+    max-height: 300px;
+    overflow-y: auto;
 }
+
 .search-tag {
     display: flex;
     font-size: 13px;
-    padding:5px 10px;
+    padding: 5px 10px;
+    justify-content: space-between;
 }
+
 .search-tag label {
     font-size: 14px;
     line-height: 1.5;
-    padding:5px;
+    padding: 5px;
 }
+
 .search-tag-checkbox {
     height: 20px;
     margin-top: 4px;
@@ -226,30 +258,33 @@
     -moz-appearance: none;
     -ms-appearance: none;
     background-color: #fafafa;
-	border: 1px solid #cacece;
-	box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px -15px 10px -12px rgba(0,0,0,0.05);
-	padding: 9px;
-	border-radius: 3px;
-	display: inline-block;
-	position: relative;
+    border: 1px solid #cacece;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), inset 0px -15px 10px -12px rgba(0, 0, 0, 0.05);
+    padding: 9px;
+    border-radius: 3px;
+    display: inline-block;
+    position: relative;
 }
-.search-tag-checkbox:active, .search-tag-checkboxx:checked:active {
-	box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px 1px 3px rgba(0,0,0,0.1);
+
+.search-tag-checkbox:active,
+.search-tag-checkboxx:checked:active {
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), inset 0px 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .search-tag-checkbox:checked {
-	background-color: #f46036;
-	border-radius: 0px;
-	box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px -15px 10px -12px rgba(0,0,0,0.05), inset 15px 10px -12px rgba(255,255,255,0.1);
-	color: #99a1a7;
+    background-color: #f46036;
+    border-radius: 0px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), inset 0px -15px 10px -12px rgba(0, 0, 0, 0.05), inset 15px 10px -12px rgba(255, 255, 255, 0.1);
+    color: #99a1a7;
 }
+
 .search-tag-checkbox:checked:after {
-	content: '\2714';
-	font-size: 14px;
-	position: absolute;
-	top: 0px;
-	left: 3px;
-	color: #fff;
+    content: '\2714';
+    font-size: 14px;
+    position: absolute;
+    top: 0px;
+    left: 3px;
+    color: #fff;
 }
 
 #search-result {
@@ -280,15 +315,15 @@
 }
 
 #search-result .article a {
-    font-family: Tahoma,Century Gothic,CenturyGothic,AppleGothic,sans-serif;
+    font-family: Tahoma, Century Gothic, CenturyGothic, AppleGothic, sans-serif;
     font-size: 18px;
     margin-bottom: 5px;
-    text-decoration:none; 
+    text-decoration: none;
     color: #000;
 }
 
 #search-result .article .info {
-    font-family: Tahoma,Century Gothic,CenturyGothic,AppleGothic,sans-serif;
+    font-family: Tahoma, Century Gothic, CenturyGothic, AppleGothic, sans-serif;
     color: #919191;
 }
 
@@ -296,31 +331,39 @@
     margin-bottom: 20px;
     height: 35px;
 }
+
 #search-list-result .search-pagination .page {
     background-color: #efefef;
     min-width: 34px;
     text-align: center;
-    font-family: Tahoma,Century Gothic,CenturyGothic,AppleGothic,sans-serif;
+    font-family: Tahoma, Century Gothic, CenturyGothic, AppleGothic, sans-serif;
     font-size: 15px;
-    margin:1px;
+    margin: 1px;
     cursor: pointer;
     height: 35px;
     float: left;
 }
+
+#search-list-result .search-pagination .page:hover {
+    background-color: #E9ECEF;
+}
+
 #search-list-result .search-pagination .page-selected {
     box-shadow: inset 0 0 0 2px #f46036;
     color: #000 !important;
 }
+
 #search-list-result .search-pagination .page a {
     display: block;
     height: 100%;
     padding-top: 6px;
     color: #919191;
-    text-decoration:none; 
+    text-decoration: none;
 }
+
 #search-list-result .search-pagination .search-pagination-last {
     background: url('data:image/svg+xml;utf8,<svg class="svg-inline--fa fa-angle-double-right fa-w-10" aria-hidden="true" focusable="false" data-prefix="fal" data-icon="angle-double-right" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-fa-i2svg=""><path fill="currentColor" d="M166.9 264.5l-117.8 116c-4.7 4.7-12.3 4.7-17 0l-7.1-7.1c-4.7-4.7-4.7-12.3 0-17L127.3 256 25.1 155.6c-4.7-4.7-4.7-12.3 0-17l7.1-7.1c4.7-4.7 12.3-4.7 17 0l117.8 116c4.6 4.7 4.6 12.3-.1 17zm128-17l-117.8-116c-4.7-4.7-12.3-4.7-17 0l-7.1 7.1c-4.7 4.7-4.7 12.3 0 17L255.3 256 153.1 356.4c-4.7 4.7-4.7 12.3 0 17l7.1 7.1c4.7 4.7 12.3 4.7 17 0l117.8-116c4.6-4.7 4.6-12.3-.1-17z"></path></svg>');
-    background-repeat:no-repeat;
+    background-repeat: no-repeat;
     filter: invert(55%) sepia(0%) saturate(1469%) hue-rotate(227deg) brightness(104%) contrast(92%);
     height: 16px;
     width: 16px;
@@ -331,7 +374,7 @@
 
 #search-list-result .search-pagination .search-pagination-prems {
     background: url('data:image/svg+xml;utf8,<svg class="svg-inline--fa fa-angle-double-left fa-w-10" aria-hidden="true" focusable="false" data-prefix="fal" data-icon="angle-double-left" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-fa-i2svg=""><path fill="currentColor" d="M153.1 247.5l117.8-116c4.7-4.7 12.3-4.7 17 0l7.1 7.1c4.7 4.7 4.7 12.3 0 17L192.7 256l102.2 100.4c4.7 4.7 4.7 12.3 0 17l-7.1 7.1c-4.7 4.7-12.3 4.7-17 0L153 264.5c-4.6-4.7-4.6-12.3.1-17zm-128 17l117.8 116c4.7 4.7 12.3 4.7 17 0l7.1-7.1c4.7-4.7 4.7-12.3 0-17L64.7 256l102.2-100.4c4.7-4.7 4.7-12.3 0-17l-7.1-7.1c-4.7-4.7-12.3-4.7-17 0L25 247.5c-4.6 4.7-4.6 12.3.1 17z"></path></svg>');
-    background-repeat:no-repeat;
+    background-repeat: no-repeat;
     filter: invert(55%) sepia(0%) saturate(1469%) hue-rotate(227deg) brightness(104%) contrast(92%);
     height: 16px;
     width: 16px;
@@ -345,4 +388,25 @@
     display: inline-block;
     margin-left: 10px;
     margin-top: 10px;
+}
+
+#search-pagination-nb-result-by-page {
+    float: right;
+    font-size: 12px;
+}
+
+#search-pagination-nb-result-by-page select {
+    height: 35px;
+    color: #000;
+    background-color: #efefef;
+    border: 0;
+    -webkit-appearance: none;
+    min-width: 34px;
+    text-align: center;
+}
+
+@media (max-width: 600px) {
+    #search-pagination-nb-result-by-page {
+        margin-top: -48px !important;
+    }
 }

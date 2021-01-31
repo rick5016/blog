@@ -8,8 +8,8 @@
             <div id="logo-container">
                 <div id="logo"></div>
                 <div id="logo-txt">
-                    <a id="rick5016" b-entity="search" href="/">rick5016.net</a>
-                    <a id="rick5016-sub" b-entity="search" href="/">Drama, anime & autres</a>
+                    <a id="rick5016" b-entity="accueil" href="/">rick5016.net</a>
+                    <a id="rick5016-sub" b-entity="accueil" href="/">Drama, anime & autres</a>
                 </div>
             </div>
 
@@ -25,17 +25,19 @@
             <nav class="container">
                 <a id="add" class="icon" b-entity="edit" href="index.html?edit=">+</a>
                 <ul id="pages">
-                    <li style="background-color: #f46036;width:100%"><a b-entity="search"
-                            href="index.html?search=&categories[]=type:drama" class="link page item nav">Drama</a></li>
-                    <li class="transition-orange"></li>
-                    <li style="background-color: #f46036;width:100%"><a b-entity="search"
-                            href="index.html?search=&categories[]=type:anime" class="link page item nav">Anime</a></li>
-                    <li class="transition-orange"></li>
-                    <li style="background-color: #f46036;width:100%"><a b-entity="search"
-                            href="index.html?search=&categories[]=type:webtoon" class="link page item nav">Webtoon</a>
+                    <li id="nav-accueil" style="background-color: #f46036;width:100%;position: relative;"><a b-entity="search"
+                            href="index.html" class="link page item nav">Accueil</a></li>
+                    <li id="nav-news" class="menu" style="background-color: #353535;width:100%;position: relative;"><a b-entity="search"
+                            href="index.html?search=&type=news" class="link page item nav">News</a></li>
+                    <li id="nav-articles" class="menu" style="background-color: #353535;width:100%;position: relative;"><a b-entity="search"
+                            href="index.html?search=&type=article" class="link page item nav">Articles</a></li>
+                    <li id="nav-tutoriels" style="background-color: #353535;width:100%;position: relative;"><a b-entity="search"
+                            href="index.html?search=&type=tutos" class="link page item nav">Tutoriels</a>
                     </li>
-                    <li class="transition-fonce"></li>
-                    <li id="other" style="background-color: #353535;width:100%">Autres</li>
+                    <li id="nav-others" class="other" style="background-color: #f46036;width:100%;margin-left:5px;position: relative;text-transform: uppercase;cursor: pointer;font-weight: bold;display: flex;">
+                        <span style="margin-left: 94px;" class="other">Autres</span>
+                        <div id="nav-others-svg" class="other"></div>
+                    </li>
                 </ul>
             </nav>
         </div>
@@ -62,26 +64,30 @@
                                             class="link page item nav">Anime</a></li>
                                     <li><a b-entity="search" href="index.html?search=&categories[]=type:webtoon"
                                             class="link page item nav">Webtoon</a></li>
+                                    <li><a b-entity="search" href="index.html?search=&categories[]=type:artiste"
+                                            class="link page item nav">Artiste</a></li>
                                 </ul>
                             </div>
                             <div style="flex: 1">
-                                <span class="title">Par genre</span>
+                                <span class="title">Par pays</span>
                                 <ul>
-                                    <li><a b-entity="search" href="index.html?search=&categories[]=genre:comedie"
-                                            class="link page item nav">Comédie</a></li>
-                                    <li><a b-entity="search" href="index.html?search=&categories[]=genre:aventure"
-                                            class="link page item nav">Aventure</a></li>
-                                    <li><a b-entity="search" href="index.html?search=&categories[]=genre:action"
-                                            class="link page item nav">Action</a></li>
+                                    <li><a b-entity="search" href="index.html?search=&categories[]=pays:chine"
+                                            class="link page item nav">Chine</a></li>
+                                    <li><a b-entity="search" href="index.html?search=&categories[]=pays:coree"
+                                            class="link page item nav">Corée</a></li>
+                                    <li><a b-entity="search" href="index.html?search=&categories[]=pays:japon"
+                                            class="link page item nav">Japon</a></li>
                                 </ul>
                             </div>
                             <div style="flex: 1">
-                                <span class="title">Par année de sortie</span>
+                                <span class="title">Par statut</span>
                                 <ul>
-                                    <li><a b-entity="search" href="index.html?search=&categories[]=annee-de-sortie:2020"
-                                            class="link page item nav">2020</a></li>
-                                    <li><a b-entity="search" href="index.html?search=&categories[]=annee-de-sortie:2017"
-                                            class="link page item nav">2017</a></li>
+                                    <li><a b-entity="search" href="index.html?search=&categories[]=statut:en-cours"
+                                            class="link page item nav">En cours</a></li>
+                                    <li><a b-entity="search" href="index.html?search=&categories[]=statut:en-activite"
+                                            class="link page item nav">En activité</a></li>
+                                    <li><a b-entity="search" href="index.html?search=&categories[]=statut:termine"
+                                            class="link page item nav">Terminé</a></li>
                                 </ul>
                             </div>
                         </div>

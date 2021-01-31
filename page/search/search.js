@@ -1,20 +1,24 @@
 var search = function () {
-    this.load = async function () {
+    this.load = async function (params = []) {
         // Récupération des paramètres (exemple: index.html?search=king&categories[]=tite:the-kng-s-avatar|test_categorie:test_tag)
-        let params = []
+        params['type'] = (new URL(document.location.href).searchParams.get('type') != null) ? new URL(document.location.href).searchParams.get('type') : ''
         params['search'] = (new URL(document.location.href).searchParams.get('search') != null) ? new URL(document.location.href).searchParams.get('search') : ''
         params['affine'] = (new URL(document.location.href).searchParams.get('affine') != null) ? new URL(document.location.href).searchParams.get('affine') : ''
         params['categories'] = (new URL(document.location.href).searchParams.get('categories[]') != null) ? new URL(document.location.href).searchParams.get('categories[]') : ''
+        let nb_result_by_page = (new URL(document.location.href).searchParams.get('resultbypage') != null) ? new URL(document.location.href).searchParams.get('resultbypage') : 10
         let page = (new URL(document.location.href).searchParams.get('page') != null) ? new URL(document.location.href).searchParams.get('page') : 1
         let search = true // Détermine si une recherche a été effectuée
-        if (params['search'] === '' && params['categories'] === '') {
+        if (params['search'] === '' && params['affine'] === '' && params['categories'] === '') {
             search = false
         }
 
+        let accueil = (params['accueil'] === 1) ? 1 : 0
         data = await promise('api.php', 'POST', {
             'find': 'categorie',
             'where': params,
-            'page': page
+            'page': page,
+            'nb_page': nb_result_by_page,
+            'accueil': accueil
         })
 
         // Si au moins une recherche a été effectué on construit le bloc du résumé de la recherche
@@ -52,7 +56,7 @@ var search = function () {
                         selectionElts.push({
                             'element': 'a', 'attributs': {
                                 'b-entity': 'search', 'class': 'search-tag-selection link', 'innerHTML': tag.tag,
-                                'href': changeURL(null, null, categorie.slug + ':' + tag.slug, params['categories'])
+                                'href': changeURL(null, null, categorie.slug + ':' + tag.slug)
                             }, 'sub': [
                                 { 'element': 'span', 'attributs': { 'class': 'search-tag-selection-croix' } }
                             ]
@@ -67,8 +71,13 @@ var search = function () {
                         'element': 'div', 'attributs': {}, 'sub': [
                             {
                                 'element': 'div', 'attributs': { 'class': 'search-tag' }, 'sub': [
-                                    { 'element': 'input', 'attributs': attributs },
-                                    { 'element': 'label', 'attributs': { 'for': categorie.slug + ':' + tag.slug, 'class': 'search-tag-checkbox-label', 'innerHTML': tag.tag } }
+                                    {
+                                        'element': 'div', 'attributs': { 'style': 'display: flex' }, 'sub': [
+                                            { 'element': 'input', 'attributs': attributs },
+                                            { 'element': 'label', 'attributs': { 'for': categorie.slug + ':' + tag.slug, 'class': 'search-tag-checkbox-label', 'innerHTML': tag.tag} }
+                                        ]
+                                    },
+                                    {'element': 'div', 'attributs': { 'style': 'padding: 5px;', 'innerHTML': ' (' + tag.count + ')' }}
                                 ]
                             }
                         ]
@@ -163,7 +172,7 @@ var search = function () {
                             {
                                 'element': 'div', 'attributs': { 'class': 'page' }, 'sub': [
                                     {
-                                        'element': 'a', 'attributs': { 'class': 'link', 'b-entity': 'search', 'href': 'index.html?search=' + params['search'] + '&categories[]=' + params['categories'] + '&page=' + 1 }, 'sub': [
+                                        'element': 'a', 'attributs': { 'class': 'link', 'b-entity': 'search', 'href': changeURL() }, 'sub': [
                                             { 'element': 'span', 'attributs': { 'class': 'search-pagination-prems' } }
                                         ]
                                     }
@@ -188,7 +197,7 @@ var search = function () {
                             paginationElts.push(
                                 {
                                     'element': 'div', 'attributs': { 'class': 'page' }, 'sub': [
-                                        { 'element': 'a', 'attributs': { 'class': 'link ' + selected, 'innerHTML': (i + 1), 'b-entity': 'search', 'href': 'index.html?search=' + params['search'] + '&categories[]=' + params['categories'] + '&page=' + (i + 1) } }
+                                        { 'element': 'a', 'attributs': { 'class': 'link ' + selected, 'innerHTML': (i + 1), 'b-entity': 'search', 'href': changeURL(null, null, null, null, (i + 1)) } }
                                     ]
                                 }
                             )
@@ -202,7 +211,7 @@ var search = function () {
                                 {
                                     'element': 'div', 'attributs': { 'b-entity': 'search', 'class': 'page' }, 'sub': [
                                         {
-                                            'element': 'a', 'attributs': { 'class': 'link search-pagination-last-container', 'b-entity': 'search', 'href': 'index.html?search=' + params['search'] + '&categories[]=' + params['categories'] + '&page=' + data.list.articles.nb_page }, 'sub':
+                                            'element': 'a', 'attributs': { 'class': 'link search-pagination-last-container', 'b-entity': 'search', 'href': changeURL(null, null, null, null, data.list.articles.nb_page) }, 'sub':
                                                 [
                                                     { 'element': 'span', 'attributs': { 'class': 'search-pagination-last' } }
                                                 ]
@@ -215,12 +224,12 @@ var search = function () {
                 }
 
                 // Commentaire en fin de pagination affichant le numéro des articles affiché à l'écran
-                var max = page * 5
+                var max = page * nb_result_by_page
                 if (nb_article < max) {
                     max = nb_article
                 }
                 paginationElts.push(
-                    { 'element': 'div', 'attributs': { 'class': 'search-pagination-info', 'innerHTML': ((page * 5) - 4) + ' - ' + max + ' sur ' + data.list.articles.nb_result + ' article(s)' } }
+                    { 'element': 'div', 'attributs': { 'class': 'search-pagination-info', 'innerHTML': ((page * nb_result_by_page) - (nb_result_by_page - 1)) + ' - ' + max + ' sur ' + data.list.articles.nb_result + ' article(s)' } }
                 )
             } else {
                 let aucun_resultat_texte = ''
@@ -228,8 +237,10 @@ var search = function () {
                     aucun_resultat_texte += 'Essayez d\'utiliser des mots-clefs plus larges et de vérifier l\'orthographe.<br>Vous pouvez également modifier ou réinitialiser les filtres.'
                 } else if (params['categories'] !== '') {
                     aucun_resultat_texte += 'Essayez de modifiez ou réinitialisez les filtres.'
-                } else if (params['search'] !== '') {
+                } else if (params['search'] !== '' || params['affine'] !== '') {
                     aucun_resultat_texte += 'Essayez d\'utiliser des mots-clefs plus larges et de vérifier l\'orthographe.'
+                } else {
+                    aucun_resultat_texte += 'Aucun résultat.'
                 }
                 // Si un critère de recherche est écrit : Essayez d'utiliser des mots-clefs plus larges et de vérifier l'orthographe.
                 // Si au moins un tag est selectionné : Mdifiez ou réinitialisez les filtres
@@ -250,11 +261,6 @@ var search = function () {
 
                 // Si affine existe on l'ajoute en tps que tag à selectionElts (en début de liste)
                 if (params['affine'] !== '') {
-                    /*selectionElts.unshift({
-                        'element': 'div', 'attributs': { 'class': 'search-tag-selection', 'innerHTML': data.affine }, 'sub': [
-                            { 'element': 'div', 'attributs': { 'class': 'search-tag-selection-croix' } }
-                        ]
-                    })*/
                     selectionElts.unshift({
                         'element': 'a', 'attributs': {
                             'b-entity': 'search', 'class': 'search-tag-selection link', 'innerHTML': data.affine,
@@ -272,7 +278,7 @@ var search = function () {
                 if (selectionElts.length > 0) {
                     article_resume.push({
                         'element': 'button', 'attributs': { 'id': 'search-selection-delete' }, 'sub': [
-                            { 'element': 'a', 'attributs': { 'class': 'link', 'b-entity': 'search', 'innerHTML': 'Effacer tout', 'href': 'index.html?search=' + params['search'] } }
+                            { 'element': 'a', 'attributs': { 'class': 'link', 'b-entity': 'search', 'innerHTML': 'Effacer tout', 'href': changeURL(null, '', '') } }
                         ]
                     });
                 }
@@ -281,7 +287,28 @@ var search = function () {
                     { 'element': 'div', 'attributs': { 'id': 'search-selection' }, 'sub': article_resume }
                 )
             }
+            if (data.list.articles.nb_result > 0) {
+                var nb_result_by_page_option_Elts = []
+                for (var i = 0; i < 6; i++) {
+                    let value = i * 10;
+                    if (i == 0) {
+                        value = 5
+                    }
+                    let attr = { 'value': value, 'innerHTML': value }
+                    if (value == nb_result_by_page) {
+                        attr = { 'value': value, 'innerHTML': value, 'selected': 'selected' }
+                    }
 
+                    nb_result_by_page_option_Elts.push({ 'element': 'option', 'attributs': attr })
+                }
+                article_result.push({
+                    'element': 'div', 'attributs': { 'id': 'search-pagination-nb-result-by-page', 'innerHTML': 'Afficher ' }, 'sub': [
+                        { 'element': 'select', 'attributs': {}, 'sub': nb_result_by_page_option_Elts },
+                        { 'element': 'span', 'attributs': { 'innerHTML': ' résultats par page' } },
+                    ]
+                })
+            }
+            
             // Contruction de la pagination + articles
             article_result.push({ 'element': 'div', 'attributs': { 'class': 'search-pagination' }, 'sub': paginationElts })
             article_result.push({ 'element': 'ul', 'attributs': { 'id': 'search-result' }, 'sub': articlesElts })
@@ -299,13 +326,13 @@ var search = function () {
             result_data.push({
                 'element': 'div', 'attributs': { 'id': 'search-bloc' }, 'sub': [
                     {
-                        'element': 'div', 'attributs': { 'id': 'search-bloc2', 'style': 'display:flex'}, 'sub': [
+                        'element': 'div', 'attributs': { 'id': 'search-bloc2', 'style': 'display:flex' }, 'sub': [
                             {
                                 'element': 'div', 'attributs': { 'id': 'search-list' }, 'sub': [
                                     {
                                         'element': 'div', 'attributs': { 'id': 'search-input-affine-bloc' }, 'sub': [
                                             { 'element': 'span', 'attributs': { 'id': 'search-input-affine-title', 'innerHTML': 'Affiner votre recherche' } },
-                                            { 'element': 'input', 'attributs': { 'type': 'text', 'id': 'search-input-affine', 'name': 'search', 'placeholder': "Titre, artiste ...", 'value': params['affine']} },
+                                            { 'element': 'input', 'attributs': { 'type': 'text', 'id': 'search-input-affine', 'name': 'search', 'placeholder': "Titre, artiste ...", 'value': params['affine'] } },
                                             {
                                                 'element': 'button', 'attributs': { 'id': 'search-input-affine-btn', 'innerHTML': 'Ok' }, 'callback': {
                                                     'event': 'click',
@@ -319,7 +346,7 @@ var search = function () {
                                     { 'element': 'ul', 'attributs': {}, 'sub': categoriesElts }
                                 ]
                             },
-                            {'element': 'div', 'attributs': { 'id': 'menuToggle' }}
+                            { 'element': 'div', 'attributs': { 'id': 'menuToggle' } }
                         ]
                     },
                     {
@@ -345,9 +372,9 @@ var search = function () {
                         load('search', [], 'page', setURL())
                     })
                     div.appendChild(button)
-                    var parent = c.parentNode.parentNode.parentNode
+                    var parent = c.parentNode.parentNode.parentNode.parentNode
                     if (parent.lastChild.className != 'valider-container') {
-                        c.parentNode.parentNode.parentNode.appendChild(div)
+                        c.parentNode.parentNode.parentNode.parentNode.appendChild(div)
                     }
                 })
             });
@@ -360,7 +387,19 @@ var search = function () {
                 })
             });
 
-            
+            if (data.list.articles.nb_result > 0) {
+                // Event sur le nombre de résultat par page
+                result_DOM.querySelector('#search-pagination-nb-result-by-page select').addEventListener("change", function () {
+                    load('search', [], 'page', changeURL(null, null, null, this.value))
+                });
+            }
+
+            result_DOM.querySelector('#search-input-affine').addEventListener("keypress", function (e) {
+                if (e.key === 'Enter') {
+                    load('search', [], 'page', setURL())
+                }
+            })
+
             result_DOM.querySelector('#menuToggle').addEventListener("click", function () {
                 if (document.querySelector('#search-list').classList.contains('search-list-show')) {
                     document.querySelector('#search-list-result').classList.remove("search-list-result-hide")
@@ -372,13 +411,12 @@ var search = function () {
                     document.querySelector('#search-list').classList.add("search-list-show")
                 }
             })
-            
-
 
             // Fini !!!
             document.querySelector('#search-input').value = params['search']
             document.querySelector('#content').innerHTML = ''
             document.querySelector('#content').appendChild(result_DOM)
+            document.querySelector('title').innerHTML = 'Recherche par critères de drama anime et webtoon'
         }
     }
 }
@@ -387,13 +425,21 @@ setURL = function () {
     let search = document.querySelector('#search-input').value
     let affine = document.querySelector('#search-input-affine').value
     let caseCoches = document.querySelectorAll('input[type="checkbox"]:checked')
+    let resultbypage = new URL(document.location.href).searchParams.get('resultbypage')
+    let type = new URL(document.location.href).searchParams.get('type')
 
-    let url = 'index.html?'
-
-    url += 'search=' + search
+    let url = 'index.html?search=' + search
 
     if (affine != '') {
         url += '&affine=' + affine
+    }
+
+    if (resultbypage != null) {
+        url += '&resultbypage=' + resultbypage
+    }
+
+    if (resultbypage != null) {
+        url += '&type=' + type
     }
 
     if (caseCoches != null) {
@@ -402,48 +448,6 @@ setURL = function () {
             url += i.id + '|'
         })
         url = url.substring(0, url.length - 1);
-    }
-
-    return url
-}
-
-changeURL = function (searchReplace = null, affineReplace = null, categorieReplace = null) {
-    let search = (new URL(document.location.href).searchParams.get('search') != null) ? new URL(document.location.href).searchParams.get('search') : ''
-    let affine = (new URL(document.location.href).searchParams.get('affine') != null) ? new URL(document.location.href).searchParams.get('affine') : ''
-    let categories = (new URL(document.location.href).searchParams.get('categories[]') != null) ? new URL(document.location.href).searchParams.get('categories[]') : ''
-
-    let url = 'index.html?'
-
-    url += 'search='
-    if (searchReplace != null) {
-        url += searchReplace
-    } else {
-        url += search
-    }
-
-    if (affine != '' && affineReplace != '') {
-        url += '&affine='
-        if (affineReplace != null) {
-            url += affineReplace
-        } else {
-            url += affine
-        }
-    }
-
-    if (categories != null) {
-        url += '&categories[]='
-        let result = categories
-        if (categorieReplace != null) {
-            if (categories.indexOf('|') != -1) {
-                result = categories.replace(categorieReplace + '|', '')
-                if (categories == result) {
-                    result = categories.replace('|' + categorieReplace, '')
-                }
-            } else {
-                result = categories.replace(categorieReplace, '')
-            }
-        }
-        url += result
     }
 
     return url

@@ -48,3 +48,26 @@
 #footer .lien a:hover {
     text-decoration: underline;
 }
+
+#footer .lien-info {
+    margin-top: 10px;
+}
+
+@media (max-width: 910px) {
+    #footer {
+        flex-direction: column;
+    }
+    #footer .title {
+        display: none;
+    }
+    #footer .lien-container {
+        justify-content: center;
+        display: flex;
+    }
+    #footer .lien {
+        position: initial;
+    }
+    .lien-info {
+        display: none;
+    }
+}

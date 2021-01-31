@@ -29,7 +29,7 @@ var edit = function () {
 
                     // event Suppression
                     let suppr = document.createElement('span')
-                    suppr.setAttribute('class', 'link delete')
+                    suppr.setAttribute('class', 'button delete')
                     suppr.innerHTML = "supprimer l'article"
                     suppr.addEventListener("click", function () {
                         if (confirm("Voulez-vous vraiment supprimer l'article ?")) {
@@ -61,117 +61,12 @@ var edit = function () {
 
             //setPrevisu()
         } else {
-            load('accueil')
+            load('search')
         }
-    }
-
-    const wiziwig = function (e) {
-        e.preventDefault()
-        var id = e.target.id
-
-        if (id.substr(0, 2) == 'w1' || id.substr(0, 2) == 'w2') {
-
-            var txtarea = document.getElementById("article")
-            var start = txtarea.selectionStart
-            var finish = txtarea.selectionEnd
-            var allText = txtarea.value
-            var selection = allText.substring(start, finish)
-
-            var markdown = id.substr(3, 10)
-            if (markdown.substr(0, 2) === 'lo') {
-                markdown = ' '.repeat(markdown.charAt(2)) + '1. '
-            } else if (markdown.substr(0, 4) === 'link') {
-                if (selection == '') {
-                    selection = 'link text'
-                }
-                var markdown = '[' + selection + '](http:// "link title")'
-                selection = ''
-            } else if (markdown.substr(0, 3) === 'img') {
-                if (selection == '') {
-                    selection = 'Alt text'
-                }
-                var markdown = '![' + selection + '](http:// "Image title")'
-                selection = ''
-            } else if (markdown.substr(0, 2) === 'bq') {
-                markdown = '>'.repeat(markdown.charAt(2)) + ' '
-            } else if (markdown.charAt(0) === 'h') {
-                markdown = '#'.repeat(markdown.charAt(1)) + ' '
-            } else if (markdown.charAt(0) === '-') {
-                markdown = "---\n"
-            } else if (markdown.charAt(0) === 'n') {
-                markdown = "\n\n"
-            } else if (markdown.charAt(0) === 'l') {
-                markdown = ' '.repeat(markdown.charAt(1)) + '+ '
-            } else if (markdown.charAt(0) === 't') {
-                markdown = '\n| Value | Option (Right aligned) | Description (center)|\n'
-                markdown += '| ----- | -----:| :----------:|\n'
-                markdown += '| data   | 1 | Lorem ipsum dolor sit amet |\n'
-                markdown += '| engine | 3 | Consectetur adipiscing elit |\n'
-                markdown += '| ext    | 2 | Integer molestie lorem at massa |\n'
-            }
-
-            if (id.substr(0, 2) == 'w1') {
-                var setTextMarkdown = markdown + selection
-            } else {
-                var setTextMarkdown = selection + markdown
-            }
-
-            var newText = allText.substring(0, start) + setTextMarkdown + allText.substring(finish, allText.length)
-
-            txtarea.value = newText
-        } else {
-
-            var txtarea = document.getElementById("article")
-            var start = txtarea.selectionStart
-            var finish = txtarea.selectionEnd
-            var allText = txtarea.value
-
-            var selection = allText.substring(start, finish)
-
-            var markdown = id.substr(3, 10)
-            if (markdown.substr(0, 2) === 'bc') {
-                var markdown = '```\n'
-                var markdown2 = '\n```'
-            } else if (markdown.charAt(0) === 'b') {
-                var markdown = '**'
-            } else if (markdown.charAt(0) === 'i') {
-                var markdown = '__'
-            } else if (markdown.charAt(0) === 's') {
-                var markdown = '~~'
-            } else if (markdown.charAt(0) === 'c') {
-                var markdown = '`'
-            }
-
-            if (markdown2 === undefined) {
-                var markdown2 = markdown
-            }
-            var newText = allText.substring(0, start) + markdown + selection + markdown2 + allText.substring(finish, allText.length)
-
-            txtarea.value = newText
-        }
-        //setPrevisu()
-    }
-
-    const setPrevisu = function () {
-        let content = document.querySelector('#article').value
-    
-        var pos = content.indexOf("<BLOC_CODE>")
-        while (pos > -1) {
-            let openPosition = pos + 11
-            let closePosition = content.indexOf("</BLOC_CODE>")
-            content = content.substring(0, openPosition).replace('<BLOC_CODE>', '<code>') +
-                '<div class="code"><pre>' + content.substring(openPosition, closePosition).replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</pre></div>' +
-                content.substring(closePosition, content.length).replace('</BLOC_CODE>', '</code>')
-    
-            pos = content.indexOf("<BLOC_CODE>", pos + 1)
-        }
-    
-        document.querySelector('#prev').innerHTML = content
     }
 
     const deleteArticle = async function () {
         var slug = new URL(document.location.href).searchParams.get('edit')
-        document.querySelector('#loader').style.display = null
 
         let data = await promise('api.php', 'POST', {
             'delete': 'page',
@@ -181,16 +76,14 @@ var edit = function () {
         })
 
         clearInterval(saveEdit)
-        document.querySelector('#loader').style.display = 'none'
         if (data.error === 0) {
             alerte("L'article a été supprimé de manière définitive.") // TODO : on recharge forcement la page, il faudrai revoir le système d'alerte pour ce genre de cas
-            load('accueil')
+            load('search')
         }
     }
 
     const updateArticle = async function (reload) {
         var slug = new URL(document.location.href).searchParams.get('edit')
-        document.querySelector('#loader').style.display = null
 
         var error = ''
         let title = document.querySelector('#title').value
@@ -221,16 +114,13 @@ var edit = function () {
                     load('menu', [], 'plugin', false, true)
                 }
                 alerte(error_messages.update_article_valide, 'ok', 1)
-                document.querySelector('#loader').style.display = 'none'
             }
         } else {
-            document.querySelector('#loader').style.display = 'none'
             alerte(error, 'ko')
         }
     }
 
     const saveArticle = async function () {
-        document.querySelector('#loader').style.display = null
 
         var error = ''
         let title = document.querySelector('#title').value
@@ -256,10 +146,8 @@ var edit = function () {
                 load('menu', [], 'plugin')
                 load('edit', [], 'page', 'index.html?edit=' + data.slug)
                 alerte(error_messages.save_article_valide, 'ok', 1)
-                document.querySelector('#loader').style.display = 'none'
             }
         } else {
-            document.querySelector('#loader').style.display = 'none'
             alerte(error, 'ko')
         }
     }

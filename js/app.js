@@ -7,7 +7,7 @@ var connexion_duration_sec = 60 * 60
 
 const DEBUG_PROD = false
 var debug = (window.location.hostname === '127.0.0.1') ? true : (DEBUG_PROD ? true : false)
-var menus = ['search', 'article', 'edit', 'search', 'serie', 'reminder']
+var menus = ['accueil', 'article', 'edit', 'search', 'serie', 'reminder']
 
 var error_messages = {
     'api_failed': 'Une erreur est survenue.',
@@ -245,55 +245,6 @@ const setDOMElement2 = function (param, DOM) {
     }
     return DOM
 }
-
-/*const setDOMElementsave = function (DOM, params) {
-    let div = document.createElement('div')
-    div.appendChild(DOM)
-
-    for (var key in params) {
-        let param = params[key]
-        if (param.connexion !== undefined) {
-            if (localStorage.getItem('token') === null) {
-                continue
-            }
-        }
-
-        // Création d'un élément
-        if (param.element !== undefined) {
-            var element = document.createElement(param.element)
-            attrParam(element, param)
-            // Création d'un sous élément
-            if (param.sub !== undefined) {
-                for (var keySub in param.sub) {
-                    var param2 = param.sub[keySub]
-                    let element2 = document.createElement(param2.element)
-                    attrParam(element2, param2)
-                    if (param2.sub !== undefined) {
-                        for (var keySub2 in param2.sub) {
-                            var param3 = param2.sub[keySub2]
-                            let element3 = document.createElement(param3.element)
-                            attrParam(element3, param3)
-                            element2.appendChild(element3)
-                        }
-                    }
-                    element.appendChild(element2)
-                }
-            }
-            div.querySelector(param.selector).appendChild(element)
-        } else {
-            // Attribution des paramètres
-            if (param.multiple !== undefined && param.multiple === true) { // Sur tous les éléments
-                div.querySelectorAll(param.selector).forEach(function (obj) {
-                    attrParam(obj, param)
-                });
-            } else { // Sur un seul élément
-                attrParam(div.querySelector(param.selector), param)
-            }
-        }
-    }
-
-    return div.firstChild
-}*/
 
 const attrParam = function (element, param) {
     for (var attribut in param.attributs) {

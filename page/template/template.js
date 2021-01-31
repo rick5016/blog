@@ -48,7 +48,7 @@ var template = function () {
         });
 
         // Affichage du menu déroulant
-        DOM.querySelector('#other').addEventListener("click", function () {
+        DOM.querySelector('.other').addEventListener("click", function () {
             if (document.querySelector('#menu-container').style.display == 'none') {
                 document.querySelector('#menu-container').style.display = 'block'
             } else {
@@ -79,7 +79,7 @@ var template = function () {
         });
 
         document.querySelector('body').addEventListener("click", function (elt) {
-            if (document.querySelector('#menu-container').style.display !== 'none' && elt.target.id != 'menu' && elt.target.id != 'other' && elt.target.id != 'nav-btn') {
+            if (document.querySelector('#menu-container').style.display !== 'none' && elt.target.id != 'menu' && !elt.target.classList.contains('other') && elt.target.id != 'nav-btn') {
                 document.querySelector('#menu-container').style.display = 'none'
             }
         });
@@ -106,13 +106,82 @@ var template = function () {
             })
         });
 
-        // Event sur les liens de la pagination
-        DOM.querySelector('#search-icone').addEventListener("click", function (a) {
-            load('search', [], 'page', 'index.html?search=' + document.querySelector('#search-input').value)
+        // Event sur la loupe via la barre de recherche
+        DOM.querySelector('#search-icone').addEventListener("click", function () {
+            load('search', [], 'page', changeURL(document.querySelector('#search-input').value))
+        })
+        DOM.querySelector('#search-input').addEventListener("keypress", function (e) {
+            if (e.key === 'Enter') {
+                load('search', [], 'page', changeURL(document.querySelector('#search-input').value))
+            }
         })
 
         document.querySelector('body').appendChild(DOM)
     }
+}
+
+changeURL = function (searchReplace = null, affineReplace = null, categorieReplace = null, resultbypageReplace = null, pageReplace = null, typeReplace = null) {
+    let search       = new URL(document.location.href).searchParams.get('search')
+    let affine       = new URL(document.location.href).searchParams.get('affine')
+    let categories   = new URL(document.location.href).searchParams.get('categories[]')
+    let resultbypage = new URL(document.location.href).searchParams.get('resultbypage')
+    let type         = new URL(document.location.href).searchParams.get('type')
+
+    let url = 'index.html?search='
+    
+    // search
+    if (searchReplace !== null) {
+        url += searchReplace
+    } else if (search !== null) {
+        url += search
+    }
+
+    // affine
+    if (affineReplace !== null) {
+        url += '&affine=' + affineReplace
+    } else if (affine !== null) {
+        url += '&affine=' + affine
+    }
+
+    // categories
+    if (categories != null) {
+        url += '&categories[]='
+        let result = categories
+        if (categorieReplace === '') {
+            result = ''
+        } else if (categorieReplace != null) {
+            if (categories.indexOf('|') != -1) {
+                result = categories.replace(categorieReplace + '|', '')
+                if (categories == result) {
+                    result = categories.replace('|' + categorieReplace, '')
+                }
+            } else {
+                result = categories.replace(categorieReplace, '')
+            }
+        }
+        url += result
+    }
+
+    // page
+    if (pageReplace !== null) {
+        url += '&page=' + pageReplace
+    }
+
+    // resultbypage
+    if (resultbypageReplace !== null) {
+        url += '&resultbypage=' + resultbypageReplace
+    } else if (resultbypage !== null) {
+        url += '&resultbypage=' + resultbypage
+    }
+
+    // type
+    if (typeReplace !== null) {
+        url += '&type=' + typeReplace
+    } else if (type !== null) {
+        url += '&type=' + type
+    }
+
+    return url
 }
 
 
