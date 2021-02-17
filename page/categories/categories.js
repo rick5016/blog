@@ -19,8 +19,6 @@ var categories = function () {
             for (var keyCategorieSearch in categorieSearch) {
                 var categorieDetailSearch = categorieSearch[keyCategorieSearch].split(':')
                 search.push(categorieSearch[keyCategorieSearch])
-                //console.log('categorie: ' + categorieDetailSearch[0])
-                //console.log('tag: ' + categorieDetailSearch[1])
             }
 
             // Gestion de la partie recherche

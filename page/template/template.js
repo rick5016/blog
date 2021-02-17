@@ -12,7 +12,7 @@ var template = function () {
         // Gestion du scroll
         var scrollPos = 0;
         window.addEventListener('scroll', function(){
-            if (scrollPos < -99) {
+            if (scrollPos < -99 && document.documentElement.scrollTop != 0) {
                 DOM.querySelector('header').classList.add("header-scroll")
                 DOM.querySelector('#nav-btn').classList.add("nav-btn-scroll")
                 DOM.querySelector('#logo-container').classList.add("logo-container-scroll")

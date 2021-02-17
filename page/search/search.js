@@ -45,8 +45,8 @@ var search = function () {
 
                 // Parcours des tags de chaque catégorie
                 var tagsElts = []
-                for (var keyTag in categorie.tags) {
-                    let tag = categorie.tags[keyTag]
+                for (var keyTag in categorie.tags.list) {
+                    let tag = categorie.tags.list[keyTag]
 
                     // Tag non sélectionné
                     let attributs = { 'id': categorie.slug + ':' + tag.slug, 'name': categorie.slug + ':' + tag.slug, 'class': 'search-tag-checkbox', 'type': 'checkbox' }
@@ -74,10 +74,10 @@ var search = function () {
                                     {
                                         'element': 'div', 'attributs': { 'style': 'display: flex' }, 'sub': [
                                             { 'element': 'input', 'attributs': attributs },
-                                            { 'element': 'label', 'attributs': { 'for': categorie.slug + ':' + tag.slug, 'class': 'search-tag-checkbox-label', 'innerHTML': tag.tag} }
+                                            { 'element': 'label', 'attributs': { 'for': categorie.slug + ':' + tag.slug, 'class': 'search-tag-checkbox-label', 'innerHTML': tag.tag } }
                                         ]
                                     },
-                                    {'element': 'div', 'attributs': { 'style': 'padding: 5px;', 'innerHTML': ' (' + tag.count + ')' }}
+                                    { 'element': 'div', 'attributs': { 'style': 'padding: 5px;', 'innerHTML': ' (' + tag.count + ')' } }
                                 ]
                             }
                         ]
@@ -89,6 +89,18 @@ var search = function () {
                     'element': 'div', 'attributs': {}, 'sub': [
                         { 'element': 'div', 'attributs': { 'class': 'search-categorie', 'innerHTML': categorie.categorie } },
                         { 'element': 'div', 'attributs': { 'class': 'search-tag-list' }, 'sub': tagsElts },
+                        {
+                            'element': 'div', 'attributs': { 'class': 'search-tag-validation' }, 'sub': [
+                                {
+                                    'element': 'button', 'attributs': { 'innerHTML': 'Valider', 'class': 'valider' }, 'callback': {
+                                        'event': 'click',
+                                        'function': function () {
+                                            load('search', [], 'page', setURL())
+                                        }
+                                    }
+                                }
+                            ]
+                        },
                     ]
                 })
             }
@@ -112,11 +124,11 @@ var search = function () {
 
                     // Recherche et formatage de la date de modification et de création
                     var date_created = new Date(article.created)
-                    date_created = ' le ' + (date_created.getDate() < 9 ? '0' + date_created.getDate() : date_created.getDate()) + '/' + (date_created.getMonth() < 9 ? '0' + (date_created.getMonth() + 1) : (date_created.getMonth() + 1)) + '/' + date_created.getFullYear()
+                    date_created = ' le ' + (date_created.getDate() < 10 ? '0' + date_created.getDate() : date_created.getDate()) + '/' + (date_created.getMonth() < 10 ? '0' + (date_created.getMonth() + 1) : (date_created.getMonth() + 1)) + '/' + date_created.getFullYear()
                     var updateDate = ''
                     if (article.created != article.updated) {
                         var date_updated = new Date(article.updated)
-                        updateDate = ' modifié le ' + (date_updated.getDate() < 9 ? '0' + date_updated.getDate() : date_updated.getDate()) + '/' + (date_updated.getMonth() < 9 ? '0' + (date_updated.getMonth() + 1) : (date_updated.getMonth() + 1)) + '/' + date_updated.getFullYear()
+                        updateDate = ' modifié le ' + (date_updated.getDate() < 10 ? '0' + date_updated.getDate() : date_updated.getDate()) + '/' + (date_updated.getMonth() < 10 ? '0' + (date_updated.getMonth() + 1) : (date_updated.getMonth() + 1)) + '/' + date_updated.getFullYear()
                     }
 
                     // Recherche et formatage de la vignette
@@ -308,7 +320,7 @@ var search = function () {
                     ]
                 })
             }
-            
+
             // Contruction de la pagination + articles
             article_result.push({ 'element': 'div', 'attributs': { 'class': 'search-pagination' }, 'sub': paginationElts })
             article_result.push({ 'element': 'ul', 'attributs': { 'id': 'search-result' }, 'sub': articlesElts })
@@ -343,7 +355,8 @@ var search = function () {
                                             },
                                         ]
                                     },
-                                    { 'element': 'ul', 'attributs': {}, 'sub': categoriesElts }
+                                    { 'element': 'ul', 'attributs': {}, 'sub': categoriesElts },
+                                    { 'element': 'div', 'attributs': {'id' : 'list-categorie-end'} }
                                 ]
                             },
                             { 'element': 'div', 'attributs': { 'id': 'menuToggle' } }
@@ -363,19 +376,8 @@ var search = function () {
             // Event sur les bouton valider de la recherche par catégories/tags
             result_DOM.querySelectorAll('.search-tag-checkbox').forEach(function (c) {
                 c.addEventListener("click", function () {
-                    var div = document.createElement('div')
-                    div.classList.add('valider-container')
-                    var button = document.createElement('button')
-                    button.innerHTML = 'Valider'
-                    button.classList.add('valider')
-                    button.addEventListener("click", function () {
-                        load('search', [], 'page', setURL())
-                    })
-                    div.appendChild(button)
                     var parent = c.parentNode.parentNode.parentNode.parentNode
-                    if (parent.lastChild.className != 'valider-container') {
-                        c.parentNode.parentNode.parentNode.parentNode.appendChild(div)
-                    }
+                    parent.nextSibling.style.height = '50px'
                 })
             });
 

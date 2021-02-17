@@ -1,0 +1,86 @@
+<div id="bloc">
+    <div class="article">
+        <div id="head-container">
+            <div id="head">
+                <h2 id="title">Commentaires<span id="heade-title-end"></span></h2>
+            </div>
+            <div id="end"></div>
+        </div>
+        <div id="article-content">
+
+            <div style="position:relative">
+            </div>
+
+            <div id="overlay" class="overlay">
+                <div id="succes" class="popup" style="display: none;">
+                    <h2>
+                        <span id="succes-title"></span>
+                        <span class="btnClose">&times;</span>
+                    </h2>
+                    <div id="succes-content" style="justify-content: center;">
+                    </div>
+                </div>
+
+                <div id="captcha" class="popup">
+                    <h2>
+                        <span id="captcha-title">Protection anti-robot</span>
+                    </h2>
+                    <div id="captcha-content" style="display: flex;justify-content: center;">
+                        <div style="width: max-content;position:relative">
+                            <div id="captcha_picture"></div>
+                            <div id="captcha_explication">Veuillez placer le ou les morceaux d'images sur l'image
+                                ci-dessus.</div>
+                            <div id="piece"></div>
+                            <div id="captcha_essai_caontainer">Essai <span id="captcha_essai"></span>/3</div>
+                            <button id="valider" class="button">Valider</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="popup" class="popup">
+                    <form action="" method="post" name="form_article" id="form_article">
+                        <div id="non_connecte" style="display:none;">
+                            <h2 style="text-align: center">Attention, vous n'êtes pas connecté !
+                                <span class="btnClose">&times;</span>
+                            </h2>
+                            Votre commentaire sera soumis <b>anonymement</b> et <b style="color:red">ne pourra pas être
+                                modifié ni supprimé</b>.<br>
+                            Celui-ci devra passer la modération avant d'être affiché sur le site.
+                        </div>
+                        <div id="connecte_noob" style="display:none">
+                            Vous êtes connecté ! Cependant vous ne disposez pas encore des autorisations pour soumettre
+                            un commentaire sans passer par la modération.<br>
+                            Pour cela vous devez faire valider par la modération encore x commentaire(s).<br>
+                            Vous pouvez modifier votre commentaire mais il devra alors repasser par la modération et
+                            cela ne comptera pas comme un nouveau commentaire.
+                        </div>
+                        <div id="connecte" style="display:none">Vous êtes connecté et la modération a validé suffisament
+                            de vos commenaires pour vous laisser écrire sans modération.<br>
+                            Attention cependant : Si un de vos commentaires est signalé et que la modération accepte ce
+                            signalement, le commentaire sera supprimé et tous vos commentaires le seront également suite
+                            à 3 signalements valides.</div>
+                        <br>
+                        <div style="color:red;display:none;text-align: left">Veuillez écrire un commentaire.</div>
+                        <textarea name="commentaireInput" id="commentaireInput" maxlength="240"
+                            placeholder="La modération s'autorise à corriger vos fautes d'orthographe avant publication."></textarea><br>
+                        <div style="text-align: right;">Restant : <span id="cara_restant">240</span>/240</div>
+                        <button id="commenaireSave" class="button">Envoyer</button>
+                    </form>
+                </div>
+            </div>
+
+            <div id="zeroCommentaire" style="display: flex;">
+                <div id="zeroCommenaire-img">
+                    <img src="\img\icone\bulles.png" alt="bulles" width="250px">
+                </div>
+                <div id="zeroCommenaire-txt">
+                    <p>Il n'y a pas encore de commentaire sur cet article</p>
+                    <p style="font-weight: bold;">Votre avis, un lien mort, une information éronnée ? Ça m'interesse !
+                    </p>
+                    <button type="button" class="button comment">Écrire un commentaire</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

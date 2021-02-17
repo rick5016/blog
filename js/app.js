@@ -110,6 +110,9 @@ const promise = async function (url, method = 'GET', data = {}) {
  * @param {bool} loadByTemplate 
  */
 const load = function (name, data = [], type = 'page', url = false, loadByTemplate = false) {
+    if (!inArray('no-scroll', data) && name != 'commentaire') {
+        document.documentElement.scrollTop = 0;
+    }
     // Gestion de la navigation du navigateur
     if (url !== false) {
         history.pushState({ page: name }, name, url)

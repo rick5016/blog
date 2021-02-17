@@ -2,6 +2,7 @@
 header nav.nav-scroll {
     opacity: 0 !important;
 }
+
 header nav {
     transition: opacity .3s ease;
     opacity: 1;
@@ -17,28 +18,32 @@ header nav {
     width: 100%;
     padding: 0;
 }
+
 header nav #pages {
     width: 100%;
     display: flex;
 }
+
 header nav #pages li {
     text-align: center;
-    padding-top: 12px;
     height: 44px;
     list-style: none;
 }
+
 header nav ul li.transition-orange {
     height: 44px;
     width: 241px !important;
-    background: linear-gradient(45deg, #f46036 47%, #353535 0% 53%, #f46036 50% );
+    background: linear-gradient(45deg, #f46036 47%, #353535 0% 53%, #f46036 50%);
 }
+
 header nav ul li.transition-fonce {
     height: 44px;
     width: 241px !important;
     background: linear-gradient(45deg, #f46036 50%, #353535 50%);
 }
+
 header nav ul li a.nav {
-    color:#fff;
+    color: #fff;
     text-decoration: none;
     text-transform: uppercase;
     font-weight: 500;
@@ -76,35 +81,40 @@ nav #icons a#add {
 #menu-container.menu-container-scroll {
     top: 70px;
 }
+
 #menu-container {
-    position:fixed;
+    position: fixed;
     top: 140px;
     width: 100%;
     z-index: 2;
 }
+
 #menu {
     display: flex;
     width: 100%;
     border-left: solid 1px #f46036;
     border-right: solid 1px #f46036;
     border-bottom: solid 1px #f46036;
-    position:absolute;
+    position: absolute;
     background-color: #fff;
     max-width: 1280px;
     margin-left: auto;
     margin-right: auto;
 }
+
 #menu #menu-title {
     flex: 1;
     background-color: #efefef;
 }
+
 #menu #menu-title li {
     border-bottom: 1px solid #d4d4d4;
 }
+
 #menu #menu-title li {
     display: inline-block;
     width: 100%;
-    font-family: Tahoma,Century Gothic,CenturyGothic,AppleGothic,sans-serif;
+    font-family: Tahoma, Century Gothic, CenturyGothic, AppleGothic, sans-serif;
     font-size: 16px;
     padding: 10px;
     color: #353535;
@@ -115,19 +125,22 @@ nav #icons a#add {
     background-size: 8px;
     cursor: pointer;
 }
+
 #menu #menu-title li:hover {
     background-color: #fff;
-    
+
 }
+
 #menu #menu-content {
     flex: 4;
-    padding: 15px;;
+    padding: 15px;
+    ;
 }
 
 #menu #menu-content .title {
     text-transform: uppercase;
     display: inline-block;
-    font-family: Tahoma,Century Gothic,CenturyGothic,AppleGothic,sans-serif;
+    font-family: Tahoma, Century Gothic, CenturyGothic, AppleGothic, sans-serif;
     color: #353535;
     font-weight: 700;
 }
@@ -139,7 +152,7 @@ nav #icons a#add {
 
 #menu #menu-content ul li {
     list-style: none;
-    font-family: Arial,Helvetica Neue,Helvetica,sans-serif;
+    font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
 }
 
 #menu #menu-content ul li a {
@@ -156,15 +169,18 @@ nav #icons a#add {
     #menu-container {
         top: 70px;
     }
+
     header nav {
         opacity: 0 !important;
     }
 }
+
 /********** Menu déroulant Fin **********/
 
 
 
 .nav {
+    padding-top: 12px;
     display: block;
     height: 100%;
 }
@@ -172,30 +188,28 @@ nav #icons a#add {
 #pages li {
     transition: background-color .5s ease;
     background-repeat: no-repeat;
-    background-image: url("/img/icone/sprite-min.png");
+    background-image: url("/img/icone/sprite2.png");
 }
 
 #nav-accueil {
-    background-position-y: -100px;
-    background-position-x: 67px;
-    background-size: 30px;
+    background-image: initial !important;
 }
 
 #nav-news {
     background-position-y: -50px;
-    background-position-x: 70px;
+    background-position-x: 30%;
     background-size: 32px;
 }
 
 #nav-articles {
-    background-position-y: -165px;
-    background-position-x: 58px;
+    background-position-y: -168px;
+    background-position-x: 24%;
     background-size: 32px;
 }
 
 #nav-tutoriels {
-    background-position-y: 5px;
-    background-position-x: 54px;
+    background-position-y: 3px;
+    background-position-x: 20%;
     background-size: 36px;
 }
 
@@ -212,12 +226,26 @@ nav #icons a#add {
 
 #nav-others {
     background-image: initial !important;
+    background-color: #f46036;
+    width: 100%;
+    margin-left: 5px;
+    position: relative;
+    text-transform: uppercase;
+    cursor: pointer;
+    font-weight: bold;
+    display: flex;
+    padding-top: 12px;
+    "
+
 }
 
-#nav-accueil:hover, #nav-others:hover {
+#nav-accueil:hover,
+#nav-others:hover {
     background-color: #ea3e0d !important;
 }
 
-#nav-news:hover, #nav-articles:hover, #nav-tutoriels:hover {
+#nav-news:hover,
+#nav-articles:hover,
+#nav-tutoriels:hover {
     background-color: #5b5b5b !important;
 }
