@@ -1,4 +1,4 @@
-<div id="bloc">
+<div id="bloc-content" style="padding-top: 10px">
     <div class="article">
         <div id="head-container">
             <div id="head">
@@ -6,12 +6,13 @@
             </div>
             <div id="end"></div>
         </div>
-        <div id="article-content">
+        <div style="background-color:#fff">
 
             <div style="position:relative">
             </div>
 
-            <div id="overlay" class="overlay">
+            <div id="captcha"></div>
+            <div id="commentaire-overlay">
                 <div id="succes" class="popup" style="display: none;">
                     <h2>
                         <span id="succes-title"></span>
@@ -21,27 +22,11 @@
                     </div>
                 </div>
 
-                <div id="captcha" class="popup">
-                    <h2>
-                        <span id="captcha-title">Protection anti-robot</span>
-                    </h2>
-                    <div id="captcha-content" style="display: flex;justify-content: center;">
-                        <div style="width: max-content;position:relative">
-                            <div id="captcha_picture"></div>
-                            <div id="captcha_explication">Veuillez placer le ou les morceaux d'images sur l'image
-                                ci-dessus.</div>
-                            <div id="piece"></div>
-                            <div id="captcha_essai_caontainer">Essai <span id="captcha_essai"></span>/3</div>
-                            <button id="valider" class="button">Valider</button>
-                        </div>
-                    </div>
-                </div>
-
                 <div id="popup" class="popup">
-                    <form action="" method="post" name="form_article" id="form_article">
+                    <form action="" method="post" name="form_commentaire" id="form_commentaire">
+                        <span class="btnClose">&times;</span>
                         <div id="non_connecte" style="display:none;">
                             <h2 style="text-align: center">Attention, vous n'êtes pas connecté !
-                                <span class="btnClose">&times;</span>
                             </h2>
                             Votre commentaire sera soumis <b>anonymement</b> et <b style="color:red">ne pourra pas être
                                 modifié ni supprimé</b>.<br>
@@ -63,8 +48,10 @@
                         <div style="color:red;display:none;text-align: left">Veuillez écrire un commentaire.</div>
                         <textarea name="commentaireInput" id="commentaireInput" maxlength="240"
                             placeholder="La modération s'autorise à corriger vos fautes d'orthographe avant publication."></textarea><br>
+                        <input id="commentaireId" name="commentaireId" type="hidden" value="">
                         <div style="text-align: right;">Restant : <span id="cara_restant">240</span>/240</div>
-                        <button id="commenaireSave" class="button">Envoyer</button>
+                        <button id="commentaireSave" class="button">Envoyer</button>
+                        <button id="commentaireUpdate" class="button">Modifier</button>
                     </form>
                 </div>
             </div>
@@ -80,7 +67,6 @@
                     <button type="button" class="button comment">Écrire un commentaire</button>
                 </div>
             </div>
-
         </div>
     </div>
 </div>

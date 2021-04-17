@@ -6,16 +6,14 @@ var edit = function () {
             var slug = new URL(document.location.href).searchParams.get('edit')
             var DOM = await promise('page/edit/edit.html')
             if (slug !== '') {
-                let data = await promise('api.php', 'POST', {
+                let article = await promise('index.php', 'POST', {
                     'find': 'page',
                     'where': {
                         'slug': slug
                     }
                 })
 
-                if (data !== undefined && data.error === 0) {
-                    if (data.list != null) {
-                        var article = data.list[0]
+                if (article !== undefined && article.error === 0) {
                         if (article.own === true) {
                             DOM.querySelector('#title').setAttribute('value', article.title)
                             DOM.querySelector('#type').value = article.type
@@ -23,9 +21,6 @@ var edit = function () {
                         } else {
                             alerte(error_messages.edit_article_not_allowed, 'ko', 10)
                         }
-                    } else {
-                        alerte(error_messages.load_article_not_found, 'ko', 10)
-                    }
 
                     // event Suppression
                     let suppr = document.createElement('span')
@@ -68,7 +63,7 @@ var edit = function () {
     const deleteArticle = async function () {
         var slug = new URL(document.location.href).searchParams.get('edit')
 
-        let data = await promise('api.php', 'POST', {
+        let data = await promise('index.php', 'POST', {
             'delete': 'page',
             'where': {
                 'slug': slug,
@@ -95,7 +90,7 @@ var edit = function () {
             error = error_messages.save_article_content_required
         }
         if (error === '') {
-            let data = await promise('api.php', 'POST', {
+            let data = await promise('index.php', 'POST', {
                 'save': 'page',
                 'values': {
                     'title': title,
@@ -132,7 +127,7 @@ var edit = function () {
             error = error_messages.save_article_content_required
         }
         if (error === '') {
-            let data = await promise('api.php', 'POST', {
+            let data = await promise('index.php', 'POST', {
                 'save': 'page',
                 'values': {
                     'title': document.querySelector('#title').value,

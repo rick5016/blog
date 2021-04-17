@@ -1,202 +1,253 @@
 var commentaire = function () {
-    this.load = async function (data) {
-        let nb_result_by_page = (new URL(document.location.href).searchParams.get('resultbypage') != null) ? new URL(document.location.href).searchParams.get('resultbypage') : 10
-        let page = (new URL(document.location.href).searchParams.get('page') != null) ? new URL(document.location.href).searchParams.get('page') : 1
-        var article = data[0]
+    this.load = async function (params) {
         var DOM = await promise('plugin/commentaire/commentaire.html')
 
-        DOM.querySelector('#heade-title-end').innerHTML = ' - ' + article.title;
+        if (params['where'] == undefined) {
+            params['where'] = ''
+        }
 
         var commentairesElts = []
-        var paginationElts = []
-        for (var keyCommentaire in article.commentaires.list) {
-            let commentaire = article.commentaires.list[keyCommentaire]
-            var date_created = new Date(commentaire.created)
-            var updateDate = ''
-            if (commentaire.created != commentaire.updated) {
-                var date_updated = new Date(commentaire.updated)
-                updateDate = ' modifié le ' + (date_updated.getDate() < 9 ? '0' + date_updated.getDate() : date_updated.getDate()) + '/' + (date_updated.getMonth() < 9 ? '0' + (date_updated.getMonth() + 1) : (date_updated.getMonth() + 1)) + '/' + date_updated.getFullYear()
+        let commentaires = await promise('index.php', 'POST', {
+            'findAll': 'commentaire',
+            'page': params['page'],
+            'nbResultByPage': params['resultbypage'],
+            'where': params['where'],
+        })
+
+        if (params['accueil'] === 1) {
+            DOM.querySelector('#title').innerHTML = 'Les commentaires'
+
+        }
+
+        // Construction des commentaires
+        for (var keyCommentaire in commentaires.list) {
+            let commentaire = commentaires.list[keyCommentaire]
+
+            // Gestion des dates
+            let date_created = new Date(commentaire.created)
+            let date_created_Ymd_H = addZero(date_created.getDate()) + '/' + addZero(date_created.getMonth()) + '/' + addZero(date_created.getFullYear()) + ' à ' + addZero(date_created.getHours())
+            let date_string = date_created_Ymd_H + ':' + addZero(date_created.getMinutes())
+            if (commentaire.updated !== undefined) {
+                let date_updated = new Date(commentaire.updated)
+                let date_updated_Ymd_H = addZero(date_updated.getDate()) + '/' + addZero(date_updated.getMonth()) + '/' + addZero(date_updated.getFullYear()) + ' à ' + addZero(date_updated.getHours())
+                if (date_created_Ymd_H != date_updated_Ymd_H) {
+                    date_string += ' modifié le ' + date_updated_Ymd_H + ':' + addZero(date_updated.getMinutes())
+                }
+            }
+
+            if (commentaire.publied !== 1 && commentaire.own !== true) {
+                commentaire.content = '<i>En cours de modération.</i>'
+            }
+            let login = 'Anonyme'
+            if (commentaire.user !== undefined && commentaire.user !== false) {
+                login = commentaire.user.login
+            }
+
+            commentaireElt = []
+            if (params['accueil'] === 1) {
+                commentaireElt.push(
+                    { 'element': 'img', 'attributs': { 'src': 'https://rick5016.net/img/vignette/' + commentaire.page.vignette, 'style': 'float:left;margin: 0px 10px 10px 0px;' } }
+                )
+                commentaireElt.push(
+                    { 'element': 'a', 'attributs': { 'class': 'link', 'href': 'index.html?article=' + commentaire.page.slug, 'b-entity': 'article', 'innerHTML': commentaire.page.title } }
+                )
+            }
+            commentaireElt.push(
+                { 'element': 'div', 'attributs': { 'class': 'info', 'style': 'padding-bottom:10px;', 'innerHTML': 'Par <b><i>' + login + '</i></b> le ' + date_string } },
+            )
+
+            commentaireElt.push(
+                { 'element': 'div', 'attributs': { 'id': 'commentaire-content-' + commentaire.id, 'class': 'commentaire-content', 'innerHTML': commentaire.content } }
+            )
+            if (commentaire.own === true) {
+                if (commentaire.publied !== 1) {
+                    commentaireElt.push({
+                        'element': 'div', 'attributs': {}, 'sub': [
+                            { 'element': 'div', 'attributs': { 'class': 'info', 'style': 'color:red', 'innerHTML': '<br><i>Votre commentaire est en cours de modération.' } },
+                        ]
+                    })
+                }
+                if (params['accueil'] !== 1) {
+                    commentaireElt.push({
+                        'element': 'div', 'attributs': {}, 'sub': [
+                            { 'element': 'br', 'attributs': {} },
+                            { 'element': 'a', 'attributs': { 'class': 'btnModify', 'style': 'cursor: pointer;', 'innerHTML': 'Modifier', 'id': 'm' + commentaire.id } },
+                            { 'element': 'span', 'attributs': { 'innerHTML': ' - ' } },
+                            { 'element': 'a', 'attributs': { 'class': 'btnDelete', 'style': 'cursor: pointer;', 'innerHTML': 'Suprimer', 'id': 'd' + commentaire.id } },
+                        ]
+                    })
+                }
             }
 
             commentairesElts.push({
-                'element': 'div', 'attributs': { 'class': 'commentaire-container', 'style': "border: 1px solid #efefef;padding: 10px;width: 100%;margin: 10px;" }, 'sub': [
-                    { 'element': 'div', 'attributs': { 'class': 'info', 'style': 'padding-bottom:10px;', 'innerHTML': 'Par <b><i>Anonyme</i></b> le ' + (date_created.getDate() < 9 ? '0' + date_created.getDate() : date_created.getDate()) + '/' + (date_created.getMonth() < 9 ? '0' + (date_created.getMonth() + 1) : (date_created.getMonth() + 1)) + '/' + date_created.getFullYear() + updateDate } },
-                    { 'element': 'div', 'attributs': { 'class': 'commentaire-content', 'innerHTML': commentaire.content } }
-                ]
+                'element': 'div', 'attributs': { 'id': 'commentaire' + commentaire.id, 'class': 'commentaire-container', 'style': "border: 1px solid #efefef;padding: 10px;margin: 10px" }, 'sub': commentaireElt
             })
         }
 
+        // Inertion des commentaires dans le DOM
         if (commentairesElts.length > 0) {
-            let slug = new URL(document.location.href).searchParams.get('article')
-            if (page > 3) {
-                if (article.commentaires.nb_page > 5) {
-                    paginationElts.push(
-                        {
-                            'element': 'div', 'attributs': { 'class': 'page' }, 'sub': [
-                                {
-                                    'element': 'a', 'attributs': { 'class': 'link', 'b-entity': 'article', 'href': 'index.html?article=' + slug }, 'sub': [
-                                        { 'element': 'span', 'attributs': { 'class': 'search-pagination-prems' } }
-                                    ]
-                                }
-                            ]
-                        }
-                    )
-                }
-            }
-
-            // Pagination
-            if (article.commentaires.nb_page > 1) {
-                var nb_pagination = 0;
-                var nb_page = page - 3
-                if (nb_page < 1) nb_page = 0
-                for (var i = (0 + nb_page); i < article.commentaires.nb_page; i++) {
-                    nb_pagination++;
-                    if (nb_pagination < 6) {
-                        var selected = ''
-                        if ((i + 1) == page) {
-                            var selected = ' page-selected'
-                        }
-                        paginationElts.push(
-                            {
-                                'element': 'div', 'attributs': { 'class': 'page' }, 'sub': [
-                                    { 'element': 'a', 'attributs': { 'class': 'link ' + selected, 'innerHTML': (i + 1), 'b-entity': 'article', 'href': 'index.html?article=' + slug + '&page=' + (i + 1) } }
-                                ]
-                            }
-                        )
-                    }
-                }
-
-                // Elément à droite de la pagination permettant d'aller à la dernière page
-                if (page < (article.commentaires.nb_page - 2)) {
-                    if (article.commentaires.nb_page > 5) {
-                        paginationElts.push(
-                            {
-                                'element': 'div', 'attributs': { 'class': 'page' }, 'sub': [
-                                    {
-                                        'element': 'a', 'attributs': { 'class': 'link search-pagination-last-container', 'b-entity': 'article', 'href': 'index.html?article=' + slug + '&page=' + article.commentaires.nb_page }, 'sub':
-                                            [
-                                                { 'element': 'span', 'attributs': { 'class': 'search-pagination-last' } }
-                                            ]
-                                    }
-                                ]
-                            }
-                        )
-                    }
-                }
-            }
-
-            // Commentaire en fin de pagination affichant le numéro des articles affiché à l'écran
-            var max = page * nb_result_by_page
-            if (article.commentaires.nb_result < max) {
-                max = article.commentaires.nb_result
-            }
-            paginationElts.push(
-                { 'element': 'div', 'attributs': { 'class': 'search-pagination-info', 'innerHTML': ((page * nb_result_by_page) - (nb_result_by_page - 1)) + ' - ' + max + ' sur ' + article.commentaires.nb_result + ' commentaire(s)' } }
-            )
-            var result = [
-                {
-                    'element': 'div', 'attributs': { 'style': 'width: 100%;' }, 'sub': [
-                        { 'element': 'div', 'attributs': { 'id': 'commentaires-pagination' }, 'sub': paginationElts },
-                        { 'element': 'div', 'attributs': { 'id': 'commentaires-container', 'style': 'width:100%' }, 'sub': commentairesElts },
-                        { 'element': 'button', 'attributs': { 'class': 'button comment', 'innerHTML': 'Écrire un commentaire' } }
+            let = commentairesResultsElts = []
+            commentairesResultsElts.push({ 'element': 'div', 'attributs': { 'class': 'pagination', 'style': 'margin-left: 10px;margin-top: 20px;' } })
+            commentairesResultsElts.push({ 'element': 'div', 'attributs': { 'id': 'commentaires-container', 'style': 'width:100%' }, 'sub': commentairesElts })
+            if (params['accueil'] !== 1) {
+                commentairesResultsElts.push({
+                    'element': 'div', 'attributs': { 'style': 'text-align:center' }, 'sub': [
+                        { 'element': 'button', 'attributs': { 'class': 'button comment', 'innerHTML': 'Écrire un commentaire' } },
                     ]
-                }
+                })
+            }
+            var result = [
+                { 'element': 'div', 'attributs': { 'style': 'width: 100%;' }, 'sub': commentairesResultsElts }
             ]
 
             let resultDOM = setDOMElement(result)
-
-            // Event sur les liens de la pagination
-            resultDOM.querySelectorAll('.link').forEach(function (a) {
-                a.addEventListener("click", function (e) {
-                    e.preventDefault()
-                    load(a.getAttribute('b-entity'), ['no-scroll'], 'page', a.getAttribute('href'))
-                })
-            });
 
             DOM.querySelector('#zeroCommentaire').innerHTML = ''
             DOM.querySelector('#zeroCommentaire').appendChild(resultDOM)
         }
 
-        // Fermeture des popup
-        DOM.querySelectorAll('.btnClose').forEach(function (close) {
-            close.addEventListener("click", function (e) {
-                document.querySelector('#overlay').style.display = 'none';
-            })
-        })
-
-        // Ouverture de la popup pour écrire un commentaire
+        // Event d'ouverture de la popup pour écrire un commentaire
         DOM.querySelectorAll('.comment').forEach(function (comment) {
             comment.addEventListener("click", function (e) {
-                document.querySelector('#succes').style.display = 'none'
-                document.querySelector('#captcha').style.display = 'none'
                 e.preventDefault();
-                if (localStorage.getItem('token') !== null) {
-
-                } else {
+                // Affichage de l'avertissement si non connecté
+                if (localStorage.getItem('token') == null) {
                     document.querySelector('#non_connecte').style.display = "block"
                 }
-                document.querySelector('#overlay').style.display = 'block';
+                // Affichage de l'overlay
+                document.querySelector('#commentaire-overlay').style.display = 'block';
+                // Affichage de la popup de commentaire
                 document.querySelector('#popup').style.display = 'block';
+                // Edition du bouton de validation
+                document.querySelector('#commentaireUpdate').style.display = 'none'
+                document.querySelector('#commentaireSave').style.display = 'initial'
             })
         })
 
-        // Comptage du nombre de caractère restant
+        // Event d'ouverture de la popup pour éditer un commentaire
+        DOM.querySelectorAll('.btnModify').forEach(function (comment) {
+            comment.addEventListener("click", function (e) {
+                e.preventDefault();
+                let id = comment.id.split('m')
+                // Affichage de l'overlay
+                document.querySelector('#commentaire-overlay').style.display = 'block';
+                // Affichage de la popup de commentaire
+                document.querySelector('#popup').style.display = 'block';
+                // Envoie du texte à modifier
+                document.querySelector('#commentaireInput').value = document.querySelector('#commentaire-content-' + id[1]).innerHTML
+                // Edition du bouton de validation
+                document.querySelector('#commentaireSave').style.display = 'none'
+                document.querySelector('#commentaireUpdate').style.display = 'initial'
+
+                // Envoie de l'ID
+                document.querySelector('#commentaireId').value = id[1]
+            })
+        })
+
+        // Event de fermeture de la popup de création/édition d'un commentaire
+        DOM.querySelectorAll('.btnClose').forEach(function (close) {
+            close.addEventListener("click", function () {
+                load('article', [], 'page', document.location.pathname + document.location.search)
+            })
+        })
+
+        DOM.querySelectorAll('.link').forEach(function (a) {
+            a.addEventListener("click", function (e) {
+                e.preventDefault()
+                load(a.getAttribute('b-entity'), [], 'page', a.getAttribute('href'))
+            })
+        });
+
+        // Event de suppression d'un commentaire
+        DOM.querySelectorAll('.btnDelete').forEach(function (btnDelete) {
+            btnDelete.addEventListener("click", function (e) {
+                e.preventDefault()
+                deleteCommentaire(btnDelete.id.split('d'))
+            })
+        })
+
+        // Event du comptage du nombre de caractère restant lors de la création/édition d'un commentaire
         DOM.querySelector('#commentaireInput').addEventListener("input", function (e) {
             document.querySelector('#cara_restant').innerHTML = (240 - e.target.value.length)
         })
 
-        // Sauvegarde
-        DOM.querySelector('#valider').addEventListener("click", function (e) {
+        // Event du chargement de la captcha à la validation de la création d'un commentaire
+        DOM.querySelector('#commentaireSave').addEventListener("click", function (e) {
             e.preventDefault();
-            valideCaptcha()
+            loadCaptcha()
         })
 
-        // Sauvegarde
-        DOM.querySelector('#commenaireSave').addEventListener("click", function (e) {
+        // Event du chargement de la captcha à la validation de la modification d'un commentaire
+        DOM.querySelector('#commentaireUpdate').addEventListener("click", function (e) {
             e.preventDefault();
-            saveCommentaire()
+            loadCaptcha()
         })
 
+        document.querySelector('#commentaires').innerHTML = ''
         document.querySelector('#commentaires').appendChild(DOM)
 
+        // Chargement du plugin de la pagination
+        if (commentairesElts.length > 0) {
+            load('pagination', { 'data': commentaires, 'where': params['where'], 'page': params['page'], 'resultbypage': params['resultbypage'], 'accueil': params['accueil'], 'callback': callbackPagination, 'no-scroll': '1' }, 'plugin', false, true)
+        }
     }
 }
-function allowDrop(ev) {
-    ev.preventDefault();
+
+const loadCaptcha = async function (data) {
+    // Affichage de l'erreur si le commentaire est vide
+    if (document.querySelector('#commentaireInput').value === '') {
+        document.querySelector('#commentaireInput').previousElementSibling.style.display = 'block'
+    } else {
+        document.querySelector('#commentaireInput').previousElementSibling.style.display = 'none'
+
+        // Récupération de la captcha
+        var data = await promise('index.php', 'POST', {
+            'save': 'captcha',
+            'width': window.innerWidth,
+        })
+
+        if (data.error === 0) {
+            // On cache la popup de modification du commentaire
+            document.querySelector('#commentaire-overlay').style.display = 'none'
+            // Appel du plugin captcha
+            load('captcha', [callbackCaptcha, data], 'plugin', false, true)
+        }
+    }
 }
 
-function drag(ev) {
-    ev.dataTransfer.setData("text", ev.target.id);
-}
-
-function drop(ev) {
-    ev.preventDefault();
-    var data = ev.dataTransfer.getData("text");
-    document.querySelector('#' + data).style['margin-left'] = (ev.layerX - 25) + 'px';
-    document.querySelector('#' + data).style['margin-top'] = (ev.layerY - 25) + 'px';
-}
-
-const valideCaptcha = async function () {
+const callbackCaptcha = async function () {
     var captchas = []
+    // Récupération des coordonnées des captchas
     document.querySelectorAll('.captcha').forEach(function (elt) {
         captchas.push({ 'id': elt.id, 'x': elt.style.left, 'y': elt.style.top })
     })
+    // Récupération du commentaire
+    var content = document.querySelector('#commentaireInput').value
+    // Récupération de l'id du commentaire
+    var id = document.querySelector('#commentaireId').value
 
-    let data = await promise('api.php', 'POST', {
-        'save': 'Commentairetmp',
+    // Validation des captchas et enregistrement/modification du commentaire
+    let data = await promise('index.php', 'POST', {
+        'save': 'commentaire',
         'values': {
-            'width': window.innerWidth,
-            'coords': JSON.stringify(captchas)
-        }
+            'content': content,
+            'page': new URL(document.location.href).searchParams.get('article')
+        },
+        'id': id,
+        'width': window.innerWidth,
+        'coords': JSON.stringify(captchas)
     })
 
     if (data.valid !== undefined) {
-        document.querySelector('#captcha').style.display = 'none'
         if (data.valid === true) {
             document.querySelector('#commentaireInput').value = ''
             document.querySelector('#cara_restant').innerHTML = '240'
             document.querySelector('#succes-title').innerHTML = 'Votre commentaire a bien été enregistré !'
-            document.querySelector('#succes-content').innerHTML = '<br>Votre commentaire a été soumis <b>anonymement</b> et <b style="color:red">ne peux pas être modifié ni supprimé</b>.<br>Celui-ci doit passer la modération avant d\'être affiché sur le site.'
+            if (localStorage.getItem('token') === null) {
+                document.querySelector('#succes-content').innerHTML = '<br>Votre commentaire a été soumis <b>anonymement</b> et <b style="color:red">ne peux pas être modifié ni supprimé</b>.<br>Celui-ci doit passer la modération avant d\'être affiché sur le site.'
+            } else {
+                document.querySelector('#succes-content').innerHTML = '<br>Celui-ci doit passer la modération avant d\'être affiché sur le site.'
+            }
         } else if (data.valid === 'surcharge') {
             document.querySelector('#succes-title').innerHTML = 'Le site est surchargé.'
             document.querySelector('#succes-content').innerHTML = '<br>Votre commentaire n\'a pas été soumis, veuillez recommencer l\'opération plus tard.'
@@ -204,129 +255,34 @@ const valideCaptcha = async function () {
             document.querySelector('#succes-title').innerHTML = 'Vous n\'avez pas réussi à valider la captcha.'
             document.querySelector('#succes-content').innerHTML = '<br>Votre commentaire n\'a pas été soumis, veuillez recommencer l\'opération.'
         }
-        document.querySelector('#succes').style.display = 'block'
-    } else {
-        saveCommentaire(data)
+        document.querySelector('#commentaire-overlay').style.display = 'block';
+        document.querySelector('#succes').style.display = 'block';
+        document.querySelector('#popup').style.display = 'none';
+    }
+
+    return data
+}
+
+const callbackPagination = async function (where, page, resultbypage, accueil) {
+    load('commentaire', { 'where': where, 'page': page[1], 'resultbypage': resultbypage, 'accueil': accueil, 'no-scroll': '1' }, 'plugin', false, true)
+}
+
+const deleteCommentaire = async function (id) {
+    let data = await promise('index.php', 'POST', {
+        'delete': 'commentaire',
+        'where': {
+            'id': id[1],
+        }
+    })
+
+    if (data.error === 0) {
+        document.querySelector('#commentaire' + id[1]).innerHTML = '<i style="color:red">Votre commentaire a été supprimé.</i>'
     }
 }
 
-
-const saveCommentaire = async function (data) {
-    var content = document.querySelector('#commentaireInput').value
-    if (content === '') {
-        document.querySelector('#commentaireInput').previousElementSibling.style.display = 'block'
-    } else {
-        document.querySelector('#commentaireInput').previousElementSibling.style.display = 'none'
-        if (data === undefined) {
-            var data = await promise('api.php', 'POST', {
-                'save': 'Commentairetmp',
-                'values': {
-                    'width': window.innerWidth,
-                    'content': content,
-                    'article': new URL(document.location.href).searchParams.get('article')
-                }
-            })
-        }
-
-        if (data.error === 0) {
-            document.querySelector('#popup').style.display = 'none'
-            document.querySelector('#captcha').style.display = 'block'
-            if (data.valid === 'surcharge') {
-                document.querySelector('#captcha-title').innerHTML = 'Le site est surchargé.'
-                document.querySelector('#captcha-content').innerHTML = '<br>Votre commentaire n\'a pas été soumis, veuillez recommencer l\'opération plus tard.'
-            } else {
-                var x = 0
-                var y = 0
-
-                let img = document.createElement('img')
-                img.src = 'img/tmp/' + data.picture
-                img.addEventListener("drop", function (e) {
-                    e.preventDefault();
-                    var data = e.dataTransfer.getData("text");
-                    document.querySelector('#' + data).style['margin-top'] = '0px'
-                    document.querySelector('#' + data).style['margin-left'] = '0px'
-                    document.querySelector('#' + data).style.left = (e.layerX - x) + 'px';
-                    document.querySelector('#' + data).style.top = (e.layerY - y) + 'px';
-                })
-                img.addEventListener("dragover", function (e) {
-                    e.preventDefault();
-                })
-                img.addEventListener("dragstart", function (e) {
-                    e.preventDefault();
-                })
-                document.querySelector('#captcha_picture').innerHTML = ''
-                document.querySelector('#captcha_picture').appendChild(img)
-
-                let margin = 100;
-                document.querySelector('#piece').innerHTML = ''
-                for (var key in data.captcha) {
-                    let captcha = data.captcha[key]
-                    let img2 = document.createElement('div')
-                    img2.id = captcha['id']
-                    img2.classList.add("captcha")
-                    img2.style['background-image'] = "url('img/tmp/" + captcha['id'] + ".png')"
-                    img2.style.position = 'absolute'
-                    img2.style['z-index'] = '2'
-                    img2.style['margin-top'] = '25px'
-                    img2.style['margin-left'] = margin + 'px'
-                    margin += 200
-                    img2.style.width = captcha['largeur'] + 'px'
-                    img2.style.height = captcha['longueur'] + 'px'
-                    img2.style.border = '1px solid #fff'
-                    img2.addEventListener("dragstart", function (e) {
-                        document.querySelector('#' + e.target.id).style['z-index'] = -1
-                        e.dataTransfer.setData("text", e.target.id);
-                        x = e.layerX
-                        y = e.layerY
-                    })
-                    img2.addEventListener("dragend", function (e) {
-                        document.querySelector('#' + e.target.id).style['z-index'] = 2
-                    })
-                    img2.draggable = true
-                    document.querySelector('#piece').appendChild(img2)
-                }
-
-                document.querySelector('#captcha_essai').innerHTML = data.try;
-                document.querySelector('#overlay').style.display = 'block';
-            }
-        }
+function addZero(i) {
+    if (i < 10) {
+        i = "0" + i;
     }
-}
-
-const updateCommentaire = async function (reload) {
-    var slug = new URL(document.location.href).searchParams.get('edit')
-
-    var error = ''
-    let title = document.querySelector('#title').value
-    if (title === '') {
-        error = error_messages.save_article_title_required
-    }
-    let content = document.querySelector('#article').value
-    if (content === '') {
-        error = error_messages.save_article_content_required
-    }
-    if (error === '') {
-        let data = await promise('api.php', 'POST', {
-            'save': 'page',
-            'values': {
-                'title': title,
-                'content': content,
-                'type': document.querySelector('#type').value
-            }, 'where': {
-                'slug': slug,
-            }
-        })
-
-        clearInterval(saveEdit)
-        saveEdit = null
-        if (data.error === 0) {
-            if (reload) {
-                history.pushState({ page: 'edit' }, 'edit', 'index.html?edit=' + data.slug)
-                load('menu', [], 'plugin', false, true)
-            }
-            alerte(error_messages.update_article_valide, 'ok', 1)
-        }
-    } else {
-        alerte(error, 'ko')
-    }
+    return i;
 }

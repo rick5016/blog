@@ -1,4 +1,4 @@
-var host = (window.location.hostname === '127.0.0.1') ? window.location.hostname + ':8081/blog' : window.location.hostname
+var host = (window.location.hostname === '127.0.0.1') ? window.location.hostname + ':8081/api_rest/www' : window.location.hostname
 var www = (window.location.hostname === '127.0.0.1') ? '' : ''
 var http = (window.location.hostname === '127.0.0.1') ? 'http' : 'https'
 var intervalToken, intervalAlert
@@ -7,7 +7,7 @@ var connexion_duration_sec = 60 * 60
 
 const DEBUG_PROD = false
 var debug = (window.location.hostname === '127.0.0.1') ? true : (DEBUG_PROD ? true : false)
-var menus = ['accueil', 'article', 'edit', 'search', 'serie', 'reminder']
+var menus = ['accueil', 'article', 'edit', 'search', 'serie', 'reminder', 'inscription', 'commentaires']
 
 var error_messages = {
     'api_failed': 'Une erreur est survenue.',
@@ -110,14 +110,14 @@ const promise = async function (url, method = 'GET', data = {}) {
  * @param {bool} loadByTemplate 
  */
 const load = function (name, data = [], type = 'page', url = false, loadByTemplate = false) {
-    if (!inArray('no-scroll', data) && name != 'commentaire') {
+    if (!inArray('no-scroll', data)) {
         document.documentElement.scrollTop = 0;
     }
     // Gestion de la navigation du navigateur
     if (url !== false) {
         history.pushState({ page: name }, name, url)
     }
-    
+
     addCSS(name, type)
     // Chargement de la page ou du plugin
     if (document.querySelector('#' + name + 'JS') == null) {
@@ -202,6 +202,17 @@ const addCSS = function (name, type = 'page') {
 }
 
 /**
+ * Retir un fichier CSS au DOM
+ * 
+ * @param {string} name 
+ */
+const removeCSS = function (name) {
+    if (document.querySelector('#' + name + 'CSS') !== null) {
+        document.querySelector('#' + name + 'CSS').remove();
+    }
+}
+
+/**
  * Set le html avec les paramètres
  * 
  * @param {String} html 
@@ -276,9 +287,15 @@ const setContent = function (DOM) {
 }
 
 const inArray = function (needle, haystack) {
-    var length = haystack.length;
-    for(var i = 0; i < length; i++) {
-        if(haystack[i] == needle) return true;
+    if (Array.isArray(haystack)) {
+        var length = haystack.length;
+        for (var i = 0; i < length; i++) {
+            if (haystack[i] == needle) return true;
+        }
+    } else {
+        for (var elt in haystack) {
+            if (elt == needle) return true;
+        }
     }
     return false;
 }

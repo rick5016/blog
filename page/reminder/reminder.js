@@ -4,7 +4,7 @@ var reminder = function () {
             document.querySelector('#page_content').innerHTML = 'Vous devez être connecté pour utiliser cette fonctionnalité'
         } else {
             var DOM = await promise('page/reminder/reminder.html')
-            let data = await promise('api.php', 'POST', {
+            let data = await promise('index.php', 'POST', {
                 'find': 'reminder',
             })
 
@@ -36,7 +36,7 @@ var reminder = function () {
                     'callback': {
                         'event': 'click',
                         'function': function () {
-                            promise('api.php', 'POST', {
+                            promise('index.php', 'POST', {
                                 'save': 'reminder',
                                 'values': {
                                     'rim_date': document.querySelector('#rim_date').value,

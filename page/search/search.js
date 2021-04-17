@@ -13,8 +13,8 @@ var search = function () {
         }
 
         let accueil = (params['accueil'] === 1) ? 1 : 0
-        data = await promise('api.php', 'POST', {
-            'find': 'categorie',
+        data = await promise('index.php', 'POST', {
+            'findAll': 'pagetag',
             'where': params,
             'page': page,
             'nb_page': nb_result_by_page,
@@ -248,14 +248,14 @@ var search = function () {
                 if (params['categories'] !== '' && params['search'] !== '') {
                     aucun_resultat_texte += 'Essayez d\'utiliser des mots-clefs plus larges et de vérifier l\'orthographe.<br>Vous pouvez également modifier ou réinitialiser les filtres.'
                 } else if (params['categories'] !== '') {
-                    aucun_resultat_texte += 'Essayez de modifiez ou réinitialisez les filtres.'
+                    aucun_resultat_texte += 'Essayez de modifier ou réinitialiser les filtres.'
                 } else if (params['search'] !== '' || params['affine'] !== '') {
                     aucun_resultat_texte += 'Essayez d\'utiliser des mots-clefs plus larges et de vérifier l\'orthographe.'
                 } else {
                     aucun_resultat_texte += 'Aucun résultat.'
                 }
                 // Si un critère de recherche est écrit : Essayez d'utiliser des mots-clefs plus larges et de vérifier l'orthographe.
-                // Si au moins un tag est selectionné : Mdifiez ou réinitialisez les filtres
+                // Si au moins un tag est selectionné : Modifiez ou réinitialisez les filtres
 
                 articlesElts.push({ 'element': 'div', 'attributs': { 'id': 'aucun-resultat', 'innerHTML': aucun_resultat_texte } })
             }

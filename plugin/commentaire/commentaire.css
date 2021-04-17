@@ -38,7 +38,7 @@
     background-color: rgb(192, 192, 192);
 }
 
-.overlay {
+#commentaire-overlay {
     position: fixed;
     left: 0px;
     top: 0px;
@@ -74,7 +74,7 @@
 }
 
 #commentaires .button {
-    margin-top: 10px;
+    margin: 10px;
     border: 0;
     background-color: #f46036;
     /*width: 18%;*/
@@ -91,11 +91,7 @@
 }
 
 #commentaires {
-    margin-top: 40px;
-}
-
-#captcha {
-    display: none;
+    margin-top: 20px;
 }
 
 #commentaireInput {
@@ -128,6 +124,7 @@
         margin: 80px auto !important;
         max-height: calc(100vh - 90px) !important;
     }
+
     #zeroCommenaire-img {
         display: none;
     }
@@ -141,89 +138,12 @@
 
 }
 
-
-
-
-
-
-/** PAGINATION **/
-#commentaires-pagination {
-    margin-bottom: 20px;
-    height: 35px;
+#bloc-content a:hover {
+    text-decoration: underline;
 }
 
-#commentaires-pagination .page {
-    background-color: #efefef;
-    min-width: 34px;
-    text-align: center;
-    font-family: Tahoma, Century Gothic, CenturyGothic, AppleGothic, sans-serif;
-    font-size: 15px;
-    margin: 1px;
-    cursor: pointer;
-    height: 35px;
-    float: left;
-}
-#commentaires-pagination .page a {
-    font-weight: initial;
-}
-
-#commentaires-pagination .page:hover {
-    background-color: #E9ECEF;
-}
-
-#commentaires-pagination .page-selected {
-    box-shadow: inset 0 0 0 2px #f46036;
-    color: #000 !important;
-}
-
-#commentaires-pagination .page a {
-    display: block;
-    height: 100%;
-    padding-top: 6px;
-    color: #919191;
+#bloc-content a {
     text-decoration: none;
-}
-
-#commentaires-pagination .search-pagination-last {
-    background: url('data:image/svg+xml;utf8,<svg class="svg-inline--fa fa-angle-double-right fa-w-10" aria-hidden="true" focusable="false" data-prefix="fal" data-icon="angle-double-right" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-fa-i2svg=""><path fill="currentColor" d="M166.9 264.5l-117.8 116c-4.7 4.7-12.3 4.7-17 0l-7.1-7.1c-4.7-4.7-4.7-12.3 0-17L127.3 256 25.1 155.6c-4.7-4.7-4.7-12.3 0-17l7.1-7.1c4.7-4.7 12.3-4.7 17 0l117.8 116c4.6 4.7 4.6 12.3-.1 17zm128-17l-117.8-116c-4.7-4.7-12.3-4.7-17 0l-7.1 7.1c-4.7 4.7-4.7 12.3 0 17L255.3 256 153.1 356.4c-4.7 4.7-4.7 12.3 0 17l7.1 7.1c4.7 4.7 12.3 4.7 17 0l117.8-116c4.6-4.7 4.6-12.3-.1-17z"></path></svg>');
-    background-repeat: no-repeat;
-    filter: invert(55%) sepia(0%) saturate(1469%) hue-rotate(227deg) brightness(104%) contrast(92%);
-    height: 16px;
-    width: 16px;
-    margin-top: 3px;
-    margin-left: 9px;
-    display: inline-block;
-}
-
-#commentaires-pagination .search-pagination-prems {
-    background: url('data:image/svg+xml;utf8,<svg class="svg-inline--fa fa-angle-double-left fa-w-10" aria-hidden="true" focusable="false" data-prefix="fal" data-icon="angle-double-left" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-fa-i2svg=""><path fill="currentColor" d="M153.1 247.5l117.8-116c4.7-4.7 12.3-4.7 17 0l7.1 7.1c4.7 4.7 4.7 12.3 0 17L192.7 256l102.2 100.4c4.7 4.7 4.7 12.3 0 17l-7.1 7.1c-4.7 4.7-12.3 4.7-17 0L153 264.5c-4.6-4.7-4.6-12.3.1-17zm-128 17l117.8 116c4.7 4.7 12.3 4.7 17 0l7.1-7.1c4.7-4.7 4.7-12.3 0-17L64.7 256l102.2-100.4c4.7-4.7 4.7-12.3 0-17l-7.1-7.1c-4.7-4.7-12.3-4.7-17 0L25 247.5c-4.6 4.7-4.6 12.3.1 17z"></path></svg>');
-    background-repeat: no-repeat;
-    filter: invert(55%) sepia(0%) saturate(1469%) hue-rotate(227deg) brightness(104%) contrast(92%);
-    height: 16px;
-    width: 16px;
-    margin-top: 3px;
-    margin-left: 9px;
-    display: inline-block;
-}
-
-#commentaires-pagination .search-pagination-info {
-    font-size: 12px;
-    display: inline-block;
-    margin-left: 10px;
-    margin-top: 10px;
-}
-
-#search-pagination-nb-result-by-page {
-    float: right;
-    font-size: 12px;
-}
-
-#search-pagination-nb-result-by-page select {
-    height: 35px;
-    color: #000;
-    background-color: #efefef;
-    border: 0;
-    -webkit-appearance: none;
-    min-width: 34px;
-    text-align: center;
+    color: #f46036;
+    font-weight: bold;
 }

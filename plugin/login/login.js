@@ -14,6 +14,7 @@ var login = function () {
         if (localStorage.getItem('token') !== null) {
             // Bouton déconnexion si logué
             let span = document.createElement('span')
+            span.id = 'deconnexion-bloc'
             span.innerHTML = 'Déconnexion'
             span.addEventListener("click", deconnexion)
             DOM.querySelector('#connexion-bloc').innerHTML = ''
@@ -25,11 +26,13 @@ var login = function () {
             if (DOM.querySelector('#inscription') != null && DOM.querySelector('#connexion') != null) {
                 DOM.querySelector('#inscription').addEventListener("click", function (e) {
                     e.preventDefault()
-                    //inscription()
+                    load('inscription', [], 'page', 'index.html?inscription')
                 })
                 DOM.querySelector('#connexion').addEventListener("click", function (e) {
                     e.preventDefault()
-                    connexion()
+                    let login = document.querySelector('#login').value
+                    let password = document.querySelector('#password').value
+                    connexion(login, password)
                 })
             }
 
@@ -51,28 +54,11 @@ const deconnexion = function () {
 }
 
 /**
- * TODO : gestion de l'inscription
- * 
- */
-const inscription = async function () {
-    let login = document.querySelector('#login').value
-    let password = document.querySelector('#password').value
-    if (login != '' && password != '') {
-        let data = await promise('api.php', 'POST', { 'login': login, 'password': password, 'inscription': true })
-        if (data !== false) {
-            connexion()
-        }
-    }
-}
-
-/**
  * Gestion de la connexion
  * 
  */
-const connexion = async function () {
-    let login = document.querySelector('#login').value
-    let password = document.querySelector('#password').value
+const connexion = async function (login, password) {
     if (login != '' && password != '') {
-        await promise('api.php', 'POST', { 'login': login, 'password': password })
+        await promise('index.php', 'POST', { 'login': login, 'password': password })
     }
 }

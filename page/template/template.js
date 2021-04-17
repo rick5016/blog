@@ -59,6 +59,13 @@ var template = function () {
         // Retrait du bouton d'ajout d'article si non connecté
         if (localStorage.getItem('token') === null) {
             DOM.querySelector('#add').remove()
+        } else {
+            let user = await promise('index.php', 'POST', {
+                'find': 'user'
+            })
+            if (user.roles.search('ADMIN') === -1) {
+                DOM.querySelector('#add').remove()
+            }
         }
 
         // Affichage du menu déroulant
@@ -79,6 +86,10 @@ var template = function () {
         });
 
         document.querySelector('body').addEventListener("click", function (elt) {
+            if (document.querySelector('#connexion-bloc').style.display !== 'none' && elt.target.classList[0] != 'connexion-event') {
+                document.querySelector('#connexion-bloc').style.display = 'none'
+            }
+
             if (document.querySelector('#menu-container').style.display !== 'none' && elt.target.id != 'menu' && !elt.target.classList.contains('other') && elt.target.id != 'nav-btn') {
                 document.querySelector('#menu-container').style.display = 'none'
             }

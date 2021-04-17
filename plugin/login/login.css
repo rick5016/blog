@@ -3,11 +3,13 @@ header #connexion-container.connexion-container-scroll {
     margin-top: 15px !important;
 }
 header #connexion-container {
-    cursor: pointer;
     transition: all .3s;
     width:150px;
     margin-top:5px;
     position: relative;
+}
+#connexion-btn {
+    cursor: pointer;
 }
 header #connexion-container #connexion-btn {
     width:60px;
@@ -151,5 +153,8 @@ header #connexion-container #connexion-bloc #connexion-form #inscription-title {
     #connexion-container {
         display: none;
     }
+}
+#deconnexion-bloc {
+    cursor: pointer;
 }
 /********** Connexion Fin **********/
